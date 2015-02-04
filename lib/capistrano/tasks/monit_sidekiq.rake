@@ -1,4 +1,8 @@
 # https://github.com/seuros/capistrano-sidekiq
+
+require 'capistrano/magic_recipes/base_helpers'
+include Capistrano::MagicRecipes::BaseHelpers
+
 namespace :load do
   task :defaults do
     set :sidekiq_monit_conf_dir, -> { '/etc/monit/conf.d' }
