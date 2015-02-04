@@ -2,7 +2,7 @@
 
 Our most used recipes for Capistrano-3!
 
-Not using capistrano-3, see [Capistrano 2 version of MagicRecipes](https://github.com/twetzel/magic_recipes)
+Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/magic_recipes)
 
 
 ### Includes
@@ -20,7 +20,14 @@ Not using capistrano-3, see [Capistrano 2 version of MagicRecipes](https://githu
 - **thin** conroll thin
 
 
-** Still work on progress .. son absolutly not production ready! **
+### ToDos
+
+- clean up code
+- write some genrerators
+- testing
+
+
+#### Still work on progress .. son absolutly not production ready!
 
 ---
 
