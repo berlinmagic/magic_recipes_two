@@ -1,0 +1,67 @@
+set daemon <%= fetch(:monit_interval) %>
+
+set logfile /var/log/monit.log
+set idfile /var/lib/monit/id
+set statefile /var/lib/monit/state
+
+set eventqueue
+    basedir /var/lib/monit/events
+    slots 100
+
+set mail-format {
+        from: <%= fetch(:monit_mail_from) %>
+    reply-to: <%= fetch(:monit_mail_reply_to) %>
+     subject: !!! $EVENT on $SERVICE !!!
+     message: $EVENT on $SERVICE - $DESCRIPTION.
+              
+              - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+              When:     $DATE
+              What:     $EVENT   [$ACTION]
+              Where:    $SERVICE
+              More:     $DESCRIPTION
+              Server:   $HOST
+              - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+              
+              Your faithful employee,
+              M O N I T
+              
+              <% if fetch(:monit_http_client) %><% if fetch(:monit_http_domain) %>
+              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_http_domain) %>:2812/
+              <% else %>
+              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:app_server_ip) %>:2812/
+              <% end %><% end %>
+}
+
+set mailserver <%= fetch(:monit_mail_server) %> port <%= fetch(:monit_mail_port) %>
+    username "<%= fetch(:monit_mail_username) %>" password "<%= fetch(:monit_mail_password) %>"
+    <% if fetch(:monit_mail_authentication) %>
+    using <%= fetch(:monit_mail_authentication) %>
+    <% end %>
+    with timeout 30 seconds
+
+set alert <%= fetch(:monit_mail_to) %>
+
+<% if fetch(:monit_http_client) %>
+set httpd port <%= fetch(:monit_http_port) %>
+    <% if fetch(:monit_http_domain) %>
+    use address <%= fetch(:monit_http_domain) %>
+    <% end %>
+    # allow careagents.cloudapp.net
+    # allow 191.233.74.184
+    # allow 127.0.0.1
+    <% if fetch(:monit_http_use_ssl) %>
+    ssl enable
+    pemfile <%= fetch(:monit_http_pemfile) %>
+    <% end %>
+    allow <%= fetch(:monit_http_username) %>:<%= fetch(:monit_http_password) %>
+<% end %>
+
+check system <%= fetch(:application) %>_server
+    if loadavg(5min) > 2 for 2 cycles then alert
+    if memory > 75% for 2 cycles then alert
+    if cpu(user) > 75% for 2 cycles then alert
+
+check device HardDrive with path /
+    if SPACE usage > 75% then alert
+
+include /etc/monit/conf.d/*

@@ -1,0 +1,30 @@
+# Monit configuration for SIDEKIQ :  <%= fetch(:application) %>  (<%= fetch(:stage) %>)
+<% processes_pids.each_with_index do |pid_file, idx| %>
+<% 
+  args = []                                                                               
+  args.push "--index #{idx}"                                                              
+  args.push "--pidfile #{pid_file}"                                                       
+  args.push "--environment #{fetch(:sidekiq_env)}"                                        
+  args.push "--logfile #{fetch(:sidekiq_log)}" if fetch(:sidekiq_log)                     
+  args.push "--require #{fetch(:sidekiq_require)}" if fetch(:sidekiq_require)             
+  args.push "--tag #{fetch(:sidekiq_tag)}" if fetch(:sidekiq_tag)                         
+  Array(fetch(:sidekiq_queue)).each do |queue|                                            
+    args.push "--queue #{queue}"                                                          
+  end                                                                                     
+  args.push "--config #{fetch(:sidekiq_config)}" if fetch(:sidekiq_config)                
+  args.push "--concurrency #{fetch(:sidekiq_concurrency)}" if fetch(:sidekiq_concurrency) 
+  # use sidekiq_options for special options                                               
+  args.push fetch(:sidekiq_options) if fetch(:sidekiq_options)                            
+  args.push '--daemon'                                                                    
+%>
+check process <%= sidekiq_service_name(idx) %>
+  with pidfile "<%= pid_file %>"
+  start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec sidekiq <%= args.join(" ") %>'" with timeout 30 seconds
+  stop program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec sidekiqctl stop <%= pid_file %>' " with timeout <%= fetch(:sidekiq_timeout).to_i + 10  %> seconds
+  group <%= fetch(:sidekiq_monit_group, fetch(:application)) %>-sidekiq
+  if totalmem is greater than 200 MB for 2 cycles then restart
+  if 3 restarts within 5 cycles then timeout
+  alert <%= fetch(:monit_mail_to) %> only on { pid }
+  if 2 restarts within 3 cycles then alert
+  if changed pid 2 times within 10 cycles then alert
+<% end %>

@@ -1,0 +1,139 @@
+upstream thin_<%= fetch(:application) %>_<%= fetch(:stage) %>_cluster {
+  <% fetch(:app_instances).to_i.times do |i| %>
+  server unix:/tmp/thin.<%= fetch(:application) %>.<%= fetch(:stage) %>.<%= i %>.sock  max_fails=1 fail_timeout=15s;
+  <% end %>
+}
+
+# HTTP Server
+<% if fetch(:nginx_use_ssl) %>
+<% if fetch(:nginx_major_domain) %>
+server {
+  listen 80<%= ' default_server' if fetch(:default_site) %>;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join("\n              ") %>
+              <%= ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" %>;
+  
+  # return 301 https://<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  
+  location ^~ /assets/ico/ {
+    root        <%= current_path %>/public;
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+  location / {
+    return 301 https://<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  }
+  
+}
+server {
+  listen 80;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| "~^(?<sub>\w+)#{ Regexp.escape( ".#{d.gsub(/^\*?\./, "")}" ) }" }.join("\n              ") %>
+              <%= "~^#{Regexp.escape("www.")}(?<sub>\w+)#{ Regexp.escape( ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" ) }" %>
+              <%= "~^(?<sub>\w+)#{ Regexp.escape( ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" ) }" %>;
+  
+  # return 301 https://$sub.<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  
+  location ^~ /assets/ico/ {
+    root        <%= current_path %>/public;
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+  location / {
+    return 301 https://$sub.<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  }
+  
+}
+<% else %>
+server {
+  listen 80;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| d[0] == "." ? d : ".#{d}"}.join("\n              ") %>;
+  # return 301 https://$host$request_uri;
+  
+  location ^~ /assets/ico/ {
+    root        <%= current_path %>/public;
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+  location / {
+    return 301 https://$host$request_uri;
+  }
+  
+}
+<% end %>
+<% end %>
+
+<% if fetch(:nginx_major_domain) %>
+server {
+  listen 443;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join("\n              ") %>;
+  return 301 https://<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  ssl on;
+  ssl_certificate <%= fetch(:nginx_ssl_certificate_path) %>/<%= fetch(:nginx_old_ssl_certificate) %>;
+  ssl_certificate_key <%= fetch(:nginx_ssl_certificate_key_path) %>/<%= fetch(:nginx_old_ssl_certificate_key) %>;
+}
+server {
+  listen 443;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| "~^(?<sub>\w+)\.#{ Regexp.escape( d.gsub(/^\*?\./, "") ) }" }.join("\n              ") %>;
+  return 301 https://$sub.<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  ssl on;
+  ssl_certificate <%= fetch(:nginx_ssl_certificate_path) %>/<%= fetch(:nginx_old_ssl_certificate) %>;
+  ssl_certificate_key <%= fetch(:nginx_ssl_certificate_key_path) %>/<%= fetch(:nginx_old_ssl_certificate_key) %>;
+}
+<% end %>
+
+server {
+<% if fetch(:nginx_use_ssl) %>
+  listen 443<%= ' default_server ssl' if fetch(:default_site) %>;
+  ssl on;
+  ssl_certificate <%= fetch(:nginx_ssl_certificate_path) %>/<%= fetch(:nginx_ssl_certificate) %>;
+  ssl_certificate_key <%= fetch(:nginx_ssl_certificate_key_path) %>/<%= fetch(:nginx_ssl_certificate_key) %>;
+<% else %>
+  listen 80<%= ' default deferred' if fetch(:default_site) %>;
+<% end %>
+  <% if fetch(:nginx_major_domain) %>
+  server_name <%= ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" %>;
+  <% else %>
+  server_name <%= Array( fetch(:nginx_domains) ).join("\n              ") %>;
+  <% end %>
+  
+  if ($host ~* ^www\.(.*)) {
+    set $host_without_www $1;
+    rewrite ^(.*) http://$host_without_www$1 permanent;
+  }
+
+  root        <%= current_path %>/public;
+
+  access_log <%= fetch(:nginx_log_path) %>/nginx-access.log;
+  error_log  <%= fetch(:nginx_log_path) %>/nginx-error.log;
+
+  error_page 404 /404.html;
+  location /404.html { root <%= fetch(:deploy_to) %>/current/<%= fetch(:nginx_static_dir) %>; }
+
+  error_page 500 502 503 504 /500.html;
+  location /500.html { root <%= fetch  (:deploy_to) %>/current/<%= fetch(:nginx_static_dir) %>; }
+
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+
+  location ^~ /assets/ {
+    gzip_static on;
+    expires max;
+    add_header Cache-Control public;
+  }
+
+  try_files $uri/index.html $uri @thin_<%= fetch(:application) %>_<%= fetch(:stage) %>;
+
+  location @thin_<%= fetch(:application) %>_<%= fetch(:stage) %> {
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-FORWARDED_PROTO http;
+    proxy_set_header Host $host:$server_port;
+  <% if fetch(:nginx_use_ssl) %>
+    proxy_set_header X-Forwarded-Proto https;
+  <% end %>
+    proxy_redirect off;
+    proxy_pass http://thin_<%= fetch(:application) %>_<%= fetch(:stage) %>_cluster;
+  }
+}

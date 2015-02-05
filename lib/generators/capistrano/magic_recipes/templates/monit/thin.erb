@@ -1,0 +1,13 @@
+# Monit configuration for THIN :  <%= fetch(:application) %>  (<%= fetch(:stage) %>)
+<%  fetch(:app_instances, 1).times do |n| %>
+  check process <%= fetch(:application) %>_<%= fetch(:stage) %>_thin_<%= n %> with pidfile <%= deploy_to %>/shared/pids/thin_<%= fetch(:application) %>_<%= fetch(:stage) %>.<%= n %>.pid
+    group thin-<%= fetch(:application) %>
+    group thin-<%= fetch(:stage) %>
+    start program = "/bin/su - <%= fetch(:user) %> -c 'cd <%= current_path %> ; bundle exec thin start -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' "
+    stop program = "/bin/su - <%= fetch(:user) %> -c 'cd <%= current_path %> ; bundle exec thin stop -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' " 
+    if mem > 200.0 MB for 1 cycles then restart
+    if cpu > 50% for 3 cycles then restart
+    if 5 restarts within 5 cycles then timeout
+    alert <%= fetch(:monit_mail_to) %> only on { pid }
+    if changed pid 2 times within 20 cycles then alert
+<% end %>

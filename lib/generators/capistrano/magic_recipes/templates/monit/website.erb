@@ -1,0 +1,9 @@
+# Check domains on port 80 <%= "(and 443 if ssl is on)" if fetch(:nginx_use_ssl) %> for <%= fetch(:application) %> [<%= fetch(:stage) %>]
+<% Array(fetch(:nginx_domains)).each do |domain| %>
+<% domain = domain.gsub(/^\*?\./, "") %>
+check host <%= domain %> with address <%= fetch(:app_server_ip) %>
+  if failed port 80 protocol http then alert
+  # <% if fetch(:nginx_use_ssl) %>if failed port 443 type TCPSSL protocol http then alert<% end %>
+
+
+<% end %>
