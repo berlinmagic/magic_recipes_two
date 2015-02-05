@@ -7,28 +7,28 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### Includes
 
-- **assets** compile assets localy, than upload them (fully integrated)
+- **assets** compile assets locally, than upload them (fully integrated)
 - **db** seed task
 - **exception_pages** copy exception pages from assets to public (if you generate them with sprockets)
-- **inform_slack** inform a slack channel about successfull upload
+- **inform_slack** inform a slack channel about successful upload
 - **monit** control monit and monit-webinterface
 - **monit_sidekiq** monit tasks for sidekiq (unused!!)
-- **nginx** controll nginx with several instances and ssl
-- **redis** controll redis
+- **nginx** control nginx with several instances and ssl
+- **redis** control redis
 - **secrets** handling of rails 4 secrets
-- **sidekiq** controll sidekiq
-- **thin** conroll thin
+- **sidekiq** control sidekiq
+- **thin** control thin
 
 
 ### ToDos
 
 - clean up code
-- write some genrerators
+- write some generators
 - testing
 
-
-#### Still work on progress .. son absolutly not production ready!
-
+---
+#### Still work on progress .. so absolutely not production ready!
+---
 
 ## Variables
 
@@ -68,9 +68,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - **monit_http_password**
 
 ##### nginx
-- **nginx_domains**
-- **default_site**
 - **app_instances**
+- **app_server_ip**
+- **default_site**
+- **nginx_domains**
 - **nginx_service_path**
 - **nginx_roles**
 - **nginx_log_path**
@@ -84,7 +85,6 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - **nginx_ssl_certificate_path**
 - **nginx_ssl_certificate_key**
 - **nginx_ssl_certificate_key_path**
-- **app_server_ip**
 
 ##### redis
 - **redis_roles**
