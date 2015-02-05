@@ -66,11 +66,23 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## MagicRecipes .. pick what you need
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 
+## bundler
+  # => set :bundle_roles, :all                                         # this is default
+  # => set :bundle_servers, -> { release_roles(fetch(:bundle_roles)) } # this is default
+  # => set :bundle_binstubs, -> { shared_path.join('bin') }            # default: nil
+  # => set :bundle_gemfile, -> { release_path.join('MyGemfile') }      # default: nil
+  # => set :bundle_path, -> { shared_path.join('my_special_bundle') }  # default: nil
+  # => set :bundle_without, %w{development test}.join(' ')             # this is default
+  # => set :bundle_flags, '--deployment --quiet'                       # this is default
+  # => set :bundle_env_variables, {}                                   # this is default
+  # => set :bundle_bins, fetch(:bundle_bins, []).push('my_new_binary') # You can add any custom executable to this list
+
+
 ## db
   # => set :db_roles, :db
 
 
-## inform_slack
+## inform slack
   # => set :slack_token,           "xxx-xxx-xxx-xxx"
   # => set :slack_channel,         "xxx-xxx-xxx-xxx"
   # => set :slack_text,            "New Deployment on *#{ fetch(:stage) }* ... check:  #{fetch(:nginx_use_ssl) ? 'https': 'htpp'}://#{ fetch(:nginx_major_domain) ? fetch(:nginx_major_domain).gsub(/^\*?\./, "") : Array( fetch(:nginx_domains) ).first.gsub(/^\*?\./, "") }"
@@ -124,9 +136,50 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
   # => set :app_server_ip,                   "127.0.0.1"
 
 
+## postgres
+  # => set :pg_database,           "#{fetch(:application)}_#{fetch(:stage)}" }
+  # => set :pg_user,             fetch(:pg_database)
+  # => set :pg_ask_for_password, false
+  # => set :pg_password,         ask_for_or_generate_password
+  # => set :pg_system_user,      'postgres'
+  # => set :pg_system_db,        'postgres'
+  # => set :pg_use_hstore,       false
+  # => set :pg_extensions,       []
+  ## template only settings
+  # => set :pg_templates_path,   'config/deploy/templates'
+  # => set :pg_env,              fetch(:rails_env) || fetch(:stage)
+  # => set :pg_pool,             5
+  # => set :pg_encoding,         'unicode'
+  ## for multiple release nodes automatically use server hostname (IP?) in the database.yml
+  # => set :pg_host, -> do
+  # =>   if release_roles(:all).count == 1 && release_roles(:all).first == primary(:db)
+  # =>     'localhost'
+  # =>   else
+  # =>     primary(:db).hostname
+  # =>   end
+  # => end
+
+
+## rails
+  # => set :rails_env, 'staging'                  # If the environment differs from the stage name
+  # => set :migration_role, 'migrator'            # Defaults to 'db'
+  # => set :conditionally_migrate, true           # Defaults to false. If true, it's skip migration if files in db/migrate not modified
+  # => set :assets_roles, [:web, :app]            # Defaults to [:web]
+  # => set :assets_prefix, 'prepackaged-assets'   # Defaults to 'assets' this should match config.assets.prefix in your rails config/application.rb
+  ## If you need to touch public/images, public/javascripts and public/stylesheets on each deploy:
+  # => set :normalize_asset_timestamps, %{public/images public/javascripts public/stylesheets}
+
+
 ## redis
   # => set :redis_roles,   :web
   # => set :redis_pid,     "/var/run/redis/redis-server.pid"
+
+
+## rvm1 capistrano3
+  # => set :rvm1_ruby_version,     "."
+  # => set :rvm1_map_bins,         %w{rake gem bundle ruby}
+  # => set :rvm1_alias_name,       fetch(:application)
+  # => set :rvm1_auto_script_path, "#{fetch(:deploy_to)}/rvm1scripts"
 
 
 ## secrets
