@@ -58,84 +58,102 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ```
 
 
-## Variables
+## in deploy file
 
-##### db
-- **db_roles**
+```ruby
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## MagicRecipes .. pick what you need
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 
-##### inform_slack
-- **slack_token**
-- **slack_channel**
-- **slack_text**
-- **slack_username**
-- **slack_production_icon**
-- **slack_staging_icon**
+## db
+  # => set :db_roles, :db
 
-##### monit
-- **monit_roles**
-- **monit_interval**
-- *Mailer:*
-- **monit_mail_server**
-- **monit_mail_port**
-- **monit_mail_authentication**
-- **monit_mail_username**
-- **monit_mail_password**
-- **monit_mail_to**
-- **monit_mail_from**
-- **monit_mail_reply_to**
-- *Additional stuff for postrgres:*
-- **postgresql_roles**
-- **postgresql_pid**
-- *WebClient:*
-- **monit_http_client**
-- **monit_http_domain**
-- **monit_http_port**
-- **monit_http_use_ssl**
-- **monit_http_pemfile**
-- **monit_http_username**
-- **monit_http_password**
 
-##### nginx
-- **app_instances**
-- **app_server_ip**
-- **default_site**
-- **nginx_domains**
-- **nginx_service_path**
-- **nginx_roles**
-- **nginx_log_path**
-- **nginx_root_path**
-- **nginx_static_dir**
-- **nginx_sites_enabled**
-- **nginx_sites_available**
-- **nginx_template**
-- **nginx_use_ssl**
-- **nginx_ssl_certificate**
-- **nginx_ssl_certificate_path**
-- **nginx_ssl_certificate_key**
-- **nginx_ssl_certificate_key_path**
+## inform_slack
+  # => set :slack_token,           "xxx-xxx-xxx-xxx"
+  # => set :slack_channel,         "xxx-xxx-xxx-xxx"
+  # => set :slack_text,            "New Deployment on *#{ fetch(:stage) }* ... check:  #{fetch(:nginx_use_ssl) ? 'https': 'htpp'}://#{ fetch(:nginx_major_domain) ? fetch(:nginx_major_domain).gsub(/^\*?\./, "") : Array( fetch(:nginx_domains) ).first.gsub(/^\*?\./, "") }"
+  # => set :slack_username,        "capistrano (#{fetch(:stage)})"
+  # => set :slack_production_icon, "http://icons.iconarchive.com/icons/itzikgur/my-seven/128/Backup-IBM-Server-icon.png"
+  # => set :slack_staging_icon,    "http://itekblog.com/wp-content/uploads/2012/07/railslogo.png"
 
-##### redis
-- **redis_roles**
-- **redis_pid**
 
-##### secrets
-- **secrets_roles**
+## monit
+  # => set :monit_roles,               :web
+  # => set :monit_interval,            30
+  ## Mailer
+  # => set :monit_mail_server,         "smtp.gmail.com"
+  # => set :monit_mail_port,           587
+  # => set :monit_mail_authentication, false # SSLAUTO|SSLV2|SSLV3|TLSV1|TLSV11|TLSV12
+  # => set :monit_mail_username,       "foo@example.com"
+  # => set :monit_mail_password,       "secret"
+  # => set :monit_mail_to,             "foo@example.com"
+  # => set :monit_mail_from,           "monit@foo.bar"
+  # => set :monit_mail_reply_to,       "support@foo.bar"
+  ## Additional stuff for postrgres
+  # => set :postgresql_roles,          :db
+  # => set :postgresql_pid,            "/var/run/postgresql/9.1-main.pid"
+  ## WebClient
+  # => set :monit_http_client,         true
+  # => set :monit_http_domain,         false
+  # => set :monit_http_port,           2812
+  # => set :monit_http_use_ssl,        false
+  # => set :monit_http_pemfile,        "/etc/monit/monit.pem"
+  # => set :monit_http_username,       "admin"
+  # => set :monit_http_password,       "monitor"
 
-##### sidekiq
-- **sidekiq_default_hooks**
-- **sidekiq_pid**
-- **sidekiq_env**
-- **sidekiq_log**
-- **sidekiq_timeout**
-- **sidekiq_roles**
-- **sidekiq_processes**
-- *Rbenv and RVM integration:*
-- **rbenv_map_bins**
-- **rvm_map_bins**
 
-##### thin
-- **thin_path**
-- **thin_roles**
+## nginx
+  # => set :nginx_domains,                   []
+  # => set :default_site,                    false
+  # => set :app_instances,                   1
+  # => set :nginx_service_path,              'service nginx'
+  # => set :nginx_roles,                     :web
+  # => set :nginx_log_path,                  "#{shared_path}/log"
+  # => set :nginx_root_path,                 "/etc/nginx"
+  # => set :nginx_static_dir,                "public"
+  # => set :nginx_sites_enabled,             "sites-enabled"
+  # => set :nginx_sites_available,           "sites-available"
+  # => set :nginx_template,                  :default
+  # => set :nginx_use_ssl,                   false
+  # => set :nginx_ssl_certificate,           "#{fetch(:application)}.crt"
+  # => set :nginx_ssl_certificate_path,      '/etc/ssl/certs'
+  # => set :nginx_ssl_certificate_key,       "#{fetch(:application)}.crt"
+  # => set :nginx_ssl_certificate_key_path,  '/etc/ssl/private'
+  # => set :app_server_ip,                   "127.0.0.1"
+
+
+## redis
+  # => set :redis_roles,   :web
+  # => set :redis_pid,     "/var/run/redis/redis-server.pid"
+
+
+## secrets
+  # => set :secrets_roles,   :app
+
+
+## sidekiq
+  # => set :sidekiq_default_hooks,   true
+  # => set :sidekiq_pid,             File.join(shared_path, 'tmp', 'pids', 'sidekiq.pid')
+  # => set :sidekiq_env,             fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
+  # => set :sidekiq_log,             File.join(shared_path, 'log', 'sidekiq.log')
+  # => set :sidekiq_timeout,         10
+  # => set :sidekiq_roles,           :app
+  # => set :sidekiq_processes,       1
+  ## Rbenv and RVM integration
+  # => set :rbenv_map_bins,          fetch(:rbenv_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
+  # => set :rvm_map_bins,            fetch(:rvm_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
+
+
+## thin
+  # => set :thin_path,     '/etc/thin'
+  # => set :thin_roles,    :web
+
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+```
+
 
 ---
 
