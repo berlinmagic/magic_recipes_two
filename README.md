@@ -34,8 +34,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## in Capfile
 
 ```ruby
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-## MagicRecipes
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## MagicRecipes .. pick what you need
 
 # => require 'rvm1/capistrano3'
 # => require 'capistrano/bundler'
@@ -54,7 +54,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 # => require 'capistrano/magic_recipes/sidekiq'
 # => require 'capistrano/magic_recipes/thin'
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ```
 
 
