@@ -12,7 +12,7 @@ namespace :deploy do
       end
     end
     
-    after "deploy:assets:precompile", "deploy:assets:copy_exceptions"
+    after "deploy:compile_assets", "deploy:assets:copy_exceptions"
     
   end
 end

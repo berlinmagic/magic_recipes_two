@@ -30,6 +30,34 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 #### Still work on progress .. so absolutely not production ready!
 ---
 
+
+## in Capfile
+
+´´´ruby
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## MagicRecipes
+
+# => require 'rvm1/capistrano3'
+# => require 'capistrano/bundler'
+# => require 'capistrano/rails/assets'
+# => require 'capistrano/rails/migrations'
+# => require 'capistrano/postgresql'
+
+# => require 'capistrano/magic_recipes/assets'
+# => require 'capistrano/magic_recipes/db'
+# => require 'capistrano/magic_recipes/exception_pages'
+# => require 'capistrano/magic_recipes/inform_slack'
+# => require 'capistrano/magic_recipes/monit'
+# => require 'capistrano/magic_recipes/nginx'
+# => require 'capistrano/magic_recipes/redis'
+# => require 'capistrano/magic_recipes/secrets'
+# => require 'capistrano/magic_recipes/sidekiq'
+# => require 'capistrano/magic_recipes/thin'
+
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+´´´
+
+
 ## Variables
 
 ##### db

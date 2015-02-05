@@ -17,8 +17,12 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.require_paths = ["lib"]
 
-  s.add_dependency "rails",         ">= 3.2"
-  s.add_dependency 'capistrano',    '>= 3.0'
+  s.add_dependency "rails",                 ">= 3.2"
+  s.add_dependency "capistrano",            ">= 3.2"
+  s.add_dependency "capistrano-bundler",    ">= 1.1"
+  s.add_dependency "capistrano-rails",      ">= 1.1"
+  s.add_dependency "rvm1-capistrano3",      ">= 1.2"
+  s.add_dependency "capistrano-postgresql", ">= 4.2"
 
   s.add_development_dependency "sqlite3"
   
