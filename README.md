@@ -29,6 +29,86 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 #### Still work on progress .. son absolutly not production ready!
 
+
+## Variables
+
+##### db
+- **db_roles**
+
+##### inform_slack
+- **slack_token**
+- **slack_channel**
+- **slack_text**
+- **slack_username**
+- **slack_production_icon**
+- **slack_staging_icon**
+
+##### monit
+- **monit_roles**
+- **monit_interval**
+- *Mailer:*
+- **monit_mail_server**
+- **monit_mail_port**
+- **monit_mail_authentication**
+- **monit_mail_username**
+- **monit_mail_password**
+- **monit_mail_to**
+- **monit_mail_from**
+- **monit_mail_reply_to**
+- *Additional stuff for postrgres:*
+- **postgresql_roles**
+- **postgresql_pid**
+- *WebClient:*
+- **monit_http_client**
+- **monit_http_domain**
+- **monit_http_port**
+- **monit_http_use_ssl**
+- **monit_http_pemfile**
+- **monit_http_username**
+- **monit_http_password**
+
+##### nginx
+- **nginx_domains**
+- **default_site**
+- **app_instances**
+- **nginx_service_path**
+- **nginx_roles**
+- **nginx_log_path**
+- **nginx_root_path**
+- **nginx_static_dir**
+- **nginx_sites_enabled**
+- **nginx_sites_available**
+- **nginx_template**
+- **nginx_use_ssl**
+- **nginx_ssl_certificate**
+- **nginx_ssl_certificate_path**
+- **nginx_ssl_certificate_key**
+- **nginx_ssl_certificate_key_path**
+- **app_server_ip**
+
+##### redis
+- **redis_roles**
+- **redis_pid**
+
+##### secrets
+- **secrets_roles**
+
+##### sidekiq
+- **sidekiq_default_hooks**
+- **sidekiq_pid**
+- **sidekiq_env**
+- **sidekiq_log**
+- **sidekiq_timeout**
+- **sidekiq_roles**
+- **sidekiq_processes**
+- *Rbenv and RVM integration:*
+- **rbenv_map_bins**
+- **rvm_map_bins**
+
+##### thin
+- **thin_path**
+- **thin_roles**
+
 ---
 
 This project rocks and uses MIT-LICENSE.
