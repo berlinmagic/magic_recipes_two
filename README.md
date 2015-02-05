@@ -33,7 +33,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ## in Capfile
 
-´´´ruby
+```ruby
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ## MagicRecipes
 
@@ -55,7 +55,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 # => require 'capistrano/magic_recipes/thin'
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-´´´
+```
 
 
 ## Variables
