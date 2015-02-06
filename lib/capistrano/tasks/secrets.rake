@@ -40,4 +40,12 @@ namespace :secrets do
     invoke "secrets:upload"
   end
   
+  
+  task :secrets_yml_symlink do
+    set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
+  end
+
+  after 'deploy:started', 'secrets:secrets_yml_symlink'
+  
+  
 end
