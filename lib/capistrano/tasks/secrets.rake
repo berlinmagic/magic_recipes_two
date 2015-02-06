@@ -4,6 +4,7 @@ include Capistrano::MagicRecipes::BaseHelpers
 namespace :load do
   task :defaults do
     set :secrets_roles,       -> { :app }
+    set :secrets_profile,     -> { "profile" } # "profile" | "bashrc"
     set :secrets_key_base,    -> { generate_secrect_key }
     set :secrets_token,       -> { generate_secrect_key }
     set :secrets_key_name,    -> { "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_KEY_BASE".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase }
@@ -30,8 +31,8 @@ namespace :secrets do
   task :export do
     on release_roles fetch(:secrets_roles) do
       within fetch(:secrets_user_path) do
-        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | cat >> .bashrc"
-        execute :sudo,  "echo 'export #{fetch(:secrets_token_name)}=#{fetch(:secrets_token)}' | cat >> .bashrc"
+        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | cat >> .#{fetch(:secrets_profile)}"
+        execute :sudo,  "echo 'export #{fetch(:secrets_token_name)}=#{fetch(:secrets_token)}' | cat >> .#{fetch(:secrets_profile)}"
         execute "export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}"
         execute "export #{fetch(:secrets_token_name)}=#{fetch(:secrets_token)}"
       end
