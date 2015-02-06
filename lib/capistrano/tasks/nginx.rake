@@ -1,3 +1,7 @@
+require 'capistrano/magic_recipes/base_helpers'
+include Capistrano::MagicRecipes::BaseHelpers
+
+
 namespace :load do
   task :defaults do
     set :nginx_domains, -> { [] }
@@ -53,10 +57,12 @@ namespace :nginx do
         within fetch(:sites_available) do
           config_file = fetch(:nginx_template)
           if config_file == :default
-              config_file = File.expand_path("../../../../config/deploy/templates/nginx.conf.erb", __FILE__)
+              # config_file = File.expand_path("../../../../config/deploy/templates/nginx.conf.erb", __FILE__)
+              magic_template("nginx.conf", '/tmp/nginx.conf')
           end
-          config = ERB.new(File.read(config_file)).result(binding)
-          upload! StringIO.new(config), '/tmp/nginx.conf'
+          # config = ERB.new(File.read(config_file)).result(binding)
+          # upload! StringIO.new(config), '/tmp/nginx.conf'
+          template(config_file, '/tmp/nginx.conf')
 
           execute :sudo, :mv, '/tmp/nginx.conf', "#{fetch(:application)}_#{fetch(:stage)}"
         end

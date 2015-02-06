@@ -66,16 +66,20 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## MagicRecipes .. pick what you need
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 
+# => set :user,        'deployuser'
+# => set :deploy_to,   "/home/#{fetch(:user)}/#{fetch(:application)}-#{fetch(:stage)}"
+
+
 ## bundler
-  # => set :bundle_roles, :all                                         # this is default
-  # => set :bundle_servers, -> { release_roles(fetch(:bundle_roles)) } # this is default
-  # => set :bundle_binstubs, -> { shared_path.join('bin') }            # default: nil
-  # => set :bundle_gemfile, -> { release_path.join('MyGemfile') }      # default: nil
-  # => set :bundle_path, -> { shared_path.join('my_special_bundle') }  # default: nil
-  # => set :bundle_without, %w{development test}.join(' ')             # this is default
-  # => set :bundle_flags, '--deployment --quiet'                       # this is default
-  # => set :bundle_env_variables, {}                                   # this is default
-  # => set :bundle_bins, fetch(:bundle_bins, []).push('my_new_binary') # You can add any custom executable to this list
+  # => set :bundle_roles,         :all                                  # this is default
+  # => set :bundle_servers,       release_roles(fetch(:bundle_roles)) } # this is default
+  # => set :bundle_binstubs,      shared_path.join('bin') }             # default: nil
+  # => set :bundle_gemfile,       release_path.join('MyGemfile') }      # default: nil
+  # => set :bundle_path,          shared_path.join('my_special_bundle') # default: nil
+  # => set :bundle_without,       %w{development test}.join(' ')        # this is default
+  # => set :bundle_flags,         '--deployment --quiet'                # this is default
+  # => set :bundle_env_variables, {}                                    # this is default
+  # => set :bundle_bins, fetch(:bundle_bins, []).push('my_new_binary')  # You can add any custom executable to this list
 
 
 ## db
@@ -183,7 +187,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 
 ## secrets
-  # => set :secrets_roles,   :app
+  # => set :secrets_roles,       :app
+  # => set :secrets_key_base,    generate_secrect_key
+  # => set :secrets_key_name,    "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_KEY_BASE".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase
+  # => set :secrets_user_path,   "/home/#{fetch(:user)}"
 
 
 ## sidekiq
