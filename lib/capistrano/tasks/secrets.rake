@@ -6,10 +6,9 @@ namespace :load do
     set :secrets_roles,       -> { :app }
     set :secrets_profile,     -> { "profile" } # "profile" | "bashrc"
     set :secrets_key_base,    -> { generate_secrect_key }
-    set :secrets_token,       -> { generate_secrect_key }
     set :secrets_key_name,    -> { "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_KEY_BASE".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase }
-    set :secrets_token_name,  -> { "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_TOKEN".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase }
     set :secrets_user_path,   -> { "/home/#{fetch(:user)}" }
+    set :secrets_set_both,    -> { false }
   end
 end
 
@@ -27,20 +26,47 @@ namespace :secrets do
   end
   
   
-  desc "set secret-key in .bashrc"
-  task :export do
+  desc "set secret-key in .profile or .bashrc"
+  task :profile do
     on release_roles fetch(:secrets_roles) do
       within fetch(:secrets_user_path) do
         execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | cat >> .#{fetch(:secrets_profile)}"
-        execute :sudo,  "echo 'export #{fetch(:secrets_token_name)}=#{fetch(:secrets_token)}' | cat >> .#{fetch(:secrets_profile)}"
-        execute "export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}"
-        execute "export #{fetch(:secrets_token_name)}=#{fetch(:secrets_token)}"
+        if fetch(:secrets_set_both, false)
+          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | cat >> .#{fetch(:secrets_profile)}"
+        end
       end
     end
   end
   
+  
+  desc "export secret-key in actual bash env"
+  task :export do
+    on release_roles fetch(:secrets_roles) do
+      within fetch(:secrets_user_path) do
+        execute "export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}"
+        if fetch(:secrets_set_both, false)
+          execute "export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}"
+        end
+      end
+    end
+  end
+  
+  
+  desc "export secret-key in actual bash env"
+  task :printenv do
+    on release_roles fetch(:secrets_roles) do
+      within fetch(:secrets_user_path) do
+        execute "printenv"
+        execute :echo, "$SECRET_KEY_BASE"
+        execute :echo, "$#{fetch(:secrets_key_name)}"
+      end
+    end
+  end
+  
+  
   desc 'secrets setup task (upload and set)'
   task :setup do
+    invoke "secrets:profile"
     invoke "secrets:export"
     invoke "secrets:upload"
   end
