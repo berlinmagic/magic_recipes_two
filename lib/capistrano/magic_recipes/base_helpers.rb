@@ -24,7 +24,7 @@ module Capistrano
       end
       
       def generate_secrect_key
-        SecureRandom.hex(123)
+        SecureRandom.hex(82)
       end
 
       def template_with_role(from, to, role = nil)
