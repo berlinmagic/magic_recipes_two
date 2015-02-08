@@ -5,8 +5,8 @@ namespace :load do
   task :defaults do
     set :slack_token,           -> { "xxx-xxx-xxx-xxx" }
     set :slack_channel,         -> { "xxx-xxx-xxx-xxx" }
-    set :slack_text,            -> { "*#{ fetch(:app_name) }* new Deployment on *#{ fetch(:stage) }* ... check:  #{fetch(:nginx_use_ssl) ? 'https': 'htpp'}://#{ fetch(:nginx_major_domain) ? fetch(:nginx_major_domain).gsub(/^\*?\./, "") : Array( fetch(:nginx_domains) ).first.gsub(/^\*?\./, "") }" }
-    set :slack_username,        -> { "#{ fetch(:app_name) }-Bot (#{fetch(:stage)})" }
+    set :slack_text,            -> { "*#{ app_name }* new Deployment on *#{ fetch(:stage) }* ... check:  #{fetch(:nginx_use_ssl) ? 'https': 'htpp'}://#{ fetch(:nginx_major_domain) ? fetch(:nginx_major_domain).gsub(/^\*?\./, "") : Array( fetch(:nginx_domains) ).first.gsub(/^\*?\./, "") }" }
+    set :slack_username,        -> { "#{ app_name }-Bot (#{fetch(:stage)})" }
     set :slack_production_icon, -> { "http://icons.iconarchive.com/icons/itzikgur/my-seven/128/Backup-IBM-Server-icon.png" }
     set :slack_staging_icon,    -> { "http://itekblog.com/wp-content/uploads/2012/07/railslogo.png" }
   end
@@ -21,7 +21,7 @@ namespace :deploy do
     params = {  
                     token:      fetch(:slack_token),
                     channel:    fetch(:slack_channel),
-                    text:       fetch(:slack_channel),
+                    text:       fetch(:slack_text),
                     parse:      "full",
                     mrkdwn:     true,
                     username:   fetch(:slack_username),
