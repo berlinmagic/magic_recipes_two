@@ -88,7 +88,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ## inform slack
   # => set :slack_token,           "xxx-xxx-xxx-xxx"
-  # => set :slack_channel,         "xxx-xxx-xxx-xxx"
+  # => set :slack_channel,         "xxx-xxx-xxx-xxx" # "channel_id" or "#channel_name"
   # => set :slack_text,            "New Deployment on *#{ fetch(:stage) }* ... check:  #{fetch(:nginx_use_ssl) ? 'https': 'htpp'}://#{ fetch(:nginx_major_domain) ? fetch(:nginx_major_domain).gsub(/^\*?\./, "") : Array( fetch(:nginx_domains) ).first.gsub(/^\*?\./, "") }"
   # => set :slack_username,        "capistrano (#{fetch(:stage)})"
   # => set :slack_production_icon, "http://icons.iconarchive.com/icons/itzikgur/my-seven/128/Backup-IBM-Server-icon.png"
