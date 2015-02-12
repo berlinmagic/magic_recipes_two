@@ -65,6 +65,8 @@ server {
 <% end %>
 
 <% if fetch(:nginx_major_domain) %>
+<% if fetch(:nginx_use_ssl) %>
+# ssl-domain
 server {
   listen 443;
   server_name <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join("\n              ") %>;
@@ -73,6 +75,7 @@ server {
   ssl_certificate <%= fetch(:nginx_ssl_certificate_path) %>/<%= fetch(:nginx_old_ssl_certificate) %>;
   ssl_certificate_key <%= fetch(:nginx_ssl_certificate_key_path) %>/<%= fetch(:nginx_old_ssl_certificate_key) %>;
 }
+# ssl-with-subdomain
 server {
   listen 443;
   server_name <%= Array(fetch(:nginx_domains)).map{ |d| "~^(?<sub>\w+)\.#{ Regexp.escape( d.gsub(/^\*?\./, "") ) }" }.join("\n              ") %>;
@@ -81,6 +84,18 @@ server {
   ssl_certificate <%= fetch(:nginx_ssl_certificate_path) %>/<%= fetch(:nginx_old_ssl_certificate) %>;
   ssl_certificate_key <%= fetch(:nginx_ssl_certificate_key_path) %>/<%= fetch(:nginx_old_ssl_certificate_key) %>;
 }
+<% else %>
+server {
+  listen 80;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join("\n              ") %>;
+  return 301 http://<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+}
+server {
+  listen 80;
+  server_name <%= Array(fetch(:nginx_domains)).map{ |d| "~^(?<sub>\w+)\.#{ Regexp.escape( d.gsub(/^\*?\./, "") ) }" }.join("\n              ") %>;
+  return 301 http://$sub.<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+}
+<% end %>
 <% end %>
 
 server {
