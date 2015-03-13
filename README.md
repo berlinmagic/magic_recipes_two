@@ -30,6 +30,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 #### Still work on progress .. so absolutely not production ready!
 ---
 
+## Usage
+
+add Gem to your gemfile
+```ruby
+  gem 'magic_recipes_two', '>= 0.0.13', group: :development
+```
+run `bundle`
+run `bundle exec cap install`
+add the following:
+
 
 ## in Capfile
 
