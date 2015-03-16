@@ -219,8 +219,14 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 
 ## thin
-  # => set :thin_path,     '/etc/thin'
-  # => set :thin_roles,    :web
+  # => set :thin_path,                  '/etc/thin'
+  # => set :thin_roles,                 :web
+  # => set :thin_timeout,               30
+  # => set :thin_max_conns,             1024
+  # => set :thin_max_persistent_conns,  512
+  # => set :thin_require,               []
+  # => set :thin_wait,                  90
+  # => set :thin_onebyone,              true    # => for zero-downtime deployment
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 

@@ -3,11 +3,19 @@ include Capistrano::MagicRecipes::BaseHelpers
 
 namespace :load do
   task :defaults do
-    set :thin_path, -> { '/etc/thin' }
-    set :thin_roles, -> { :web }
+    
+    set :thin_path,                   -> { '/etc/thin' }
+    set :thin_roles,                  -> { :web }
+    
+    set :thin_timeout,                -> { 30 }
+    set :thin_max_conns,              -> { 1024 }
+    set :thin_max_persistent_conns,   -> { 512 }
+    set :thin_require,                -> { [] }
+    set :thin_wait,                   -> { 90 }
+    set :thin_onebyone,               -> { true }
+    
   end
 end
-
 
 
 namespace :thin do
