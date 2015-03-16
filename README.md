@@ -219,14 +219,14 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 
 ## thin
-  # => set :thin_path,                  '/etc/thin'
-  # => set :thin_roles,                 :web
-  # => set :thin_timeout,               30
-  # => set :thin_max_conns,             1024
-  # => set :thin_max_persistent_conns,  512
-  # => set :thin_require,               []
-  # => set :thin_wait,                  90
-  # => set :thin_onebyone,              true    # => for zero-downtime deployment
+  # => set :thin_path,                  '/etc/thin'     # => thin path on your server
+  # => set :thin_roles,                 :web            # => thin roles
+  # => set :thin_timeout,               30              # => Request or command timeout in sec (default: 30)
+  # => set :thin_max_conns,             1024            # => Maximum number of open file descriptors (default: 1024)
+  # => set :thin_max_persistent_conns,  512             # => Maximum number of persistent connections (default: 100)
+  # => set :thin_require,               []              # => require the library
+  # => set :thin_wait,                  90              # => Maximum wait time for server to be started in seconds
+  # => set :thin_onebyone,              true            # => for zero-downtime deployment (only works with restart command)
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
