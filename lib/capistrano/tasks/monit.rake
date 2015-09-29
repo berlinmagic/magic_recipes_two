@@ -141,6 +141,11 @@ namespace :monit do
       end
     end
   end
+  
+  def sidekiq_service_name(index=nil)
+    fetch(:sidekiq_service_name, "#{fetch(:application)}_#{fetch(:stage)}_sidekiq_") + index.to_s
+  end
+  
 end
 
 def monit_config( name, destination = nil, role = nil )
