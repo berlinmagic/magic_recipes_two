@@ -5,6 +5,7 @@ namespace :load do
   task :defaults do
     set :monit_roles, -> { :web }
     set :monit_interval, -> { 30 }
+    set :monit_bin, -> { '/usr/bin/monit' }
     ## Mailer
     set :monit_mail_server, -> { "smtp.gmail.com" }
     set :monit_mail_port, -> { 587 }
