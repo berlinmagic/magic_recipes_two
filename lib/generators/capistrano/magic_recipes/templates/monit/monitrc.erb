@@ -52,6 +52,9 @@ set httpd port <%= fetch(:monit_http_port) %>
     <% if fetch(:monit_http_use_ssl) %>
     ssl enable
     pemfile <%= fetch(:monit_http_pemfile) %>
+    <% if fetch(:monit_http_allow_self_certification) %>
+    ALLOWSELFCERTIFICATION
+    <% end %>
     <% end %>
     allow <%= fetch(:monit_http_username) %>:<%= fetch(:monit_http_password) %>
 <% end %>

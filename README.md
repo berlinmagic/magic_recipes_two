@@ -106,28 +106,29 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 
 ## monit
-  # => set :monit_roles,               :web
-  # => set :monit_interval,            30
+  # => set :monit_roles,                          :web
+  # => set :monit_interval,                       30
   ## Mailer
-  # => set :monit_mail_server,         "smtp.gmail.com"
-  # => set :monit_mail_port,           587
-  # => set :monit_mail_authentication, false # SSLAUTO|SSLV2|SSLV3|TLSV1|TLSV11|TLSV12
-  # => set :monit_mail_username,       "foo@example.com"
-  # => set :monit_mail_password,       "secret"
-  # => set :monit_mail_to,             "foo@example.com"
-  # => set :monit_mail_from,           "monit@foo.bar"
-  # => set :monit_mail_reply_to,       "support@foo.bar"
+  # => set :monit_mail_server,                    "smtp.gmail.com"
+  # => set :monit_mail_port,                      587
+  # => set :monit_mail_authentication,            false # SSLAUTO|SSLV2|SSLV3|TLSV1|TLSV11|TLSV12
+  # => set :monit_mail_username,                  "foo@example.com"
+  # => set :monit_mail_password,                  "secret"
+  # => set :monit_mail_to,                        "foo@example.com"
+  # => set :monit_mail_from,                      "monit@foo.bar"
+  # => set :monit_mail_reply_to,                  "support@foo.bar"
   ## Additional stuff for postrgres
-  # => set :postgresql_roles,          :db
-  # => set :postgresql_pid,            "/var/run/postgresql/9.1-main.pid"
+  # => set :postgresql_roles,                     :db
+  # => set :postgresql_pid,                       "/var/run/postgresql/9.1-main.pid"
   ## WebClient
-  # => set :monit_http_client,         true
-  # => set :monit_http_domain,         false
-  # => set :monit_http_port,           2812
-  # => set :monit_http_use_ssl,        false
-  # => set :monit_http_pemfile,        "/etc/monit/monit.pem"
-  # => set :monit_http_username,       "admin"
-  # => set :monit_http_password,       "monitor"
+  # => set :monit_http_client,                    true
+  # => set :monit_http_domain,                    false
+  # => set :monit_http_port,                      2812
+  # => set :monit_http_use_ssl,                   false
+  # => set :monit_http_allow_self_certification,  false
+  # => set :monit_http_pemfile,                   "/etc/monit/monit.pem"
+  # => set :monit_http_username,                  "admin"
+  # => set :monit_http_password,                  "monitor"
 
 
 ## nginx
@@ -207,7 +208,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ## sidekiq
   # => set :sidekiq_default_hooks,   true
-  # => set :sidekiq_pid,             File.join(shared_path, 'tmp', 'pids', 'sidekiq.pid')
+  # => set :sidekiq_pid,             File.join(shared_path, 'pids', 'sidekiq.pid')
   # => set :sidekiq_env,             fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
   # => set :sidekiq_log,             File.join(shared_path, 'log', 'sidekiq.log')
   # => set :sidekiq_timeout,         10

@@ -22,6 +22,7 @@ namespace :load do
     set :monit_http_domain, -> { false }
     set :monit_http_port, -> { 2812 }
     set :monit_http_use_ssl, -> { false }
+    set :monit_http_allow_self_certification, -> { false }
     set :monit_http_pemfile, -> { "/etc/monit/monit.pem" }
     set :monit_http_username, -> { "admin" }
     set :monit_http_password, -> { "monitor" }
