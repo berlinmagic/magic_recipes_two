@@ -202,6 +202,7 @@ server {
     proxy_cache_valid     404               <%= fetch(:proxy_cache_rails_404) %>;
     <% end %>
     proxy_cache_use_stale <%= Array( fetch(:proxy_cache_rails_stale) ).join(" ") %>;
+    proxy_ignore_headers  Set-Cookie;
     proxy_cache_bypass    $http_bypass_proxy;
     add_header            X-Cache-Status    $upstream_cache_status;
     <% end %>
