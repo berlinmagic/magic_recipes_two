@@ -4,23 +4,46 @@ include Capistrano::MagicRecipes::BaseHelpers
 
 namespace :load do
   task :defaults do
-    set :nginx_domains, -> { [] }
-    set :default_site, -> { false }
-    set :app_instances, -> { 1 }
-    set :nginx_service_path, -> { 'service nginx' }
-    set :nginx_roles, -> { :web }
-    set :nginx_log_path, -> { "#{shared_path}/log" }
-    set :nginx_root_path, -> { "/etc/nginx" }
-    set :nginx_static_dir, -> { "public" }
-    set :nginx_sites_enabled, -> { "sites-enabled" }
-    set :nginx_sites_available, -> { "sites-available" }
-    set :nginx_template, -> { :default }
-    set :nginx_use_ssl, -> { false }
-    set :nginx_ssl_certificate, -> { "#{fetch(:application)}.crt" }
-    set :nginx_ssl_certificate_path, -> { '/etc/ssl/certs' }
-    set :nginx_ssl_certificate_key, -> { "#{fetch(:application)}.crt" }
+    set :nginx_domains,               -> { [] }
+    set :nginx_major_domain,          -> { false }
+    set :nginx_remove_www,            -> { true }
+    set :default_site,                -> { false }
+    set :app_instances,               -> { 1 }
+    set :nginx_service_path,          -> { 'service nginx' }
+    set :nginx_roles,                 -> { :web }
+    set :nginx_log_path,              -> { "#{shared_path}/log" }
+    set :nginx_root_path,             -> { "/etc/nginx" }
+    set :nginx_static_dir,            -> { "public" }
+    set :nginx_sites_enabled,         -> { "sites-enabled" }
+    set :nginx_sites_available,       -> { "sites-available" }
+    set :nginx_template,              -> { :default }
+    set :nginx_use_ssl,               -> { false }
+    set :nginx_ssl_certificate,       -> { "#{fetch(:application)}.crt" }
+    set :nginx_ssl_certificate_path,  -> { '/etc/ssl/certs' }
+    set :nginx_ssl_certificate_key,   -> { "#{fetch(:application)}.crt" }
     set :nginx_ssl_certificate_key_path, -> { '/etc/ssl/private' }
-    set :app_server_ip, -> { "127.0.0.1" }
+    set :app_server_ip,               -> { "127.0.0.1" }
+    ## NginX Proxy-Caching
+    # Cache Rails
+    set :proxy_cache_rails,           -> { false }
+    set :proxy_cache_rails_directory, -> { "#{shared_path}/tmp/proxy_cache/rails" }
+    set :proxy_cache_rails_levels,    -> { "1:2" }
+    set :proxy_cache_rails_name,      -> { "RAILS_#{fetch(:application)}_#{fetch(:stage)}_CACHE" }
+    set :proxy_cache_rails_size,      -> { "4m" }
+    set :proxy_cache_rails_time,      -> { "24h" }
+    set :proxy_cache_rails_max,       -> { "1g" }
+    set :proxy_cache_rails_200,       -> { false }
+    set :proxy_cache_rails_404,       -> { "60m" }
+    set :proxy_cache_rails_stale,     -> { ["error", "timeout", "invalid_header", "updating"] }
+    # Cache Media (Dragonfly)
+    set :proxy_cache_media,           -> { false }
+    set :proxy_cache_media_path,      -> { "media" }
+    set :proxy_cache_media_directory, -> { "#{shared_path}/tmp/proxy_cache/media" }
+    set :proxy_cache_media_levels,    -> { "1:2" }
+    set :proxy_cache_media_name,      -> { "MEDIA_#{fetch(:application)}_#{fetch(:stage)}_CACHE" }
+    set :proxy_cache_media_size,      -> { "2m" }
+    set :proxy_cache_media_time,      -> { "48h" }
+    set :proxy_cache_media_max,       -> { "1g" }
   end
 end
 
@@ -47,6 +70,8 @@ namespace :nginx do
   after 'deploy:check', nil do
     on release_roles fetch(:nginx_roles) do
       execute :mkdir, '-pv', fetch(:nginx_log_path)
+      execute :mkdir, '-pv', fetch(:proxy_cache_rails_path)   if fetch(:proxy_cache_rails)
+      execute :mkdir, '-pv', fetch(:proxy_cache_media_path)   if fetch(:proxy_cache_media)
     end
   end
 

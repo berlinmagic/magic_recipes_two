@@ -20,6 +20,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - **thin** control thin
 
 
+### NEWs
+
+**Version 0.0.18:**
+- optional NginX Proxy-Cash for Rails and/or an optional path for Dragonfly/Paperclip
+
 ### ToDos
 
 - clean up code
@@ -133,9 +138,17 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 
 ## nginx
-  # => set :nginx_domains,                   []
-  # => set :default_site,                    false
-  # => set :app_instances,                   1
+  # all domains the app uses
+  # => set :nginx_domains,                   []               # array of domains
+  # app is the default site for this server?
+  # => set :default_site,                    false            # true | false
+  # all domains are redirected to this one, domain
+  # => set :nginx_major_domain,              false            # "domain-name.tld" | false
+  # remove "www" from each request?
+  # => set :nginx_remove_www,                true             # true | false
+  # how many (thin) server instances 
+  # => set :app_instances,                   1                # number >= 1
+  # nginx service path
   # => set :nginx_service_path,              'service nginx'
   # => set :nginx_roles,                     :web
   # => set :nginx_log_path,                  "#{shared_path}/log"
@@ -150,6 +163,40 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
   # => set :nginx_ssl_certificate_key,       "#{fetch(:application)}.crt"
   # => set :nginx_ssl_certificate_key_path,  '/etc/ssl/private'
   # => set :app_server_ip,                   "127.0.0.1"
+  
+  # 
+  # NginX Proxy-Cache
+  # 
+  # -> Send appropriate cache headers ( Cache-Control: max-age=X, public ) to activate cache
+  # -> Send bypass headers ( bypass_proxy: true ) to bypass cache
+  
+  # Cache Rails-App
+  # 
+  # => set :proxy_cache_rails,           false                                                   # cache active?
+  # => set :proxy_cache_rails_directory, "#{shared_path}/tmp/proxy_cache/rails"                  # cache directory
+  # => set :proxy_cache_rails_levels,    "1:2"                                                   # cache level
+  # => set :proxy_cache_rails_name,      "RAILS_#{fetch(:application)}_#{fetch(:stage)}_CACHE"   # cache name
+  # => set :proxy_cache_rails_size,      "4m"                                                    # max-key-size ( 1m = 8000 keys)
+  # => set :proxy_cache_rails_time,      "24h"                                                   # cache invalidate after
+  # => set :proxy_cache_rails_max,       "1g"                                                    # max-cache-size
+  # cache 200 / 302 Pages ?
+  # => set :proxy_cache_rails_200,       false                                                   # false | time
+  # cache 404 Pages ?
+  # => set :proxy_cache_rails_404,       "60m"                                                   # false | time
+  # use stale content when state is in:
+  # => set :proxy_cache_rails_stale,     ["error", "timeout", "invalid_header", "updating"]      # stale when (array)
+  # 
+  # Cache Media (Dragonfly/Paperclip/..) 
+  # 
+  # => set :proxy_cache_media,           false                                                   # cache active?
+  # media-path ('media' for dargonfly, 'system' for paperclip)
+  # => set :proxy_cache_media_path,      "media"                                                 # media path (string)
+  # => set :proxy_cache_media_directory, "#{shared_path}/tmp/proxy_cache/media"                  # cache directory
+  # => set :proxy_cache_media_levels,    "1:2"                                                   # cache level
+  # => set :proxy_cache_media_name,      "MEDIA_#{fetch(:application)}_#{fetch(:stage)}_CACHE"   # cache name
+  # => set :proxy_cache_media_size,      "2m"                                                    # max-key-size ( 1m = 8000 keys)
+  # => set :proxy_cache_media_time,      "48h"                                                   # cache invalidate after
+  # => set :proxy_cache_media_max,       "1g"                                                    # max-cache-size
 
 
 ## postgres
