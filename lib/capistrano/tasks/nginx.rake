@@ -70,8 +70,8 @@ namespace :nginx do
   after 'deploy:check', nil do
     on release_roles fetch(:nginx_roles) do
       execute :mkdir, '-pv', fetch(:nginx_log_path)
-      execute :mkdir, '-pv', fetch(:proxy_cache_rails_path)   if fetch(:proxy_cache_rails)
-      execute :mkdir, '-pv', fetch(:proxy_cache_media_path)   if fetch(:proxy_cache_media)
+      execute :mkdir, '-pv', fetch(:proxy_cache_rails_directory)   if fetch(:proxy_cache_rails)
+      execute :mkdir, '-pv', fetch(:proxy_cache_media_directory)   if fetch(:proxy_cache_media)
     end
   end
 
