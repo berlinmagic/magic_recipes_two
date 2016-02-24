@@ -111,9 +111,7 @@ server {
 <% else %>
 server {
   listen                80;
-  server_name           
-                        
-  <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join(joiner) %>;
+  server_name           <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join(joiner) %>;
   return 301 http://<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
 }
 server {
