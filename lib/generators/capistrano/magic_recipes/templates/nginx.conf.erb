@@ -86,6 +86,32 @@ server {
   
 }
 <% end %>
+<% elsif fetch(:nginx_remove_https) %>
+<% if fetch(:nginx_major_domain) %>
+server {
+  listen                443;
+  server_name           <%= Array(fetch(:nginx_domains)).map{ |d| d.gsub(/^\*?\./, "") }.join(joiner) %>
+                        <%= ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" %>;
+  
+  return 301 http://<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+  
+}
+server {
+  listen                443;
+  server_name           <%= Array(fetch(:nginx_domains)).map{ |d| "~^(?<sub>\w+)#{ Regexp.escape( ".#{d.gsub(/^\*?\./, "")}" ) }" }.join(joiner) %>
+                        <%= "~^#{Regexp.escape("www.")}(?<sub>\w+)#{ Regexp.escape( ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" ) }" %>
+                        <%= "~^(?<sub>\w+)#{ Regexp.escape( ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" ) }" %>;
+  
+  return 301 http://$sub.<%= fetch(:nginx_major_domain).gsub(/^\*?\./, "") %>$request_uri;
+}
+<% else %>
+server {
+  listen                443;
+  server_name           <%= Array(fetch(:nginx_domains)).map{ |d| d[0] == "." ? d : ".#{d}"}.join(joiner) %>;
+  
+  return 301 http://$host$request_uri;
+}
+<% end %>
 <% end %>
 
 <% if fetch(:nginx_major_domain) %>

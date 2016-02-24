@@ -146,6 +146,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
   # => set :nginx_major_domain,              false            # "domain-name.tld" | false
   # remove "www" from each request?
   # => set :nginx_remove_www,                true             # true | false
+  # remove "https" from each request?
+  # => set :nginx_remove_https,              false             # true | false
   # how many (thin) server instances 
   # => set :app_instances,                   1                # number >= 1
   # nginx service path

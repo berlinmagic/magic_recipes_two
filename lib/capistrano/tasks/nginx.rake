@@ -7,6 +7,7 @@ namespace :load do
     set :nginx_domains,               -> { [] }
     set :nginx_major_domain,          -> { false }
     set :nginx_remove_www,            -> { true }
+    set :nginx_remove_https,          -> { false }
     set :default_site,                -> { false }
     set :app_instances,               -> { 1 }
     set :nginx_service_path,          -> { 'service nginx' }
