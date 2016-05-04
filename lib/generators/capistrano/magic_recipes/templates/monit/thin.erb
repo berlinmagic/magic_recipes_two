@@ -3,7 +3,7 @@
   check process <%= fetch(:application) %>_<%= fetch(:stage) %>_thin_<%= n %> with pidfile <%= deploy_to %>/shared/pids/thin_<%= fetch(:application) %>_<%= fetch(:stage) %>.<%= n %>.pid
     group thin-<%= fetch(:application) %>
     group thin-<%= fetch(:stage) %>
-    start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec thin start -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' "
+    start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ;<% if fetch(:monit_thin_with_secret) %> export SECRET_KEY_BASE=<%= fetch(:secrets_key_base) %>; export <%= fetch(:secrets_key_name) %>=<%= fetch(:secrets_key_base) %>;<% end %> bundle exec thin start -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' "
     stop program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec thin stop -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' " 
     if mem > 200.0 MB for 1 cycles then restart
     if cpu > 50% for 3 cycles then restart

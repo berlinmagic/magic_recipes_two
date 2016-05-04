@@ -17,6 +17,3 @@ servers: <%= fetch(:app_instances) %>
 socket: /tmp/thin.<%= fetch(:application) %>.<%= fetch(:stage) %>.sock
 daemonize: true
 onebyone: <%= fetch(:thin_onebyone) %>
-<% if fetch(:monit_thin_with_secret) %>
-SECRET_KEY_BASE: <%= fetch(:secrets_key_base) %>
-<% end %>
