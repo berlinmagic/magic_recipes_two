@@ -19,5 +19,4 @@ daemonize: true
 onebyone: <%= fetch(:thin_onebyone) %>
 <% if fetch(:monit_thin_with_secret) %>
 SECRET_KEY_BASE: <%= fetch(:secrets_key_base) %>
-<%= fetch(:secrets_key_name, "APP_SECRET_KEY_BASE") %>: <%= fetch(:secrets_key_base) %>
 <% end %>
