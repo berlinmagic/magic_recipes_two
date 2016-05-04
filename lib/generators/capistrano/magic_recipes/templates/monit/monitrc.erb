@@ -1,8 +1,8 @@
 set daemon <%= fetch(:monit_interval) %>
 
-set logfile /var/log/monit.log
-set idfile /var/lib/monit/id
-set statefile /var/lib/monit/state
+set logfile <%= fetch(:monit_logfile) %>
+set idfile <%= fetch(:monit_idfile) %>
+set statefile <%= fetch(:monit_statefile) %>
 
 set eventqueue
     basedir /var/lib/monit/events
@@ -26,9 +26,9 @@ set mail-format {
               M O N I T
               
               <% if fetch(:monit_http_client) %><% if fetch(:monit_http_domain) %>
-              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_http_domain) %>:2812/
+              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_http_domain) %>:<%= fetch(:monit_http_port) %>/
               <% else %>
-              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:app_server_ip) %>:2812/
+              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:app_server_ip) %>:<%= fetch(:monit_http_port) %>/
               <% end %><% end %>
 }
 
@@ -46,8 +46,6 @@ set httpd port <%= fetch(:monit_http_port) %>
     <% if fetch(:monit_http_domain) %>
     use address <%= fetch(:monit_http_domain) %>
     <% end %>
-    # allow careagents.cloudapp.net
-    # allow 191.233.74.184
     # allow 127.0.0.1
     <% if fetch(:monit_http_use_ssl) %>
     ssl enable

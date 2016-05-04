@@ -48,9 +48,19 @@ namespace :thin do
   
 end
 
-after 'deploy:published', nil do
-  on release_roles fetch(:thin_roles) do
+
+# => after 'deploy:published', nil do
+# =>   on release_roles fetch(:thin_roles) do
+# =>     invoke "thin:reconf"
+# =>     invoke "thin:restart"
+# =>   end
+# => end
+
+
+namespace :deploy do
+  before 'deploy:finished', :restart_thin_apps do
     invoke "thin:reconf"
     invoke "thin:restart"
   end
 end
+

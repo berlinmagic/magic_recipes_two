@@ -131,3 +131,13 @@ namespace :nginx do
     end
   end
 end
+
+
+namespace :deploy do
+  after 'deploy:finished', :restart_nginx_app do
+    invoke "nginx:site:add"
+    invoke "nginx:site:enable"
+    invoke "nginx:restart"
+  end
+end
+

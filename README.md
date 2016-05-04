@@ -114,6 +114,9 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
   # => set :monit_roles,                          :web
   # => set :monit_interval,                       30
   # => set :monit_bin,                            '/usr/bin/monit'
+  # => set :monit_logfile,                        '/var/log/monit.log'
+  # => set :monit_idfile,                         '/var/lib/monit/id'
+  # => set :monit_statefile,                      '/var/lib/monit/state'
   ## Mailer
   # => set :monit_mail_server,                    "smtp.gmail.com"
   # => set :monit_mail_port,                      587
