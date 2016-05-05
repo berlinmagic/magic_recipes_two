@@ -63,7 +63,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.31', group: :development
+  gem 'magic_recipes_two', '>= 0.0.32', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
