@@ -141,7 +141,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## Status (monit is running or not .. activate monit hooks in deploy chain)
 # => set :monit_active,                         true
 ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin
-# => set :monit_processes,                      %w[nginx postgresql thin] }
+# => set :monit_processes,                      %w[nginx postgresql thin]
 ## Monit System
 # => set :monit_roles,                          :web
 # => set :monit_interval,                       30
@@ -246,7 +246,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## => postgresql
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-# => set :pg_database,           "#{fetch(:application)}_#{fetch(:stage)}" }
+# => set :pg_database,         "#{fetch(:application)}_#{fetch(:stage)}"
 # => set :pg_user,             fetch(:pg_database)
 # => set :pg_ask_for_password, false
 # => set :pg_password,         ask_for_or_generate_password
