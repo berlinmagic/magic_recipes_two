@@ -22,13 +22,18 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
-**Version 0.0.31:**
+**Version 0.0.32:**
 - monit now has a status *(active|inactive)* !!
 - **monit needs `:monit_active` to be true, otherwise won't work**
 - **monit needs `:monit_processes` to include all processes you want to monitor**
 - nginx hooks in deploy chain, `:nginx_hooks` to control
 - thin hooks in deploy chain, `:thin_hooks` to control
 - secrets hooks in setup chain, `:secrets_hooks` to control
+ 
+ 
+
+**Version 0.0.31:**
+- **contains monit Bug!!**
  
  
 

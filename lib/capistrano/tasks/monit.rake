@@ -72,22 +72,23 @@ namespace :monit do
   
   
   %w[nginx postgresql redis sidekiq thin].each do |process|
-    if Array(fetch(:monit_processes)).include?(process)
       
       %w[monitor unmonitor start stop restart].each do |command|
         desc "#{command} monit-service for: #{process}"
         task "#{command}_#{process}" do
-          on roles(fetch(:sidekiq_roles)) do
-            if process == "sidekiq"
-              fetch(:sidekiq_processes).times do |idx|
-                sudo "#{fetch(:monit_bin)} #{command} #{sidekiq_service_name(idx)}"
+          if Array(fetch(:monit_processes)).include?(process)
+            on roles(fetch("#{process}_roles".to_sym)) do
+              if process == "sidekiq"
+                fetch(:sidekiq_processes).times do |idx|
+                  sudo "#{fetch(:monit_bin)} #{command} #{sidekiq_service_name(idx)}"
+                end
+              elsif process == "thin"
+                fetch(:app_instances).times do |idx|
+                  sudo "#{fetch(:monit_bin)} #{command} #{fetch(:application)}_#{fetch(:stage)}_thin_#{idx}"
+                end
+              else
+                sudo "#{fetch(:monit_bin)} #{command} #{process}"
               end
-            elsif process == "thin"
-              fetch(:app_instances).times do |idx|
-                sudo "#{fetch(:monit_bin)} #{command} #{fetch(:application)}_#{fetch(:stage)}_thin_#{idx}"
-              end
-            else
-              sudo "#{fetch(:monit_bin)} #{command} #{process}"
             end
           end
         end
@@ -97,21 +98,24 @@ namespace :monit do
         ## Server specific tasks (gets overwritten by other environments!)
         desc "Upload Monit #{process} config file (server specific)"
         task "configure_#{process}" do
-          on release_roles fetch("#{process}_roles".to_sym) do |role|
-            monit_config( process, nil, role )
+          if Array(fetch(:monit_processes)).include?(process)
+            on release_roles fetch("#{process}_roles".to_sym) do |role|
+              monit_config( process, nil, role )
+            end
           end
         end
       elsif %w[sidekiq thin].include?(process)
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
         task "configure_#{process}" do
-          on release_roles fetch("#{process}_roles".to_sym) do |role|
-            monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
+          if Array(fetch(:monit_processes)).include?(process)
+            on release_roles fetch("#{process}_roles".to_sym) do |role|
+              monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
+            end
           end
         end
       end
       
-    end
   end
   
 
