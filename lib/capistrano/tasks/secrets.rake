@@ -9,6 +9,7 @@ namespace :load do
     set :secrets_key_name,    -> { "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_KEY_BASE".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase }
     set :secrets_user_path,   -> { "/home/#{fetch(:user)}" }
     set :secrets_set_both,    -> { false }
+    set :secrets_hooks,       -> { true }
   end
 end
 
@@ -79,4 +80,12 @@ namespace :secrets do
   after 'deploy:started', 'secrets:secrets_yml_symlink'
   
   
+end
+
+
+
+
+desc 'Server setup tasks'
+task :setup do
+  invoke "secrets:setup" if fetch(:secrets_hooks)
 end

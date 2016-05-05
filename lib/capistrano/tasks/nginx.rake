@@ -24,6 +24,7 @@ namespace :load do
     set :nginx_ssl_certificate_key,   -> { "#{fetch(:application)}.crt" }
     set :nginx_ssl_certificate_key_path, -> { '/etc/ssl/private' }
     set :app_server_ip,               -> { "127.0.0.1" }
+    set :nginx_hooks,                 -> { true }
     ## NginX Proxy-Caching
     # Cache Rails
     set :proxy_cache_rails,           -> { false }
@@ -83,15 +84,10 @@ namespace :nginx do
         within fetch(:sites_available) do
           config_file = fetch(:nginx_template)
           if config_file == :default
-            # config_file = File.expand_path("../../../../config/deploy/templates/nginx.conf.erb", __FILE__)
             magic_template("nginx.conf", '/tmp/nginx.conf')
           else
             template(config_file, '/tmp/nginx.conf')
           end
-          # config = ERB.new(File.read(config_file)).result(binding)
-          # upload! StringIO.new(config), '/tmp/nginx.conf'
-          
-
           execute :sudo, :mv, '/tmp/nginx.conf', "#{fetch(:application)}_#{fetch(:stage)}"
         end
       end
@@ -134,10 +130,12 @@ end
 
 
 namespace :deploy do
-  after 'deploy:finished', :restart_nginx_app do
-    invoke "nginx:site:add"
-    invoke "nginx:site:enable"
-    invoke "nginx:restart"
+  after 'deploy:finishing', :restart_nginx_app do
+    if fetch(:nginx_hooks)
+      invoke "nginx:site:add"
+      invoke "nginx:site:enable"
+      invoke "nginx:restart"
+    end
   end
 end
 

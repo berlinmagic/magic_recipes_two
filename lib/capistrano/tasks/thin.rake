@@ -13,6 +13,7 @@ namespace :load do
     set :thin_require,                -> { [] }
     set :thin_wait,                   -> { 90 }
     set :thin_onebyone,               -> { true }
+    set :thin_hooks,                  -> { true }
     
   end
 end
@@ -58,9 +59,11 @@ end
 
 
 namespace :deploy do
-  before 'deploy:finished', :restart_thin_apps do
-    invoke "thin:reconf"
-    invoke "thin:restart"
+  after 'deploy:published', :restart_thin_apps do
+    if fetch(:thin_hooks)
+      invoke "thin:reconf"
+      invoke "thin:restart"
+    end
   end
 end
 
