@@ -9,6 +9,6 @@
     if mem > 200.0 MB for 1 cycles then restart
     if cpu > 50% for 3 cycles then restart
     if 5 restarts within 5 cycles then timeout
-    alert <%= fetch(:monit_mail_to) %> only on { pid }
+    # alert <%= fetch(:monit_mail_to) %> only on { pid }
     if changed pid 2 times within 20 cycles then alert
 <% end %>

@@ -22,6 +22,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.33:**
+- new `:monit_sidekiq_with_secret` if true, sets *secret_key_base* when starting **sidekiq** via monit
+ 
+ 
+
 **Version 0.0.32:**
 - monit now has a status *(active|inactive)* !!
 - **monit needs `:monit_active` to be true, otherwise won't work**
@@ -170,6 +175,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 # => set :postgresql_pid,                       "/var/run/postgresql/9.1-main.pid"
 ## Additional stuff for thin (need secrets_key_base to be set)
 # => set :monit_thin_with_secret,               false
+## Additional stuff for sidekiq (need secrets_key_base to be set)
+# => set :monit_sidekiq_with_secret,            false
 ## WebClient
 # => set :monit_http_client,                    true
 # => set :monit_http_domain,                    false

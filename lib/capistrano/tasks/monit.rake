@@ -28,6 +28,8 @@ namespace :load do
     set :postgresql_pid,              -> { "/var/run/postgresql/9.1-main.pid" }
     ## Additional stuff for thin (need secrets_key_base to be set)
     set :monit_thin_with_secret,      -> { false }
+    ## Additional stuff for sidekiq (need secrets_key_base to be set)
+    set :monit_sidekiq_with_secret,   -> { false }
     ## WebClient
     set :monit_http_client,           -> { true }
     set :monit_http_domain,           -> { false }
@@ -152,6 +154,9 @@ namespace :deploy do
       end
     end
   end
+  # after :finished, :setup_monit_configs do
+  #   invoke "monit:setup" if fetch(:monit_active)
+  # end
   after :finished, :restart_monitoring do
     %w[sidekiq thin].each do |command|
       if fetch(:monit_active) && Array(fetch(:monit_processes)).include?(command)
@@ -159,7 +164,9 @@ namespace :deploy do
       end
     end
   end
-  after :finished, :setup_monit_configs do
-    invoke "monit:setup" if fetch(:monit_active)
-  end
+end
+
+desc 'Server setup tasks'
+task :setup do
+  invoke "monit:setup" if fetch(:monit_active)
 end
