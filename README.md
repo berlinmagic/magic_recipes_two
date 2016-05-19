@@ -22,6 +22,13 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+
+**Version 0.0.35:**
+- new `:monit_sidekiq_totalmem_mb` .. sets maximum mb of ram for sidekiq
+- new `:monit_sidekiq_timeout_sec` .. sets timeout for sidekiq when sarted/stoped via monit
+ 
+ 
+
 **Version 0.0.33:**
 - new `:monit_sidekiq_with_secret` if true, sets *secret_key_base* when starting **sidekiq** via monit
  
@@ -177,6 +184,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 # => set :monit_thin_with_secret,               false
 ## Additional stuff for sidekiq (need secrets_key_base to be set)
 # => set :monit_sidekiq_with_secret,            false
+# => set :monit_sidekiq_totalmem_mb,            300
+# => set :monit_sidekiq_timeout_sec,            90
 ## WebClient
 # => set :monit_http_client,                    true
 # => set :monit_http_domain,                    false

@@ -30,6 +30,8 @@ namespace :load do
     set :monit_thin_with_secret,      -> { false }
     ## Additional stuff for sidekiq (need secrets_key_base to be set)
     set :monit_sidekiq_with_secret,   -> { false }
+    set :monit_sidekiq_totalmem_mb,   -> { 300 }
+    set :monit_sidekiq_timeout_sec,   -> { 90 }
     ## WebClient
     set :monit_http_client,           -> { true }
     set :monit_http_domain,           -> { false }

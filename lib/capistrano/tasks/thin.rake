@@ -23,7 +23,7 @@ namespace :thin do
   
   
   desc "rewrite thin-configurations"
-  task :reconf => ['nginx:load_vars'] do
+  task :reconf do
     on release_roles fetch(:thin_roles) do
       within current_path do
         magic_template("thin_app_yml", '/tmp/thin_app.yml')
@@ -37,7 +37,7 @@ namespace :thin do
   
   %w[start stop restart].each do |command|
     desc "#{command} thin"
-    task command => ['nginx:load_vars'] do
+    task command do
       on release_roles fetch(:thin_roles) do
         within current_path do
           execute :bundle, :exec, :thin, "#{command} -C config/thin_app_#{fetch(:stage)}.yml"
