@@ -182,6 +182,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 # => set :postgresql_pid,                       "/var/run/postgresql/9.1-main.pid"
 ## Additional stuff for thin (need secrets_key_base to be set)
 # => set :monit_thin_with_secret,               false
+# => set :monit_thin_totalmem_mb,               300
 ## Additional stuff for sidekiq (need secrets_key_base to be set)
 # => set :monit_sidekiq_with_secret,            false
 # => set :monit_sidekiq_totalmem_mb,            300

@@ -21,9 +21,9 @@ check process <%= sidekiq_service_name(idx) %>
   with pidfile "<%= pid_file %>"
   start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ;<% if fetch(:monit_sidekiq_with_secret) %> export SECRET_KEY_BASE=<%= fetch(:secrets_key_base) %>; export <%= fetch(:secrets_key_name) %>=<%= fetch(:secrets_key_base) %>;<% end %> bundle exec sidekiq <%= args.join(" ") %>'" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   stop program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec sidekiqctl stop <%= pid_file %>' " with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
-  group <%= fetch(:sidekiq_monit_group, fetch(:application)) %>-sidekiq
-  # if does not exist then alert
-  if totalmem is greater than <%= fetch( :monit_sidekiq_totalmem_mb, 300 )%> MB for 2 cycles then restart
+  group sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
+  if does not exist then alert
+  if totalmem is greater than <%= fetch( :monit_sidekiq_totalmem_mb, 300 ) %> MB for 2 cycles then restart
   if 3 restarts within 5 cycles then timeout
   # alert <%= fetch(:monit_mail_to) %> only on { pid }
   if 2 restarts within 3 cycles then alert
