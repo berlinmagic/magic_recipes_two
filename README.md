@@ -323,7 +323,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## => secrets
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 # => set :secrets_roles,       :app
-# => set :secrets_profile,     "profile" # "profile" | "bashrc"
+# => set :secrets_profile,     "bashrc" # "profile" | "bashrc"
 # => set :secrets_key_base,    generate_secrect_key
 # => set :secrets_key_name,    "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_KEY_BASE".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase
 # => set :secrets_user_path,   { "/home/#{fetch(:user)}"
