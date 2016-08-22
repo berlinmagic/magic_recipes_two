@@ -75,7 +75,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.32', group: :development
+  gem 'magic_recipes_two', '>= 0.0.40', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
@@ -138,7 +138,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## => db
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-# => set :db_roles, :db
+# => set :db_roles,             :db
+# => set :db_backup_on_deploy,  false   # make DB backup (yaml_db) before deployment
 
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

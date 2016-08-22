@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "capistrano-rails",      ">= 1.1"
   s.add_dependency "rvm1-capistrano3",      "=  1.3.2.2"
   s.add_dependency "capistrano-postgresql", ">= 4.2"
+  s.add_dependency "yaml_db"
 
   s.add_development_dependency "sqlite3"
   
