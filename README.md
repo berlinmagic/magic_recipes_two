@@ -8,7 +8,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ### Includes
 
 - **assets** compile assets locally, than upload them (fully integrated)
-- **db** seed task
+- **db** seed task + backup task
 - **exception_pages** copy exception pages from assets to public (if you generate them with sprockets)
 - **inform_slack** inform a slack channel about successful upload
 - **monit** control monit with monit-webinterface
@@ -22,6 +22,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+
+**Version 0.0.40:**
+- new `:db_backup_on_deploy` .. make DB backup before deployment
+ 
+ 
 
 **Version 0.0.35:**
 - new `:monit_sidekiq_totalmem_mb` .. sets maximum mb of ram for sidekiq
