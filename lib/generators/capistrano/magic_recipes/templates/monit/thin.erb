@@ -5,7 +5,8 @@
     start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ;<% if fetch(:monit_thin_with_secret) %> export SECRET_KEY_BASE=<%= fetch(:secrets_key_base) %>; export <%= fetch(:secrets_key_name) %>=<%= fetch(:secrets_key_base) %>;<% end %> bundle exec thin start -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' "
     stop program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec thin stop -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' " 
     # if does not exist then start # (default)
-    if does not exist for 3 cycles then alert
+    # if does not exist for 3 cycles then alert
+    if 3 restarts within 5 cycles then alert
     if mem > <%= ( fetch( :monit_thin_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then alert
     if mem > <%= fetch( :monit_thin_totalmem_mb, 300 ) %> MB for 2 cycles then restart
     if cpu > 50% then alert
