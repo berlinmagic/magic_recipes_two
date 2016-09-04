@@ -2,7 +2,8 @@
 check process nginx with pidfile /var/run/nginx.pid
   start program = "/etc/init.d/nginx start"
   stop program = "/etc/init.d/nginx stop"
-  if does not exist then alert
+  # if does not exist then start
+  if does not exist for 2 cycles then alert
   if children > 250 then restart
   if failed host 127.0.0.1 port 80 then restart
   if cpu is greater than 40% for 2 cycles then alert

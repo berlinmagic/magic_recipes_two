@@ -2,6 +2,7 @@
 check process postgresql with pidfile <%= fetch(:postgresql_pid) %>
   start program = "/etc/init.d/postgresql start"
   stop program = "/etc/init.d/postgresql stop"
-  if does not exist then alert
+  # if does not exist then start
+  if does not exist for 2 cycles then alert
   if failed host localhost port 5432 protocol pgsql then restart
   if 5 restarts within 5 cycles then timeout
