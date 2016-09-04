@@ -329,12 +329,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## => secrets
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 # => set :secrets_roles,       :app
-# => set :secrets_profile,     "bashrc" # "profile" | "bashrc"
+# => set :secrets_profile,     "bashrc" # "profile" | "bashrc" | "bach_profile" | "bash_login"
 # => set :secrets_key_base,    generate_secrect_key
 # => set :secrets_key_name,    "#{ fetch(:application) }_#{ fetch(:stage) }_SECRET_KEY_BASE".gsub(/-/, "_").gsub(/[^a-zA-Z_]/, "").upcase
 # => set :secrets_user_path,   { "/home/#{fetch(:user)}"
 # => set :secrets_set_both,    false  # also save usual SECRET_KEY_BASE 
-# => set :secrets_hooks,       true   # activate thin hooks in setup chain ?
+# => set :secrets_hooks,       true   # activate secrets hooks in setup chain ?
+# => set :secrets_set_env,     true   # also set in /etc/environment (for rvm usage)
+# => set :secrets_set_etc,     false  # also set in /etc/profile (for all machine users)
+# => set :secrets_symlink,     false  # auto symlink secrets.yml on each deploy (not needed if set in :linked_files)
+
 
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
