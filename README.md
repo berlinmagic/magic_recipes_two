@@ -23,6 +23,17 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ### NEWs
 
 
+**Version 0.0.45:**
+- new `:sidekiq_special_queues` .. use special options per queue?
+- new `:sidekiq_queued_processes` .. special options per queue
+- *options per queue:*
+- `queue`     = queue-name *str* .. default: "default"
+- `processes` = number of processes *int* .. default: 1
+- `worker`    = number of worker (concurrency) *int* .. default: 7
+- ie: `[ {queue: "default", processes: 1, worker: 15}, {queue: "single", processes: 1, worker: 1} ]`
+
+
+
 **Version 0.0.40:**
 - new `:db_backup_on_deploy` .. make DB backup before deployment
  
@@ -351,6 +362,13 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 # => set :sidekiq_timeout,         10
 # => set :sidekiq_roles,           :app
 # => set :sidekiq_processes,       1
+## If needed, you can set special queues and configure it seperately .. options:
+##    - queue:      string    # => queue-name       (default: "default")
+##    - processes:  integer   # => number processes (default: 1)
+##    - worker:     integer   # => concurrency      (default: 7)
+##      ie: [ {queue: "default", processes: 1, worker: 15}, {queue: "single", processes: 1, worker: 1} ]
+# => set :sidekiq_special_queues,   false
+# => set :sidekiq_queued_processes, []
 ## Rbenv and RVM integration
 # => set :rbenv_map_bins,          fetch(:rbenv_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
 # => set :rvm_map_bins,            fetch(:rvm_map_bins).to_a.concat(%w(sidekiq sidekiqctl))

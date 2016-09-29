@@ -8,11 +8,19 @@
   args.push "--logfile #{fetch(:sidekiq_log)}" if fetch(:sidekiq_log)                     
   args.push "--require #{fetch(:sidekiq_require)}" if fetch(:sidekiq_require)             
   args.push "--tag #{fetch(:sidekiq_tag)}" if fetch(:sidekiq_tag)                         
-  Array(fetch(:sidekiq_queue)).each do |queue|                                            
-    args.push "--queue #{queue}"                                                          
-  end                                                                                     
-  args.push "--config #{fetch(:sidekiq_config)}" if fetch(:sidekiq_config)                
-  args.push "--concurrency #{fetch(:sidekiq_concurrency)}" if fetch(:sidekiq_concurrency) 
+  
+  if fetch(:sidekiq_special_queues)
+    queue_config = sidekiq_special_config(idx)
+    args.push "--queue #{ queue_config[:queue] || 'default' }"
+    args.push "--concurrency #{ queue_config[:concurrency] || 7 }"
+  else
+    Array(fetch(:sidekiq_queue)).each do |queue|
+      args.push "--queue #{queue}"
+    end
+    args.push "--concurrency #{fetch(:sidekiq_concurrency)}" if fetch(:sidekiq_concurrency)
+  end
+  args.push "--config #{fetch(:sidekiq_config)}" if fetch(:sidekiq_config)
+  
   # use sidekiq_options for special options                                               
   args.push fetch(:sidekiq_options) if fetch(:sidekiq_options)                            
   args.push '--daemon'                                                                    

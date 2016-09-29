@@ -3,12 +3,23 @@ namespace :load do
   task :defaults do
     set :sidekiq_default_hooks, -> { true }
 
-    set :sidekiq_pid, -> { File.join(shared_path, 'pids', 'sidekiq.pid') }
-    set :sidekiq_env, -> { fetch(:rack_env, fetch(:rails_env, fetch(:stage))) }
-    set :sidekiq_log, -> { File.join(shared_path, 'log', 'sidekiq.log') }
-    set :sidekiq_timeout, -> { 10 }
-    set :sidekiq_roles, -> { :app }
-    set :sidekiq_processes, -> { 1 }
+    set :sidekiq_pid,               -> { File.join(shared_path, 'pids', 'sidekiq.pid') }
+    set :sidekiq_env,               -> { fetch(:rack_env, fetch(:rails_env, fetch(:stage))) }
+    set :sidekiq_log,               -> { File.join(shared_path, 'log', 'sidekiq.log') }
+    set :sidekiq_timeout,           -> { 10 }
+    set :sidekiq_roles,             -> { :app }
+    set :sidekiq_processes,         -> { 1 }
+    # Sidekiq queued processes:
+    
+    set :sidekiq_special_queues,    -> { false }
+    set :sidekiq_queued_processes,  -> { [] }
+    ## If needed you can set special queues and configure it seperately
+    ## .. options:  
+    ##    - queue:      string    # => queue-name       (default: "default")
+    ##    - processes:  integer   # => number processes (default: 1)
+    ##    - worker:     integer   # => concurrency      (default: 7)
+    ## => [ { queue: "queue_name", processes: "count", worker: "count" }]
+    
     # Rbenv and RVM integration
     set :rbenv_map_bins, fetch(:rbenv_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
     set :rvm_map_bins, fetch(:rvm_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
@@ -36,14 +47,39 @@ namespace :sidekiq do
       end
     end
   end
+  
+  def sidekiq_special_config(idx)
+    if fetch(:sidekiq_special_queues)
+      settingz = []
+      fetch(:sidekiq_queued_processes).each do |that|
+        (that[:processes].present? ? that[:processes] : 1 ).to_i.times do
+          settingz.push {   queue: that[:queue].present? ? that[:queue] : "default", 
+                            concurrency: that[:worker].present? ? that[:worker].to_i : 7   }
+        end
+      end
+      settingz[ idx.to_i ]
+    else
+      {}
+    end
+  end
 
   def processes_pids
     pids = []
-    fetch(:sidekiq_processes).times do |idx|
-      pids.push (idx.zero? && fetch(:sidekiq_processes) <= 1) ?
-                    fetch(:sidekiq_pid) :
-                    fetch(:sidekiq_pid).gsub(/\.pid$/, "-#{idx}.pid")
+    if fetch(:sidekiq_special_queues)
+      processes_count = fetch(:sidekiq_queued_processes).sum{ |qp| qp[:processes].present? ? qp[:processes].to_i : 1 }
+      processes_count.times do |idx|
+        pids.push (idx.zero? && processes_count <= 1) ?
+                      fetch(:sidekiq_pid) :
+                      fetch(:sidekiq_pid).gsub(/\.pid$/, "-#{idx}.pid")
 
+      end
+    else
+      fetch(:sidekiq_processes).times do |idx|
+        pids.push (idx.zero? && fetch(:sidekiq_processes) <= 1) ?
+                      fetch(:sidekiq_pid) :
+                      fetch(:sidekiq_pid).gsub(/\.pid$/, "-#{idx}.pid")
+
+      end
     end
     pids
   end
@@ -89,11 +125,17 @@ namespace :sidekiq do
     args.push "--logfile #{fetch(:sidekiq_log)}" if fetch(:sidekiq_log)
     args.push "--require #{fetch(:sidekiq_require)}" if fetch(:sidekiq_require)
     args.push "--tag #{fetch(:sidekiq_tag)}" if fetch(:sidekiq_tag)
-    Array(fetch(:sidekiq_queue)).each do |queue|
-      args.push "--queue #{queue}"
+    if fetch(:sidekiq_special_queues)
+      queue_config = sidekiq_special_config(idx)
+      args.push "--queue #{ queue_config[:queue] || 'default' }"
+      args.push "--concurrency #{ queue_config[:concurrency] || 7 }"
+    else
+      Array(fetch(:sidekiq_queue)).each do |queue|
+        args.push "--queue #{queue}"
+      end
+      args.push "--concurrency #{fetch(:sidekiq_concurrency)}" if fetch(:sidekiq_concurrency)
     end
     args.push "--config #{fetch(:sidekiq_config)}" if fetch(:sidekiq_config)
-    args.push "--concurrency #{fetch(:sidekiq_concurrency)}" if fetch(:sidekiq_concurrency)
     # use sidekiq_options for special options
     args.push fetch(:sidekiq_options) if fetch(:sidekiq_options)
 
