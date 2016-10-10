@@ -52,10 +52,10 @@ namespace :sidekiq do
     if fetch(:sidekiq_special_queues)
       settingz = []
       fetch(:sidekiq_queued_processes).each do |that|
-        (that[:processes].present? ? that[:processes] : 1 ).to_i.times do
+        (that[:processes] && that[:processes].to_i > 0 ? that[:processes].to_i : 1 ).to_i.times do
           sttng_hash = {}
-          sttng_hash[:queue] = that[:queue].present? ? that[:queue] : "default"
-          sttng_hash[:concurrency] = that[:worker].present? ? that[:worker].to_i : 7
+          sttng_hash[:queue] = that[:queue] ? that[:queue] : "default"
+          sttng_hash[:concurrency] = that[:worker] && that[:worker].to_i > 0 ? that[:worker].to_i : 7
           settingz.push( sttng_hash )
         end
       end
@@ -69,7 +69,7 @@ namespace :sidekiq do
     pids = []
     if fetch(:sidekiq_special_queues)
       # processes_count = fetch(:sidekiq_queued_processes).sum{ |qp| qp[:processes].present? ? qp[:processes].to_i : 1 }
-      processes_count = fetch(:sidekiq_queued_processes).inject(0){ |sum,qp| sum + (qp[:processes].present? ? qp[:processes].to_i : 1) }
+      processes_count = fetch(:sidekiq_queued_processes).inject(0){ |sum,qp| sum + (qp[:processes] && qp[:processes].to_i > 0 ? qp[:processes].to_i : 1) }
       processes_count.times do |idx|
         pids.push (idx.zero? && processes_count <= 1) ?
                       fetch(:sidekiq_pid) :
