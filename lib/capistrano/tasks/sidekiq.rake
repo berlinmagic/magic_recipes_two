@@ -68,7 +68,8 @@ namespace :sidekiq do
   def processes_pids
     pids = []
     if fetch(:sidekiq_special_queues)
-      processes_count = fetch(:sidekiq_queued_processes).sum{ |qp| qp[:processes].present? ? qp[:processes].to_i : 1 }
+      # processes_count = fetch(:sidekiq_queued_processes).sum{ |qp| qp[:processes].present? ? qp[:processes].to_i : 1 }
+      processes_count = fetch(:sidekiq_queued_processes).inject(0){ |sum,qp| sum + (qp[:processes].present? ? qp[:processes].to_i : 1) }
       processes_count.times do |idx|
         pids.push (idx.zero? && processes_count <= 1) ?
                       fetch(:sidekiq_pid) :
