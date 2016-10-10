@@ -53,8 +53,8 @@ namespace :sidekiq do
       settingz = []
       fetch(:sidekiq_queued_processes).each do |that|
         (that[:processes].present? ? that[:processes] : 1 ).to_i.times do
-          settingz.push {   queue: that[:queue].present? ? that[:queue] : "default", 
-                            concurrency: that[:worker].present? ? that[:worker].to_i : 7   }
+          settingz.push {   queue: (that[:queue].present? ? that[:queue] : "default"), 
+                            concurrency: (that[:worker].present? ? that[:worker].to_i : 7)   }
         end
       end
       settingz[ idx.to_i ]
