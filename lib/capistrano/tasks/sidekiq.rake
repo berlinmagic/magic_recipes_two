@@ -77,7 +77,7 @@ namespace :sidekiq do
 
       end
     else
-      fetch(:sidekiq_processes).times do |idx|
+      fetch(:sidekiq_processes).to_i.times do |idx|
         pids.push (idx.zero? && fetch(:sidekiq_processes) <= 1) ?
                       fetch(:sidekiq_pid) :
                       fetch(:sidekiq_pid).gsub(/\.pid$/, "-#{idx}.pid")
@@ -85,6 +85,14 @@ namespace :sidekiq do
       end
     end
     pids
+  end
+  
+  def sidekiq_processes_count
+    if fetch(:sidekiq_special_queues)
+      fetch(:sidekiq_queued_processes).inject(0){ |sum,qp| sum + (qp[:processes] && qp[:processes].to_i > 0 ? qp[:processes].to_i : 1) }
+    else
+      fetch(:sidekiq_processes).to_i
+    end
   end
 
   def pid_process_exists?(pid_file)

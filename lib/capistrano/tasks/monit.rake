@@ -84,7 +84,8 @@ namespace :monit do
           if Array(fetch(:monit_processes)).include?(process)
             on roles(fetch("#{process}_roles".to_sym)) do
               if process == "sidekiq"
-                fetch(:sidekiq_processes).times do |idx|
+                # fetch(:sidekiq_processes)
+                sidekiq_processes_count.times do |idx|
                   sudo "#{fetch(:monit_bin)} #{command} #{sidekiq_service_name(idx)}"
                 end
               elsif process == "thin"
