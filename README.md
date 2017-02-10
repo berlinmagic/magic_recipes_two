@@ -23,7 +23,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ### NEWs
 
 
-**Version 0.0.49:**
+**Version 0.0.51:**
+- data-dump gets packed *(tar.gz)* before download
+ 
+
+**Version 0.0.50:**
 - new `:sidekiq_special_queues` .. use special options per queue?
 - new `:sidekiq_queued_processes` .. special options per queue
 - *options per queue:*
@@ -31,10 +35,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - `processes` = number of processes *int* .. default: 1
 - `worker`    = number of worker (concurrency) *int* .. default: 7
 - ie: `[ {queue: "default", processes: 1, worker: 15}, {queue: "single", processes: 1, worker: 1} ]`
-
+ 
 
 **Caution**
-- broken Versions: **0.0.45 - 0.0.48**
+- broken Versions: **0.0.45 - 0.0.49**
 
 **Version 0.0.40:**
 - new `:db_backup_on_deploy` .. make DB backup before deployment

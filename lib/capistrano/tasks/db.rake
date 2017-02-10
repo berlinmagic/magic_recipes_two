@@ -27,7 +27,9 @@ namespace :db do
     on roles :db do
       within current_path do
         execute :bundle, :exec, :rake, "db:data:dump RAILS_ENV=#{fetch(:stage)}"
-        download! "#{current_path}/db/data.yml", "db/backups/#{ Time.now.strftime("%y-%m-%d_%H-%M") }_#{fetch(:stage)}_db_data.yml"
+        # => download! "#{current_path}/db/data.yml", "db/backups/#{ Time.now.strftime("%y-%m-%d_%H-%M") }_#{fetch(:stage)}_db_data.yml"
+        execute "tar -czvf db/data-dumb.tar.gz db/data.yml"
+        download! "#{current_path}/db/data-dumb.tar.gz", "db/backups/#{ Time.now.strftime("%y-%m-%d_%H-%M") }_#{fetch(:stage)}_db_data.tar.gz"
       end
     end
   end
