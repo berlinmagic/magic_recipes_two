@@ -23,7 +23,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ### NEWs
 
 
-**Version 0.0.51:**
+**Version 0.0.52:**
 - data-dump gets packed *(tar.gz)* before download
  
 
