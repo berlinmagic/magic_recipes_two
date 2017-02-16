@@ -29,7 +29,7 @@ namespace :db do
         execute :bundle, :exec, :rake, "db:data:dump RAILS_ENV=#{fetch(:stage)}"
         # => download! "#{current_path}/db/data.yml", "db/backups/#{ Time.now.strftime("%y-%m-%d_%H-%M") }_#{fetch(:stage)}_db_data.yml"
         execute "cd #{current_path}/db ; tar -czvf data-dumb.tar.gz data.yml"
-        download! "#{current_path}/db/data-dumb.tar.gz", "db/backups/#{ Time.now.strftime("%y-%m-%d_%H-%M") }_#{fetch(:stage)}_db_data.tar.gz"
+        download! "#{current_path}/db/data-dumb.tar.gz", "db/backups/#{ Time.now.strftime("%y-%m-%d_%H-%M") }_#{fetch(:stage)}_db.tar.gz"
       end
     end
   end
