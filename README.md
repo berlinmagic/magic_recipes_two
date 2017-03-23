@@ -11,6 +11,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - **db** seed task + backup task
 - **exception_pages** copy exception pages from assets to public (if you generate them with sprockets)
 - **inform_slack** inform a slack channel about successful upload
+- **lets encrypt** install certs, add cron job, create Diffie-Hellman
 - **monit** control monit with monit-webinterface
 - **monit_sidekiq** monit tasks for sidekiq (unused!!)
 - **nginx** control nginx with several instances and ssl
@@ -22,9 +23,15 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.58:**
+- add **Lets Encrypt** actions
+- add special nginx security lines, as described by [digital-ocean](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04)
+- add **Diffie-Hellman** actions
+ 
 
 **Version 0.0.57:**
-- **Lets Encrypt** allow *.well-known* passes via nginx with `:allow_well_known`
+- **Lets Encrypt** allow *.well-known* pathes via nginx with `:allow_well_known`
+ 
 
 **Version 0.0.52:**
 - data-dump gets packed *(tar.gz)* before download
@@ -42,10 +49,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 **Caution**
 - broken Versions: **0.0.45 - 0.0.49**
+ 
 
 **Version 0.0.40:**
 - new `:db_backup_on_deploy` .. make DB backup before deployment
- 
  
 
 **Version 0.0.35:**
@@ -100,7 +107,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.57', group: :development
+  gem 'magic_recipes_two', '>= 0.0.58', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
@@ -123,6 +130,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/db'
     # => require 'capistrano/magic_recipes/exception_pages'
     # => require 'capistrano/magic_recipes/inform_slack'
+    # => require 'capistrano/magic_recipes/lets_encrypt'
     # => require 'capistrano/magic_recipes/monit'
     # => require 'capistrano/magic_recipes/nginx'
     # => require 'capistrano/magic_recipes/redis'
@@ -131,12 +139,12 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/thin'
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-    ```
-    
-    
-    ## in deploy file
-    
-    ```ruby
+```
+
+
+## in deploy file
+
+```ruby
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
     ## MagicRecipes .. pick what you need
@@ -176,6 +184,13 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :slack_username,        "capistrano (#{fetch(:stage)})"
     # => set :slack_production_icon, "http://icons.iconarchive.com/icons/itzikgur/my-seven/128/Backup-IBM-Server-icon.png"
     # => set :slack_staging_icon,    "http://itekblog.com/wp-content/uploads/2012/07/railslogo.png"
+    
+    
+    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    ## => lets encrypt
+    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    # => set :lets_encrypt_roles,    :web
+    # => set :lets_encrypt_path,     "~"
     
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
@@ -257,7 +272,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     ## activate nginx hooks in deploy chain ?
     # => set :nginx_hooks,                     true
     ## Lets Encrypt - Challenge Path
-    # => set :allow_well_known                 false
+    # => set :allow_well_known,                false
+    # Diffie-Hellman settings
+    # => set :nginx_ssl_dh_path,               "/etc/ssl/certs"
+    # => set :nginx_ssl_dh_file,               "dhparam.pem"
+    # => set :nginx_ssl_diffie_hellman,        false
     ## ## ##
     ## NginX Proxy-Cache
     ## ## ##

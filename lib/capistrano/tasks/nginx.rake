@@ -27,6 +27,10 @@ namespace :load do
     set :nginx_hooks,                 -> { true }
     ## Lets Encrypt - Challenge Path
     set :allow_well_known,            -> { false }
+    # Diffie-Hellman settings
+    set :nginx_ssl_dh_path,           -> { "/etc/ssl/certs" }
+    set :nginx_ssl_dh_file,           -> { "dhparam.pem" }
+    set :nginx_ssl_diffie_hellman,    -> { false }
     ## NginX Proxy-Caching
     # Cache Rails
     set :proxy_cache_rails,           -> { false }
