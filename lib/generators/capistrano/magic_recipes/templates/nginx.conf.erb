@@ -195,7 +195,13 @@ server {
     expires             max;
     add_header          Cache-Control     public;
   }
-
+  
+<% if fetch(:allow_well_known) %>
+  location ~ /.well-known {
+    allow all;
+  }
+<% end %>
+  
 <% if fetch(:proxy_cache_media) %>
   # Media-Path with NginX-Proxy-Cache
   location ^~ /<%= fetch(:proxy_cache_media_path) %>/ {

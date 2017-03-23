@@ -21,10 +21,12 @@ namespace :load do
     set :nginx_use_ssl,               -> { false }
     set :nginx_ssl_certificate,       -> { "#{fetch(:application)}.crt" }
     set :nginx_ssl_certificate_path,  -> { '/etc/ssl/certs' }
-    set :nginx_ssl_certificate_key,   -> { "#{fetch(:application)}.crt" }
+    set :nginx_ssl_certificate_key,   -> { "#{fetch(:application)}.key" }
     set :nginx_ssl_certificate_key_path, -> { '/etc/ssl/private' }
     set :app_server_ip,               -> { "127.0.0.1" }
     set :nginx_hooks,                 -> { true }
+    ## Lets Encrypt - Challenge Path
+    set :allow_well_known             -> { false }
     ## NginX Proxy-Caching
     # Cache Rails
     set :proxy_cache_rails,           -> { false }
