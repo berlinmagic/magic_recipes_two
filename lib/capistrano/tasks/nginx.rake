@@ -26,7 +26,7 @@ namespace :load do
     set :app_server_ip,               -> { "127.0.0.1" }
     set :nginx_hooks,                 -> { true }
     ## Lets Encrypt - Challenge Path
-    set :allow_well_known             -> { false }
+    set :allow_well_known,            -> { false }
     ## NginX Proxy-Caching
     # Cache Rails
     set :proxy_cache_rails,           -> { false }
