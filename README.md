@@ -23,7 +23,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ### NEWs
 
 
-**Version 0.0.56:**
+**Version 0.0.57:**
 - **Lets Encrypt** allow *.well-known* passes via nginx with `:allow_well_known`
 
 **Version 0.0.52:**
@@ -100,7 +100,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.40', group: :development
+  gem 'magic_recipes_two', '>= 0.0.57', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
