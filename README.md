@@ -23,7 +23,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
-**Version 0.0.58:**
+**Version 0.0.59:**
 - add **Lets Encrypt** actions
 - add special nginx security lines, as described by [digital-ocean](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04)
 - add **Diffie-Hellman** actions
