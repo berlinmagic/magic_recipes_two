@@ -74,6 +74,31 @@ namespace :nginx do
       end
     end
   end
+  
+  desc "check nginx version"
+  task :version do
+    on release_roles fetch(:nginx_roles) do
+      output = capture("nginx -v")
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+      output.each_line do |line|
+          puts line
+      end
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+    end
+  end
+  
+  desc "check nginx conf"
+  task :check_conf do
+    nginx_service = fetch(:nginx_service_path)
+    on release_roles fetch(:nginx_roles) do
+      output = capture(:sudo, "nginx -t")
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+      output.each_line do |line|
+          puts line
+      end
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+    end
+  end
 
   after 'deploy:check', nil do
     on release_roles fetch(:nginx_roles) do

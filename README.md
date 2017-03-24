@@ -107,7 +107,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.58', group: :development
+  gem 'magic_recipes_two', '>= 0.0.60', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
@@ -191,6 +191,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     # => set :lets_encrypt_roles,         :web
     # => set :lets_encrypt_path,          "~"
+    # Array without www.domains "www" will be auto-added! .. First domain is main one!
+    # => set :lets_encrypt_domains,       -> { fetch(:nginx_major_domain,false) ? [fetch(:nginx_major_domain)] + Array(fetch(:nginx_domains)) : Array(fetch(:nginx_domains)) }
     # => set :lets_encrypt_renew_minute,  "23"        # 0-59
     # => set :lets_encrypt_renew_hour1,   "0"         # 0-11
     # => set :lets_encrypt_renew_hour2,   "12"        # 12-23
