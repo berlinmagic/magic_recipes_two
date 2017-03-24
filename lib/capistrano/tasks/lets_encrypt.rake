@@ -30,7 +30,7 @@ namespace :lets_encrypt do
   task :certonly do
     on release_roles fetch(:lets_encrypt_roles) do
       # execute "./certbot-auto certonly --webroot -w /var/www/example -d example.com -d www.example.com -w /var/www/thing -d thing.is -d m.thing.is"
-      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto certonly --webroot -w #{current_path}/public #{ Array(fetch(:lets_encrypt_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, "")} -d www.#{d.gsub(/^\*?\./, "")}" }.join(" ") }"
+      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive certonly --webroot -w #{current_path}/public #{ Array(fetch(:lets_encrypt_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, "")} -d www.#{d.gsub(/^\*?\./, "")}" }.join(" ") }"
     end
   end
   
