@@ -3,8 +3,12 @@
 
 namespace :load do
   task :defaults do
-    set :lets_encrypt_roles,    -> { :web }
-    set :lets_encrypt_path,     -> { "~" }
+    set :lets_encrypt_roles,        -> { :web }
+    set :lets_encrypt_path,         -> { "~" }
+    set :lets_encrypt_renew_minute, -> { "23" }
+    set :lets_encrypt_renew_hour1,  -> { "0" }
+    set :lets_encrypt_renew_hour2,  -> { "12" }
+    set :lets_encrypt_cron_log,     -> { "#{shared_path}/log/lets_encrypt_cron.log" }
   end
 end
 
@@ -13,8 +17,10 @@ namespace :lets_encrypt do
   desc "Install certbot LetsEncrypt"
   task :install do
     on release_roles fetch(:lets_encrypt_roles) do
-      execute "cd #{ fetch(:lets_encrypt_path) } ; wget https://dl.eff.org/certbot-auto"
-      execute "cd #{ fetch(:lets_encrypt_path) } ; chmod a+x certbot-auto"
+      within fetch(:lets_encrypt_path) do
+        execute "wget https://dl.eff.org/certbot-auto"
+        execute "chmod a+x certbot-auto"
+      end
     end
   end
   
@@ -32,15 +38,25 @@ namespace :lets_encrypt do
   ## http://serverfault.com/a/825032
   task :auto_renew do
     on release_roles fetch(:lets_encrypt_roles) do
-      execute :sudo, "echo '42 0,12 * * * root #{ fetch(:lets_encrypt_path) }/certbot-auto renew --quiet' | cat > /etc/cron.d/lets_encrypt"
+      # execute :sudo, "echo '42 0,12 * * * root (#{ fetch(:lets_encrypt_path) }/certbot-auto renew --quiet) >> #{shared_path}/lets_encrypt_cron.log 2>&1' | cat > #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob"
+      execute :sudo, "echo '#{ fetch(:lets_encrypt_renew_minute) } #{ fetch(:lets_encrypt_renew_hour1) },#{ fetch(:lets_encrypt_renew_hour2) } * * * root #{ fetch(:lets_encrypt_path) }/certbot-auto renew --no-self-upgrade --post-hook \"#{fetch(:nginx_service_path)} restart\"  >> #{ fetch(:lets_encrypt_cron_log) } 2>&1' | cat > #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob"
+      execute :sudo, "mv -f #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob /etc/cron.d/lets_encrypt"
+      execute :sudo, "chown -f root:root /etc/cron.d/lets_encrypt"
+      execute :sudo, "chmod -f 0644 /etc/cron.d/lets_encrypt"
     end
   end
   
   
-  desc "Install certbot LetsEncrypt"
-  task :test_renew do
+  desc "Dry-Run Renew LetsEncrypt"
+  task :dry_renew do
     on release_roles fetch(:lets_encrypt_roles) do
-      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto renew --dry-run"
+      # execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto renew --dry-run"
+      output = capture(:sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto renew --dry-run")
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+      output.each_line do |line|
+          puts line
+      end
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
     end
   end
   
@@ -52,6 +68,18 @@ namespace :lets_encrypt do
     end
   end
   
+  desc "Check CRON logs in syslog"
+  task :check_cron_logs do
+    on release_roles fetch(:lets_encrypt_roles) do
+      # execute "grep CRON /var/log/syslog"
+      output = capture("grep CRON /var/log/syslog")
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+      output.each_line do |line|
+          puts line
+      end
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+    end
+  end
   
 end
 

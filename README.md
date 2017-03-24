@@ -23,7 +23,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
-**Version 0.0.59:**
+**Version 0.0.60:**
 - add **Lets Encrypt** actions
 - add special nginx security lines, as described by [digital-ocean](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04)
 - add **Diffie-Hellman** actions
@@ -189,8 +189,12 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     ## => lets encrypt
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    # => set :lets_encrypt_roles,    :web
-    # => set :lets_encrypt_path,     "~"
+    # => set :lets_encrypt_roles,         :web
+    # => set :lets_encrypt_path,          "~"
+    # => set :lets_encrypt_renew_minute,  "23"        # 0-59
+    # => set :lets_encrypt_renew_hour1,   "0"         # 0-11
+    # => set :lets_encrypt_renew_hour2,   "12"        # 12-23
+    # => set :lets_encrypt_cron_log,      "#{shared_path}/log/lets_encrypt_cron.log"
     
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
