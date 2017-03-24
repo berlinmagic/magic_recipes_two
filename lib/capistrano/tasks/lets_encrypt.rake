@@ -74,7 +74,7 @@ namespace :lets_encrypt do
   task :check_cron_logs do
     on release_roles fetch(:lets_encrypt_roles) do
       # execute "grep CRON /var/log/syslog"
-      output = capture("grep CRON /var/log/syslog")
+      output = capture(:sudo, "grep CRON /var/log/syslog")
       puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
       output.each_line do |line|
           puts line

@@ -23,6 +23,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.64:**
+- got **A+ SSL Report** on [ssllabs](https://www.ssllabs.com/ssltest/analyze.html) for certificate created with this gem
+- add check cron-log job for lets encrypt
+ 
+
 **Version 0.0.60:**
 - add **Lets Encrypt** actions
 - add special nginx security lines, as described by [digital-ocean](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-16-04)
@@ -107,7 +112,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.60', group: :development
+  gem 'magic_recipes_two', '>= 0.0.64', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
@@ -187,7 +192,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => lets encrypt
+    ## => lets encrypt  .. needs *nginx* :allow_well_known to be true!
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     # => set :lets_encrypt_roles,         :web
     # => set :lets_encrypt_path,          "~"
