@@ -197,6 +197,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :lets_encrypt_renew_hour1,   "0"         # 0-11
     # => set :lets_encrypt_renew_hour2,   "12"        # 12-23
     # => set :lets_encrypt_cron_log,      "#{shared_path}/log/lets_encrypt_cron.log"
+    set :lets_encrypt_email,              "admin@example.com"
     
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
