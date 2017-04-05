@@ -23,6 +23,12 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.65:**
+- cover for *Strict Transport Security (HSTS): Invalid .. Server provided more than one HSTS header*
+- add `:nginx_strict_transport_security_header` => set *false*, when rails `:force_ssl` is *true*!
+- to get **A+** again on [ssllabs](https://www.ssllabs.com/ssltest/analyze.html) (was A, when `:force_ssl` = true)
+
+
 **Version 0.0.64:**
 - got **A+ SSL Report** on [ssllabs](https://www.ssllabs.com/ssltest/analyze.html) for certificate created with this gem
 - add check cron-log job for lets encrypt
@@ -202,7 +208,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :lets_encrypt_renew_hour1,   "0"         # 0-11
     # => set :lets_encrypt_renew_hour2,   "12"        # 12-23
     # => set :lets_encrypt_cron_log,      "#{shared_path}/log/lets_encrypt_cron.log"
-    set :lets_encrypt_email,              "admin@example.com"
+    # => set :lets_encrypt_email,         "admin@example.com"
     
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
@@ -285,6 +291,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :nginx_hooks,                     true
     ## Lets Encrypt - Challenge Path
     # => set :allow_well_known,                false
+    ## only turn on, when rails :force_ssl is false !
+    # => set :nginx_strict_transport_security_header, false
     # Diffie-Hellman settings
     # => set :nginx_ssl_dh_path,               "/etc/ssl/certs"
     # => set :nginx_ssl_dh_file,               "dhparam.pem"

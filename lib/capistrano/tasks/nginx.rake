@@ -27,6 +27,8 @@ namespace :load do
     set :nginx_hooks,                 -> { true }
     ## Lets Encrypt - Challenge Path
     set :allow_well_known,            -> { false }
+    ## only turn on, when rails :force_ssl is false !
+    set :nginx_strict_transport_security_header, -> { false }
     # Diffie-Hellman settings
     set :nginx_ssl_dh_path,           -> { "/etc/ssl/certs" }
     set :nginx_ssl_dh_file,           -> { "dhparam.pem" }

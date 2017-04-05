@@ -178,7 +178,9 @@ server {
   ## Disable preloading HSTS for now.  You can use the commented out header line that includes
   ## the "preload" directive if you understand the implications.
   # => add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
+  <% if fetch(:nginx_strict_transport_security_header) %>
   add_header                  Strict-Transport-Security "max-age=63072000; includeSubdomains";
+  <% end %>
   add_header                  X-Frame-Options DENY;
   add_header                  X-Content-Type-Options nosniff;
   ssl_dhparam                 <%= fetch(:nginx_ssl_dh_path) %>/<%= fetch(:nginx_ssl_dh_file) %>;

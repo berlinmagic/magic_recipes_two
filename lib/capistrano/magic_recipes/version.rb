@@ -1,5 +1,5 @@
 module Capistrano
   module MagicRecipes
-    VERSION = "0.0.64"
+    VERSION = "0.0.65"
   end
 end
