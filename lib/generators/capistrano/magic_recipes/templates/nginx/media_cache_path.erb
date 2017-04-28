@@ -1,0 +1,9 @@
+<% if fetch(:proxy_cache_media) %>
+# Proxy-Caching - Media - Files ( ie: dragonfly / paperclip )
+proxy_cache_path    <%= fetch(:proxy_cache_media_directory) %> 
+                    levels=<%= fetch(:proxy_cache_media_levels) %> 
+                    keys_zone=<%= fetch(:proxy_cache_media_name) %>:<%= fetch(:proxy_cache_media_size) %> 
+                    inactive=<%= fetch(:proxy_cache_media_time) %> 
+                    max_size=<%= fetch(:proxy_cache_media_max) %>;
+
+<% end %>

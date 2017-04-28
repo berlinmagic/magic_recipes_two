@@ -7,7 +7,6 @@ namespace :load do
     set :nginx_domains,               -> { [] }
     set :nginx_major_domain,          -> { false }
     set :nginx_remove_www,            -> { true }
-    set :nginx_remove_https,          -> { false }
     set :default_site,                -> { false }
     set :app_instances,               -> { 1 }
     set :nginx_service_path,          -> { 'service nginx' }
@@ -19,20 +18,34 @@ namespace :load do
     set :nginx_sites_available,       -> { "sites-available" }
     set :nginx_template,              -> { :default }
     set :nginx_use_ssl,               -> { false }
-    set :nginx_ssl_certificate,       -> { "#{fetch(:application)}.crt" }
-    set :nginx_ssl_certificate_path,  -> { '/etc/ssl/certs' }
-    set :nginx_ssl_certificate_key,   -> { "#{fetch(:application)}.key" }
-    set :nginx_ssl_certificate_key_path, -> { '/etc/ssl/private' }
+    
+    # depreacated!!!
+    set :nginx_ssl_certificate_path,      -> { '/etc/ssl/certs' }
+    set :nginx_ssl_certificate_key_path,  -> { '/etc/ssl/private' }
+    set :nginx_ssl_certificate,           -> { "#{fetch(:application)}.crt" }
+    set :nginx_ssl_certificate_key,       -> { "#{fetch(:application)}.key" }
+    set :nginx_old_ssl_certificate,       -> { "#{fetch(:application)}.crt" }
+    set :nginx_old_ssl_certificate_key,   -> { "#{fetch(:application)}.key" }
+    
+    
+    set :nginx_ssl_cert,              -> { "#{fetch(:nginx_ssl_certificate_path)}/#{fetch(:nginx_ssl_certificate)}" }
+    set :nginx_ssl_key,               -> { "#{fetch(:nginx_ssl_certificate_key_path)}/#{fetch(:nginx_ssl_certificate_key)}" }
+    set :nginx_other_ssl_cert,        -> { "#{fetch(:nginx_ssl_certificate_path)}/#{fetch(:nginx_old_ssl_certificate)}" }
+    set :nginx_other_ssl_key,         -> { "#{fetch(:nginx_ssl_certificate_key_path)}/#{fetch(:nginx_old_ssl_certificate_key)}" }
+    
     set :app_server_ip,               -> { "127.0.0.1" }
     set :nginx_hooks,                 -> { true }
     ## Lets Encrypt - Challenge Path
     set :allow_well_known,            -> { false }
     ## only turn on, when rails :force_ssl is false !
-    set :nginx_strict_transport_security_header, -> { false }
+    set :nginx_strict_security,       -> { false }
     # Diffie-Hellman settings
     set :nginx_ssl_dh_path,           -> { "/etc/ssl/certs" }
     set :nginx_ssl_dh_file,           -> { "dhparam.pem" }
-    set :nginx_ssl_diffie_hellman,    -> { false }
+    set :nginx_use_diffie_hellman,    -> { false }
+    set :nginx_diffie_hellman_param,  -> { "#{fetch(:nginx_ssl_dh_path)}/#{fetch(:nginx_ssl_dh_file)}" }
+    set :nginx_ssl_ciphers,           -> { "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA" }
+    
     ## NginX Proxy-Caching
     # Cache Rails
     set :proxy_cache_rails,           -> { false }
@@ -58,12 +71,14 @@ namespace :load do
 end
 
 namespace :nginx do
+  
   task :load_vars do
-    set :sites_available, -> { File.join(fetch(:nginx_root_path), fetch(:nginx_sites_available)) }
-    set :sites_enabled, -> { File.join(fetch(:nginx_root_path), fetch(:nginx_sites_enabled)) }
-    set :enabled_application, -> { File.join(fetch(:sites_enabled), "#{fetch(:application)}_#{fetch(:stage)}") }
+    set :sites_available,       -> { File.join(fetch(:nginx_root_path), fetch(:nginx_sites_available)) }
+    set :sites_enabled,         -> { File.join(fetch(:nginx_root_path), fetch(:nginx_sites_enabled)) }
+    set :enabled_application,   -> { File.join(fetch(:sites_enabled), "#{fetch(:application)}_#{fetch(:stage)}") }
     set :available_application, -> { File.join(fetch(:sites_available), "#{fetch(:application)}_#{fetch(:stage)}") }
   end
+  
 
   %w[start stop restart reload].each do |command|
     desc "#{command.capitalize} nginx service"
@@ -111,6 +126,28 @@ namespace :nginx do
   end
 
   namespace :site do
+    
+    def joiner
+      "\n                        "
+    end
+    
+    def clear_domain( domain )
+      "#{ domain }".gsub(/^www\./, "").gsub(/^\*?\./, "")
+    end
+    
+    def subdomain_regex( domain )
+      "~^(www\.)?(?<sub>[\w-]+)#{ Regexp.escape(".#{ domain }") }"
+    end
+  
+    def nginx_domains
+      Array( fetch(:nginx_domains) ).map{ |d| clear_domain(d) }.uniq
+    end
+    
+    def nginx_major_domain
+      fetch(:nginx_major_domain, false) ? clear_domain( fetch(:nginx_major_domain) ) : false
+    end
+    
+    
     desc 'Creates the site configuration and upload it to the available folder'
     task :add => ['nginx:load_vars'] do
       on release_roles fetch(:nginx_roles) do

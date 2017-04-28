@@ -23,6 +23,13 @@ module Capistrano
         upload! StringIO.new( ERB.new(erb).result(binding) ), to
       end
       
+      
+      def magic_render(tmpl)
+        erb = get_template_file(tmpl)
+        ERB.new(erb).result(binding)
+      end
+      
+      
       def generate_secrect_key
         SecureRandom.hex(82)
       end

@@ -23,11 +23,28 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.67:**
+- **Removed some useless stuff:**
+- `:nginx_remove_https` .. need realy possible, so its gone
+- **Renamed and combined some stuff:**
+- `:nginx_ssl_cert` **=** `:nginx_ssl_certificate_path` + `:nginx_ssl_certificate`
+- `:nginx_ssl_key` **=** `:nginx_ssl_certificate_key_path` + `:nginx_ssl_certificate_key`
+- `:nginx_other_ssl_cert` **=** `:nginx_ssl_certificate_path` + `:nginx_old_ssl_certificate`
+- `:nginx_other_ssl_key` **=** `:nginx_ssl_certificate_key_path` + `:nginx_old_ssl_certificate_key`
+- depreacated: `:nginx_ssl_certificate_path`, `:nginx_ssl_certificate`, `:nginx_old_ssl_certificate`, `:nginx_ssl_certificate_key_path`, `:nginx_ssl_certificate_key`, `:nginx_old_ssl_certificate_key`
+- `:nginx_diffie_hellman_param` **=** `:nginx_ssl_dh_path` + `:nginx_ssl_dh_file`
+- **Renamed some stuff:**
+- `:nginx_ssl_diffie_hellman` => `:nginx_use_diffie_hellman`
+- `:nginx_strict_transport_security_header` => `:nginx_strict_security`
+- **Add new Stuff**
+- `:nginx_ssl_ciphers` to change the cipher suite *(needs `:nginx_use_diffie_hellman`)*
+ 
+
 **Version 0.0.65:**
 - cover for *Strict Transport Security (HSTS): Invalid .. Server provided more than one HSTS header*
 - add `:nginx_strict_transport_security_header` => set *false*, when rails `:force_ssl` is *true*!
 - to get **A+** again on [ssllabs](https://www.ssllabs.com/ssltest/analyze.html) (was A, when `:force_ssl` = true)
-
+ 
 
 **Version 0.0.64:**
 - got **A+ SSL Report** on [ssllabs](https://www.ssllabs.com/ssltest/analyze.html) for certificate created with this gem
@@ -131,6 +148,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
     ## MagicRecipes .. pick what you need
     
+    # => require 'capistrano/rvm'
     # => require 'rvm1/capistrano3'
     # => require 'capistrano/bundler'
     # => require 'capistrano/rails/assets'
@@ -142,6 +160,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/exception_pages'
     # => require 'capistrano/magic_recipes/inform_slack'
     # => require 'capistrano/magic_recipes/lets_encrypt'
+    # => require 'capistrano/magic_recipes/logs'
     # => require 'capistrano/magic_recipes/monit'
     # => require 'capistrano/magic_recipes/nginx'
     # => require 'capistrano/magic_recipes/redis'
@@ -156,18 +175,19 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## in deploy file
 
 ```ruby
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-    ## MagicRecipes .. pick what you need
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## MagicRecipes .. pick what you need
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
     
     # => set :user,        'deployuser'
     # => set :deploy_to,   "/home/#{fetch(:user)}/#{fetch(:application)}-#{fetch(:stage)}"
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => bundler
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => bundler
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :bundle_roles,         :all                                  # this is default
     # => set :bundle_servers,       release_roles(fetch(:bundle_roles)) } # this is default
     # => set :bundle_binstubs,      shared_path.join('bin') }             # default: nil
@@ -179,16 +199,18 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :bundle_bins, fetch(:bundle_bins, []).push('my_new_binary')  # You can add any custom executable to this list
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => db
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => db
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :db_roles,             :db
     # => set :db_backup_on_deploy,  false   # make DB backup (yaml_db) before deployment
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => inform slack
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => inform slack
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :slack_token,           "xxx-xxx-xxx-xxx"
     # => set :slack_channel,         "xxx-xxx-xxx-xxx" # "channel_id" or "#channel_name"
     # => set :slack_text,            "New Deployment on *#{ fetch(:stage) }* ... check:  #{fetch(:nginx_use_ssl) ? 'https': 'htpp'}://#{ fetch(:nginx_major_domain) ? fetch(:nginx_major_domain).gsub(/^\*?\./, "") : Array( fetch(:nginx_domains) ).first.gsub(/^\*?\./, "") }"
@@ -197,9 +219,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :slack_staging_icon,    "http://itekblog.com/wp-content/uploads/2012/07/railslogo.png"
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => lets encrypt  .. needs *nginx* :allow_well_known to be true!
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => lets encrypt  .. needs *nginx* :allow_well_known to be true!
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :lets_encrypt_roles,         :web
     # => set :lets_encrypt_path,          "~"
     # Array without www.domains "www" will be auto-added! .. First domain is main one!
@@ -211,9 +234,18 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :lets_encrypt_email,         "admin@example.com"
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => monit
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => logs .. (if you need to check app log-files)
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :logs_roles,                 :web    # on roles ..
+    # => set :logs_show_lines,            500     # show the last .. lines of log-file
+    
+    
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => monit
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     ## Status (monit is running or not .. activate monit hooks in deploy chain)
     # => set :monit_active,                         true
     ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin
@@ -257,9 +289,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_http_password,                  "monitor"
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => nginx
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => nginx
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :app_server_ip,                   "127.0.0.1"
     ## all domains the app uses
     # => set :nginx_domains,                   []               # array of domains
     ## app is the default site for this server?
@@ -268,8 +302,6 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :nginx_major_domain,              false            # "domain-name.tld" | false
     ## remove "www" from each request?
     # => set :nginx_remove_www,                true             # true | false
-    ## remove "https" from each request?
-    # => set :nginx_remove_https,              false             # true | false
     ## how many (thin) server instances 
     # => set :app_instances,                   1                # number >= 1
     ## nginx service path
@@ -282,24 +314,28 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :nginx_sites_available,           "sites-available"
     # => set :nginx_template,                  :default
     # => set :nginx_use_ssl,                   false
-    # => set :nginx_ssl_certificate,           "#{fetch(:application)}.crt"
-    # => set :nginx_ssl_certificate_path,      '/etc/ssl/certs'
-    # => set :nginx_ssl_certificate_key,       "#{fetch(:application)}.key"
-    # => set :nginx_ssl_certificate_key_path,  '/etc/ssl/private'
-    # => set :app_server_ip,                   "127.0.0.1"
+    ## ssl certificates
+    # => set :nginx_ssl_cert,                  "/etc/ssl/certs/#{fetch(:application)}.crt"
+    # => set :nginx_ssl_key,                   "/etc/ssl/private/#{fetch(:application)}.key"
+    ## certs for other domains (when :nginx_major_domain is set)
+    # => set :nginx_other_ssl_cert,            "/etc/ssl/certs/#{fetch(:application)}.crt"
+    # => set :nginx_other_ssl_key,             "/etc/ssl/private/#{fetch(:application)}.key"
     ## activate nginx hooks in deploy chain ?
     # => set :nginx_hooks,                     true
     ## Lets Encrypt - Challenge Path
     # => set :allow_well_known,                false
     ## only turn on, when rails :force_ssl is false !
-    # => set :nginx_strict_transport_security_header, false
+    # => set :nginx_strict_security,           false
     # Diffie-Hellman settings
-    # => set :nginx_ssl_dh_path,               "/etc/ssl/certs"
-    # => set :nginx_ssl_dh_file,               "dhparam.pem"
-    # => set :nginx_ssl_diffie_hellman,        false
-    ## ## ##
-    ## NginX Proxy-Cache
-    ## ## ##
+    # => set :nginx_use_diffie_hellman,        false
+    # => set :nginx_diffie_hellman_param,      "/etc/ssl/certs/dhparam.pem"
+    # => set :nginx_ssl_ciphers,               ".. long cipher string .." # check: https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
+    
+    
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => NginX - Proxy-Cache
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # -> Send appropriate cache headers ( Cache-Control: max-age=X, public ) to activate cache
     # -> Send bypass headers ( bypass_proxy: true ) to bypass cache
     ## ## ##
@@ -332,9 +368,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :proxy_cache_media_max,       "1g"                                                    # max-cache-size
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => postgresql
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => postgresql
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :pg_database,         "#{fetch(:application)}_#{fetch(:stage)}"
     # => set :pg_user,             fetch(:pg_database)
     # => set :pg_ask_for_password, false
@@ -358,9 +395,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => end
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => rails
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => rails
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :rails_env, 'staging'                  # If the environment differs from the stage name
     # => set :migration_role, 'migrator'            # Defaults to 'db'
     # => set :conditionally_migrate, true           # Defaults to false. If true, it's skip migration if files in db/migrate not modified
@@ -370,25 +408,39 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :normalize_asset_timestamps, %{public/images public/javascripts public/stylesheets}
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => redis
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    # => set :redis_roles,   :web
-    # => set :redis_pid,     "/var/run/redis/redis-server.pid"
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => redis
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :redis_roles,            :web
+    # => set :redis_pid,              "/var/run/redis/redis-server.pid"
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => rvm1 capistrano3
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    # => set :rvm1_ruby_version,     "."
-    # => set :rvm1_map_bins,         %w{rake gem bundle ruby}
-    # => set :rvm1_alias_name,       fetch(:application)
-    # => set :rvm1_auto_script_path, "#{fetch(:deploy_to)}/rvm1scripts"
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => rvm  (if used)
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :rvm_type,               :user               # Defaults to: :auto .. (:auto | :system | :user)
+    # => set :rvm_ruby_version,       '2.0.0-p247'        # Defaults to: 'default'
+    # => set :rvm_custom_path,        '~/.myveryownrvm'   # only needed if not detected
+    # => set :rvm_roles,              [:app, :web]
+    # => set :rvm_map_bins,           %w{gem rake ruby bundle}
+    
+        
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => rvm1capistrano3  (if used)
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :rvm1_ruby_version,      "."
+    # => set :rvm1_map_bins,          %w{rake gem bundle ruby}
+    # => set :rvm1_alias_name,        fetch(:application)
+    # => set :rvm1_auto_script_path,  "#{fetch(:deploy_to)}/rvm1scripts"
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => secrets
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => secrets
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :secrets_roles,       :app
     # => set :secrets_profile,     "bashrc" # "profile" | "bashrc" | "bach_profile" | "bash_login"
     # => set :secrets_key_base,    generate_secrect_key
@@ -402,9 +454,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => sidekiq
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => sidekiq
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :sidekiq_default_hooks,   true
     # => set :sidekiq_pid,             File.join(shared_path, 'pids', 'sidekiq.pid')
     # => set :sidekiq_env,             fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
@@ -424,9 +477,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :rvm_map_bins,            fetch(:rvm_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ## => thin
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => thin
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
     # => set :thin_path,                  '/etc/thin'     # => thin path on your server
     # => set :thin_roles,                 :web            # => thin roles
     # => set :thin_timeout,               30              # => Request or command timeout in sec (default: 30)
@@ -438,8 +492,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :thin_hooks,                 true            # => activate thin hooks in deploy chain ?
     
     
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
-    ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ```
 
 

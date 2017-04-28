@@ -34,9 +34,9 @@ namespace :secrets do
   task :profile do
     on release_roles fetch(:secrets_roles) do
       within fetch(:secrets_user_path) do
-        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | cat >> .#{fetch(:secrets_profile)}"
+        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' >> .#{fetch(:secrets_profile)}"
         if fetch(:secrets_set_both, false)
-          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | cat >> .#{fetch(:secrets_profile)}"
+          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' >> .#{fetch(:secrets_profile)}"
         end
       end
     end
@@ -46,9 +46,9 @@ namespace :secrets do
   task :environment do
     on release_roles fetch(:secrets_roles) do
       within "/etc" do
-        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | cat >> environment"
+        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' >> environment"
         if fetch(:secrets_set_both, false)
-          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | cat >> environment"
+          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' >> environment"
         end
       end
     end
@@ -58,9 +58,9 @@ namespace :secrets do
   task :etc_profile do
     on release_roles fetch(:secrets_roles) do
       within "/etc" do
-        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | cat >> profile"
+        execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' >> profile"
         if fetch(:secrets_set_both, false)
-          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | cat >> profile"
+          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' >> profile"
         end
       end
     end

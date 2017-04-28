@@ -1,0 +1,9 @@
+<% if fetch(:proxy_cache_rails) %>
+# Proxy-Caching - Rails - Site
+proxy_cache_path    <%= fetch(:proxy_cache_rails_directory) %> 
+                    levels=<%= fetch(:proxy_cache_rails_levels) %> 
+                    keys_zone=<%= fetch(:proxy_cache_rails_name) %>:<%= fetch(:proxy_cache_rails_size) %> 
+                    inactive=<%= fetch(:proxy_cache_rails_time) %> 
+                    max_size=<%= fetch(:proxy_cache_rails_max) %>;
+
+<% end %>
