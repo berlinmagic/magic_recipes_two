@@ -15,7 +15,7 @@ namespace :logs do
     task that do
       on release_roles fetch(:logs_roles, :web) do
         within shared_path do
-          execute :tail, "-n #{ fetch(:logs_show_lines, 100) } log/#{ that == 'rails' ? 'production' : that }.log"
+          execute :tail, "-n #{ fetch(:logs_show_lines, 100) } log/#{ that == 'rails' ? fetch(:stage) : that }.log"
         end
       end
     end
