@@ -318,8 +318,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :nginx_ssl_cert,                  "/etc/ssl/certs/#{fetch(:application)}.crt"
     # => set :nginx_ssl_key,                   "/etc/ssl/private/#{fetch(:application)}.key"
     ## certs for other domains (when :nginx_major_domain is set)
-    # => set :nginx_other_ssl_cert,            "/etc/ssl/certs/#{fetch(:application)}.crt"
-    # => set :nginx_other_ssl_key,             "/etc/ssl/private/#{fetch(:application)}.key"
+    # => set :nginx_other_ssl_cert,            fetch(:nginx_ssl_cert)
+    # => set :nginx_other_ssl_key,             fetch(:nginx_ssl_key)
     ## activate nginx hooks in deploy chain ?
     # => set :nginx_hooks,                     true
     ## Lets Encrypt - Challenge Path

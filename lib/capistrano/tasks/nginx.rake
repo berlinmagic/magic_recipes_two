@@ -19,7 +19,7 @@ namespace :load do
     set :nginx_template,              -> { :default }
     set :nginx_use_ssl,               -> { false }
     
-    # depreacated!!!
+    ##! depreacated!!!
     set :nginx_ssl_certificate_path,      -> { '/etc/ssl/certs' }
     set :nginx_ssl_certificate_key_path,  -> { '/etc/ssl/private' }
     set :nginx_ssl_certificate,           -> { "#{fetch(:application)}.crt" }
@@ -27,11 +27,11 @@ namespace :load do
     set :nginx_old_ssl_certificate,       -> { "#{fetch(:application)}.crt" }
     set :nginx_old_ssl_certificate_key,   -> { "#{fetch(:application)}.key" }
     
-    
+    ##! New-Style
     set :nginx_ssl_cert,              -> { "#{fetch(:nginx_ssl_certificate_path)}/#{fetch(:nginx_ssl_certificate)}" }
     set :nginx_ssl_key,               -> { "#{fetch(:nginx_ssl_certificate_key_path)}/#{fetch(:nginx_ssl_certificate_key)}" }
-    set :nginx_other_ssl_cert,        -> { "#{fetch(:nginx_ssl_certificate_path)}/#{fetch(:nginx_old_ssl_certificate)}" }
-    set :nginx_other_ssl_key,         -> { "#{fetch(:nginx_ssl_certificate_key_path)}/#{fetch(:nginx_old_ssl_certificate_key)}" }
+    set :nginx_other_ssl_cert,        -> { "#{fetch(:nginx_ssl_cert)}" }
+    set :nginx_other_ssl_key,         -> { "#{fetch(:nginx_ssl_key)}" }
     
     set :app_server_ip,               -> { "127.0.0.1" }
     set :nginx_hooks,                 -> { true }
@@ -39,11 +39,15 @@ namespace :load do
     set :allow_well_known,            -> { false }
     ## only turn on, when rails :force_ssl is false !
     set :nginx_strict_security,       -> { false }
+    
     # Diffie-Hellman settings
+    set :nginx_use_diffie_hellman,    -> { false }
+    ##! depreacated!!!
     set :nginx_ssl_dh_path,           -> { "/etc/ssl/certs" }
     set :nginx_ssl_dh_file,           -> { "dhparam.pem" }
-    set :nginx_use_diffie_hellman,    -> { false }
+    ##! New-Style
     set :nginx_diffie_hellman_param,  -> { "#{fetch(:nginx_ssl_dh_path)}/#{fetch(:nginx_ssl_dh_file)}" }
+    ## SSL Cipher
     set :nginx_ssl_ciphers,           -> { "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA" }
     
     ## NginX Proxy-Caching

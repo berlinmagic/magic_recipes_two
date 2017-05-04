@@ -2,7 +2,7 @@ server {
     listen 80;
     server_name <%= fetch(:monit_web_domain) %>;
     
-    location ~ /.well-known {
+    location ^~ /.well-known/ {
       allow         all;
       root          <%= fetch(:monit_well_known_path, "/tmp/monit/well_known") %>;
     }
