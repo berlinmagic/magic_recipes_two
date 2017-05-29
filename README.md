@@ -23,6 +23,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.68:**
+- Better handling of sudo add secret to env
+ 
+
 **Version 0.0.67:**
 - **Removed some useless stuff:**
 - `:nginx_remove_https` .. need realy possible, so its gone
