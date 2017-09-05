@@ -47,10 +47,10 @@ namespace :secrets do
     on release_roles fetch(:secrets_roles) do
       within "/etc" do
         # execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' >> environment"
-        execute "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | sudo tee -a environment"
+        execute "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | sudo tee -a /etc/environment"
         if fetch(:secrets_set_both, false)
           # execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' >> environment"
-          execute "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | sudo tee -a environment"
+          execute "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | sudo tee -a /etc/environment"
         end
       end
     end
@@ -61,10 +61,10 @@ namespace :secrets do
     on release_roles fetch(:secrets_roles) do
       within "/etc" do
         # execute :sudo,  "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' >> profile"
-        execute "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | sudo tee -a profile"
+        execute "echo 'export #{fetch(:secrets_key_name)}=#{fetch(:secrets_key_base)}' | sudo tee -a /etc/profile"
         if fetch(:secrets_set_both, false)
           # execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' >> profile"
-          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | sudo tee -a profile"
+          execute :sudo,  "echo 'export SECRET_KEY_BASE=#{fetch(:secrets_key_base)}' | sudo tee -a /etc/profile"
         end
       end
     end
