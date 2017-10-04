@@ -13,23 +13,26 @@ set mail-format {
     reply-to: <%= fetch(:monit_mail_reply_to) %>
      subject: !!! $EVENT on $SERVICE !!!
      message: $EVENT on $SERVICE - $DESCRIPTION.
-              
-              - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-              When:     $DATE
-              What:     $EVENT   [$ACTION]
-              Where:    $SERVICE
-              More:     $DESCRIPTION
-              Server:   $HOST
-              - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-              
-              Your faithful employee,
-              M O N I T
-              
-              <% if fetch(:monit_http_client) %><% if fetch(:monit_http_domain) %>
-              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_http_domain) %>:<%= fetch(:monit_http_port) %>/
-              <% else %>
-              Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:app_server_ip) %>:<%= fetch(:monit_http_port) %>/
-              <% end %><% end %>
+    
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    
+      Where:    $SERVICE
+      When:     $DATE
+      What:     $EVENT
+      Type:     $ACTION
+      More:     $DESCRIPTION
+      Server:   $HOST
+    
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    
+    Your faithful employee,
+    M O N I T
+    
+    <% if fetch(:monit_http_client) %><% if fetch(:monit_http_domain) %>
+    Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_http_domain) %>:<%= fetch(:monit_http_port) %>/
+    <% else %>
+    Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:app_server_ip) %>:<%= fetch(:monit_http_port) %>/
+    <% end %><% end %>
 }
 
 set mailserver <%= fetch(:monit_mail_server) %> port <%= fetch(:monit_mail_port) %>

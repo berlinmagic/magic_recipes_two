@@ -23,6 +23,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.70:**
+- **Renamed and combined some stuff:**
+- `:lets_encrypt_renew_hour` **=** `:lets_encrypt_renew_hour1` + `:lets_encrypt_renew_hour2`
+ 
+
 **Version 0.0.68:**
 - Better handling of sudo add secret to env
  
@@ -230,10 +235,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :lets_encrypt_roles,         :web
     # => set :lets_encrypt_path,          "~"
     # Array without www.domains "www" will be auto-added! .. First domain is main one!
-    # => set :lets_encrypt_domains,       -> { fetch(:nginx_major_domain,false) ? [fetch(:nginx_major_domain)] + Array(fetch(:nginx_domains)) : Array(fetch(:nginx_domains)) }
+    # => set :lets_encrypt_domains,       fetch(:nginx_major_domain,false) ? [fetch(:nginx_major_domain)] + Array(fetch(:nginx_domains)) : Array(fetch(:nginx_domains))
     # => set :lets_encrypt_renew_minute,  "23"        # 0-59
     # => set :lets_encrypt_renew_hour1,   "0"         # 0-11
     # => set :lets_encrypt_renew_hour2,   "12"        # 12-23
+    # => set :lets_encrypt_renew_hour,    "#{fetch(:lets_encrypt_renew_hour1)},#{fetch(:lets_encrypt_renew_hour2)}"
     # => set :lets_encrypt_cron_log,      "#{shared_path}/log/lets_encrypt_cron.log"
     # => set :lets_encrypt_email,         "admin@example.com"
     

@@ -9,6 +9,7 @@ namespace :load do
     set :lets_encrypt_renew_minute, -> { "23" }
     set :lets_encrypt_renew_hour1,  -> { "0" }
     set :lets_encrypt_renew_hour2,  -> { "12" }
+    set :lets_encrypt_renew_hour,   -> { "#{ fetch(:lets_encrypt_renew_hour1) },#{ fetch(:lets_encrypt_renew_hour2) }" }
     set :lets_encrypt_cron_log,     -> { "#{shared_path}/log/lets_encrypt_cron.log" }
     set :lets_encrypt_email,        -> { "ssl@example.com" }
   end
@@ -27,7 +28,7 @@ namespace :lets_encrypt do
   end
   
   
-  desc "Install certbot LetsEncrypt"
+  desc "Generate LetsEncrypt certificate"
   task :certonly do
     on release_roles fetch(:lets_encrypt_roles) do
       # execute "./certbot-auto certonly --webroot -w /var/www/example -d example.com -d www.example.com -w /var/www/thing -d thing.is -d m.thing.is"
@@ -36,12 +37,12 @@ namespace :lets_encrypt do
   end
   
   
-  desc "Install certbot LetsEncrypt"
+  desc "Upload LetsEncrypt cron-job"
   ## http://serverfault.com/a/825032
   task :auto_renew do
     on release_roles fetch(:lets_encrypt_roles) do
       # execute :sudo, "echo '42 0,12 * * * root (#{ fetch(:lets_encrypt_path) }/certbot-auto renew --quiet) >> #{shared_path}/lets_encrypt_cron.log 2>&1' | cat > #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob"
-      execute :sudo, "echo '#{ fetch(:lets_encrypt_renew_minute) } #{ fetch(:lets_encrypt_renew_hour1) },#{ fetch(:lets_encrypt_renew_hour2) } * * * root #{ fetch(:lets_encrypt_path) }/certbot-auto renew --no-self-upgrade --post-hook \"#{fetch(:nginx_service_path)} restart\"  >> #{ fetch(:lets_encrypt_cron_log) } 2>&1' | cat > #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob"
+      execute :sudo, "echo '#{ fetch(:lets_encrypt_renew_minute) } #{ fetch(:lets_encrypt_renew_hour) } * * * root #{ fetch(:lets_encrypt_path) }/certbot-auto renew --no-self-upgrade --post-hook \"#{fetch(:nginx_service_path)} restart\"  >> #{ fetch(:lets_encrypt_cron_log) } 2>&1' | cat > #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob"
       execute :sudo, "mv -f #{ fetch(:lets_encrypt_path) }/lets_encrypt_cronjob /etc/cron.d/lets_encrypt"
       execute :sudo, "chown -f root:root /etc/cron.d/lets_encrypt"
       execute :sudo, "chmod -f 0644 /etc/cron.d/lets_encrypt"
@@ -69,6 +70,7 @@ namespace :lets_encrypt do
       execute :sudo, "openssl dhparam -out #{ fetch(:nginx_ssl_dh_path) }/#{ fetch(:nginx_ssl_dh_file) } 2048"
     end
   end
+  
   
   desc "Check CRON logs in syslog"
   task :check_cron_logs do
