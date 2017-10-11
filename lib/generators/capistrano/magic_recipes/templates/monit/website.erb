@@ -15,7 +15,7 @@ check host <%= domain %> with address <%= domain %>
   <% end %>
   <% if fetch(:monit_website_check_content, false) %>
   if failed 
-    url <%= "#{ fetch(:nginx_use_ssl,false) ? "https" : "http" }://#{ domain }#{ fetch(:monit_website_check_path, '/') }" %> and content == <%= fetch(:monit_website_check_text, '<!DOCTYPE html>') %>
+    url <%= "#{ fetch(:nginx_use_ssl,false) ? "https" : "http" }://#{ domain }#{ fetch(:monit_website_check_path, '/') }" %> and content == "<%= fetch(:monit_website_check_text, '<!DOCTYPE html>') %>"
     timeout <%= fetch(:monit_website_check_timeout, 20) %> seconds for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
   then alert
   <% end %>
