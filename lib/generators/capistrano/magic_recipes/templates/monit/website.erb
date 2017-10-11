@@ -9,14 +9,18 @@
 # Check domains on port 80 <%= "(and 443 if ssl is on)" if fetch(:nginx_use_ssl) %> for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% domain_list.uniq.each do |domain| %>
 check host <%= domain %> with address <%= domain %>
-  if failed port 80 protocol http then alert
+  if failed 
   <% if fetch(:nginx_use_ssl) %>
-  if failed port 443 type TCPSSL protocol http then alert
+    port 443 type TCPSSL protocol https
+  <% else %>
+    port 80 protocol http
   <% end %>
   <% if fetch(:monit_website_check_content, false) %>
-  if failed 
-    url <%= "#{ fetch(:nginx_use_ssl,false) ? "https" : "http" }://#{ domain }#{ fetch(:monit_website_check_path, '/') }" %> and content == "<%= fetch(:monit_website_check_text, '<!DOCTYPE html>') %>"
-    timeout <%= fetch(:monit_website_check_timeout, 20) %> seconds for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
-  then alert
+    request "<%= fetch(:monit_website_check_path, '/') %>"
+    content = "<%= fetch(:monit_website_check_text, '<!DOCTYPE html>') %>"
   <% end %>
+    status < 300
+    timeout <%= fetch(:monit_website_check_timeout, 20) %> seconds
+    for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
+  then alert
 <% end %>
