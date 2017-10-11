@@ -73,7 +73,7 @@ namespace :monit do
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx postgresql redis sidekiq thin].each do |command|
+      %w[nginx postgresql redis sidekiq thin website].each do |command|
         invoke "monit:configure_#{command}" if Array(fetch(:monit_processes)).include?(command)
       end
     end
