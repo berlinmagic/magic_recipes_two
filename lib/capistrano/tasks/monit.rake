@@ -44,11 +44,11 @@ namespace :load do
     set :monit_http_username,         -> { "admin" }
     set :monit_http_password,         -> { "monitor" }
     ## Website
+    set :monit_website_check_timeout, -> { 10 }
+    set :monit_website_check_cycles,  -> { 3 }
     set :monit_website_check_content, -> { false }
     set :monit_website_check_path,    -> { "/" }
     set :monit_website_check_text,    -> { "<!DOCTYPE html>" }
-    set :monit_website_check_timeout, -> { 20 }
-    set :monit_website_check_cycles,  -> { 3 }
     
   end
 end
