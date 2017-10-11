@@ -258,8 +258,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     
     ## Status (monit is running or not .. activate monit hooks in deploy chain)
     # => set :monit_active,                         true
-    ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin
-    # => set :monit_processes,                      %w[nginx postgresql thin]
+    ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin website
+    # => set :monit_processes,                      %w[nginx postgresql thin website]
     ## Monit System
     # => set :monit_roles,                          :web
     # => set :monit_interval,                       30
@@ -297,6 +297,12 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_http_pemfile,                   "/etc/monit/monit.pem"
     # => set :monit_http_username,                  "admin"
     # => set :monit_http_password,                  "monitor"
+    ## Website
+    # => set :monit_website_check_content,          false
+    # => set :monit_website_check_path,             "/"
+    # => set :monit_website_check_text,             "<!DOCTYPE html>"
+    # => set :monit_website_check_timeout,          20
+    # => set :monit_website_check_cycles,           3
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

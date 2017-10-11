@@ -12,8 +12,8 @@ namespace :load do
     set :monit_statefile,             -> { '/var/lib/monit/state' }
     ## Status
     set :monit_active,                -> { true }
-    # set :monit_processes,             -> { %w[nginx postgresql redis sidekiq thin] }
-    set :monit_processes,             -> { %w[nginx postgresql thin] }
+    # set :monit_processes,             -> { %w[nginx postgresql redis sidekiq thin website] }
+    set :monit_processes,             -> { %w[nginx postgresql thin website] }
     ## Mailer
     set :monit_mail_server,           -> { "smtp.gmail.com" }
     set :monit_mail_port,             -> { 587 }
@@ -42,7 +42,13 @@ namespace :load do
     set :monit_http_pemfile,          -> { "/etc/monit/monit.pem" }
     set :monit_http_username,         -> { "admin" }
     set :monit_http_password,         -> { "monitor" }
-    ##v Website
+    ## Website
+    set :monit_website_check_content, -> { false }
+    set :monit_website_check_path,    -> { "/" }
+    set :monit_website_check_text,    -> { "<!DOCTYPE html>" }
+    set :monit_website_check_timeout, -> { 20 }
+    set :monit_website_check_cycles,  -> { 3 }
+    
   end
 end
 
@@ -122,6 +128,16 @@ namespace :monit do
         end
       end
       
+  end
+  
+  
+  desc "Upload Monit website config file (app specific)"
+  task "configure_website" do
+    if Array(fetch(:monit_processes)).include?("website")
+      on release_roles fetch(:nginx_roles, :web) do |role|
+        monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_website.conf", role
+      end
+    end
   end
   
 
