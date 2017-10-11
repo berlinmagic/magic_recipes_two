@@ -60,7 +60,7 @@ set httpd port <%= fetch(:monit_http_port) %>
     allow <%= fetch(:monit_http_username) %>:<%= fetch(:monit_http_password) %>
 <% end %>
 
-check system <%= fetch(:application) %>_server
+check system <%= fetch(:monit_name, "#{ fetch(:application) }_server") %>
     if loadavg(5min) > 2 for 2 cycles then alert
     if memory > 75% for 2 cycles then alert
     if cpu(user) > 75% for 2 cycles then alert

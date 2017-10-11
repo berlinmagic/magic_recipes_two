@@ -14,6 +14,7 @@ namespace :load do
     set :monit_active,                -> { true }
     # set :monit_processes,             -> { %w[nginx postgresql redis sidekiq thin website] }
     set :monit_processes,             -> { %w[nginx postgresql thin website] }
+    set :monit_name,                  -> { "#{ fetch(:application) }_#{ fetch(:stage) }" }
     ## Mailer
     set :monit_mail_server,           -> { "smtp.gmail.com" }
     set :monit_mail_port,             -> { 587 }

@@ -260,6 +260,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_active,                         true
     ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin website
     # => set :monit_processes,                      %w[nginx postgresql thin website]
+    # => set :monit_name,                           "#{ fetch(:application) }_#{ fetch(:stage) }"
     ## Monit System
     # => set :monit_roles,                          :web
     # => set :monit_interval,                       30
