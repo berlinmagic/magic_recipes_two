@@ -49,6 +49,8 @@ namespace :load do
     set :monit_website_check_content, -> { false }
     set :monit_website_check_path,    -> { "/" }
     set :monit_website_check_text,    -> { "<!DOCTYPE html>" }
+    ## M/Monit
+    set :monit_mmonit_url,            -> { false }
     
   end
 end

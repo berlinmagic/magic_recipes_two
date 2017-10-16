@@ -304,6 +304,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_website_check_text,             "<!DOCTYPE html>"
     # => set :monit_website_check_timeout,          20
     # => set :monit_website_check_cycles,           3
+    ## M/Monit
+    # => set :monit_mmonit_url,                     false
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

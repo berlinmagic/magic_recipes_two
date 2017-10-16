@@ -68,4 +68,9 @@ check system <%= fetch(:monit_name, "#{ fetch(:application) }_server") %>
 check device HardDrive with path /
     if SPACE usage > 75% then alert
 
+
+<%= if fetch(:monit_mmonit_url, false) %>
+set mmonit <%= fetch(:monit_mmonit_url, false) %>
+<% end %>
+
 include /etc/monit/conf.d/*

@@ -27,3 +27,12 @@ check host <%= domain %> with address <%= domain %>
     for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
   then alert
 <% end %>
+
+
+### For Version 5.6:
+# check host example.com with address example.com
+#   if failed
+#     url https://example.com
+#     timeout 10 seconds
+#     for 3 cycles 
+#   then alert
