@@ -160,7 +160,7 @@ namespace :nginx do
           if config_file == :default
             magic_template("nginx.conf", '/tmp/nginx.conf')
           else
-            template(config_file, '/tmp/nginx.conf')
+            magic_template(config_file, '/tmp/nginx.conf')
           end
           execute :sudo, :mv, '/tmp/nginx.conf', "#{fetch(:application)}_#{fetch(:stage)}"
         end
