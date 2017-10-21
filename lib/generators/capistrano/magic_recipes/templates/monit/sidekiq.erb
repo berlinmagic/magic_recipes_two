@@ -27,8 +27,8 @@
 %>
 check process <%= sidekiq_service_name(idx) %>
   with pidfile "<%= pid_file %>"
-  start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ;<% if fetch(:monit_sidekiq_with_secret) %> export SECRET_KEY_BASE=<%= fetch(:secrets_key_base) %>; export <%= fetch(:secrets_key_name) %>=<%= fetch(:secrets_key_base) %>;<% end %> bundle exec sidekiq <%= args.join(" ") %>'" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
-  stop program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec sidekiqctl stop <%= pid_file %>' " with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  start program = <%= monit_app_prefixed("sidekiq #{ args.join(" ") }") %> with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  stop program = <%= monit_app_prefixed("sidekiqctl stop #{ pid_file }") %> with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   group sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
   # if does not exist then start # (default)
   # if does not exist for 3 cycles then alert

@@ -23,6 +23,13 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.75:**
+- **Remove useless monit secret-helpers:**
+- `:monit_thin_with_secret`, `:monit_sidekiq_with_secret`
+- **Add App-prefix for monit**
+- `:monit_app_worker_prefix`
+ 
+
 **Version 0.0.70:**
 - **Renamed and combined some stuff:**
 - `:lets_encrypt_renew_hour` **=** `:lets_encrypt_renew_hour1` + `:lets_encrypt_renew_hour2`
@@ -284,12 +291,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :postgresql_roles,                     :db
     # => set :postgresql_pid,                       "/var/run/postgresql/9.1-main.pid"
     ## Additional stuff for thin (need secrets_key_base to be set)
-    # => set :monit_thin_with_secret,               false
     # => set :monit_thin_totalmem_mb,               300
     ## Additional stuff for sidekiq (need secrets_key_base to be set)
-    # => set :monit_sidekiq_with_secret,            false
     # => set :monit_sidekiq_totalmem_mb,            300
     # => set :monit_sidekiq_timeout_sec,            90
+    ## Additional App helpers (for in app processes like: thin, sidekiq)
+    # => set :monit_app_worker_prefix,              "#{ fetch(:rvm_path) }/bin/rvm #{ fetch(:rvm_ruby_version) } do"
+    # => set :monit_app_cmd_captured,               false
+    # => set :monit_app_default_prefix,             "cd #{ current_path } ; bundle exec MONIT_CMD"
+    # i.e.:   worker_prefix = "/bin/su - #{ @role.user } -c 'MONIT_CMD'" # MONIT_CMD gets replaced with current command if :monit_app_cmd_captured
+    # i.e.:   worker_prefix = false  # don't use an prefix
     ## WebClient
     # => set :monit_http_client,                    true
     # => set :monit_http_domain,                    false

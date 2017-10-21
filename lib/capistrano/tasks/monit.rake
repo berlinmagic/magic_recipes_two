@@ -28,12 +28,14 @@ namespace :load do
     set :postgresql_roles,            -> { :db }
     set :postgresql_pid,              -> { "/var/run/postgresql/9.1-main.pid" }
     ## Additional stuff for thin (need secrets_key_base to be set)
-    set :monit_thin_with_secret,      -> { false }
     set :monit_thin_totalmem_mb,      -> { 300 }
     ## Additional stuff for sidekiq (need secrets_key_base to be set)
-    set :monit_sidekiq_with_secret,   -> { false }
     set :monit_sidekiq_totalmem_mb,   -> { 300 }
     set :monit_sidekiq_timeout_sec,   -> { 90 }
+    ## Additional App helpers
+    set :monit_app_worker_prefix,     -> { "cd #{ current_path } ; #{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do bundle exec MONIT_CMD" }
+    set :monit_app_cmd_captured,      -> { false }
+    set :monit_app_default_prefix,    -> { "cd #{ current_path } ; bundle exec MONIT_CMD" }
     ## WebClient
     set :monit_http_client,           -> { true }
     set :monit_http_domain,           -> { false }
@@ -166,6 +168,20 @@ def monit_config( name, destination = nil, role = nil )
   execute :sudo, "mv /tmp/monit_#{name} #{destination}"
   execute :sudo, "chown root #{destination}"
   execute :sudo, "chmod 600 #{destination}"
+end
+
+def monit_app_prefixed( cmd )
+  if fetch(:monit_app_default_prefix, "cd #{ current_path } ; bundle exec MONIT_CMD")
+    fetch(:monit_app_default_prefix).to_s.gsub(/MONIT_CMD/, cmd)
+  end
+  if fetch(:monit_app_cmd_captured, false) && fetch(:monit_app_worker_prefix, false) && fetch(:monit_app_worker_prefix).to_s.strip != ""
+    fetch(:monit_app_worker_prefix).to_s.gsub(/MONIT_CMD/, cmd)
+  else
+    komandos = []
+    komandos << fetch(:monit_app_worker_prefix) if fetch(:monit_app_worker_prefix, false) && fetch(:monit_app_worker_prefix).to_s.strip != ""
+    komandos << cmd
+    komandos.join(" ")
+  end
 end
 
 
