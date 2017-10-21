@@ -26,8 +26,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 **Version 0.0.75:**
 - **Remove useless monit secret-helpers:**
 - `:monit_thin_with_secret`, `:monit_sidekiq_with_secret`
-- **Add App-prefix for monit**
-- `:monit_app_worker_prefix`
+- **Add App-command-wrapper for monit** (i.e. for: thin, sidekiq)
+- `:monit_app_worker_command`
  
 
 **Version 0.0.70:**
@@ -296,11 +296,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_sidekiq_totalmem_mb,            300
     # => set :monit_sidekiq_timeout_sec,            90
     ## Additional App helpers (for in app processes like: thin, sidekiq)
-    # => set :monit_app_worker_prefix,              "#{ fetch(:rvm_path) }/bin/rvm #{ fetch(:rvm_ruby_version) } do"
-    # => set :monit_app_cmd_captured,               false
-    # => set :monit_app_default_prefix,             "cd #{ current_path } ; bundle exec MONIT_CMD"
-    # i.e.:   worker_prefix = "/bin/su - #{ @role.user } -c 'MONIT_CMD'" # MONIT_CMD gets replaced with current command if :monit_app_cmd_captured
-    # i.e.:   worker_prefix = false  # don't use an prefix
+    # => set :monit_app_worker_command,             "cd #{ current_path } ; #{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do bundle exec MONIT_CMD"
+    #   needs to include at least MONIT_CMD, which gets replaced with current command
+    #   ## RVM:
+    #    - "cd #{ current_path } ; #{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do bundle exec MONIT_CMD"
+    #   ## RVM1Caspistrano3:
+    #    - "cd #{ current_path } ; #{fetch(:rvm1_auto_script_path)}/rvm-auto.sh #{fetch(:rvm1_ruby_version)} bundle exec MONIT_CMD"
+    #   ## if all is root
+    #    - "/usr/bin/env cd #{current_path} ; bundle exec MONIT_CMD"
+    #   ## last option (if nothing else helps)
+    #    - "/bin/su - #{@role.user} -c 'cd #{current_path} ; bundle exec MONIT_CMD'"
     ## WebClient
     # => set :monit_http_client,                    true
     # => set :monit_http_domain,                    false

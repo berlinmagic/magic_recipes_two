@@ -2,11 +2,8 @@
 <%  fetch(:app_instances, 1).times do |n| %>
   check process <%= fetch(:application) %>_<%= fetch(:stage) %>_thin_<%= n %> with pidfile <%= deploy_to %>/shared/pids/thin_<%= fetch(:application) %>_<%= fetch(:stage) %>.<%= n %>.pid
     group thin-<%= fetch(:application) %>-<%= fetch(:stage) %>
-    start program = <%= monit_app_prefixed("thin start -C config/thin_app_#{ fetch(:stage) }.yml -o #{ n }") %>
-    stop program = <%= monit_app_prefixed("thin stop -C config/thin_app_#{ fetch(:stage) }.yml -o #{ n }") %>
-    
-    start program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec thin start -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' "
-    stop program = "/bin/su - <%= @role.user %> -c 'cd <%= current_path %> ; bundle exec thin stop -C config/thin_app_<%= fetch(:stage) %>.yml -o <%= n %>' "
+    start program = <%=   monit_app_prefixed("thin start -C config/thin_app_#{ fetch(:stage) }.yml -o #{ n }")    %>
+    stop program = <%=    monit_app_prefixed("thin stop -C config/thin_app_#{ fetch(:stage) }.yml -o #{ n }")     %>
     # if does not exist then start # (default)
     # if does not exist for 3 cycles then alert
     if 3 restarts within 5 cycles then alert
