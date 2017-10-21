@@ -27,8 +27,8 @@
 %>
 check process <%= sidekiq_service_name(idx) %>
   with pidfile "<%= pid_file %>"
-  start program = <%=   monit_app_prefixed("sidekiq #{ args.join(" ") }")     %> with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
-  stop program = <%=    monit_app_prefixed("sidekiqctl stop #{ pid_file }")   %> with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  start program = "<%=   monit_app_prefixed("sidekiq #{ args.join(" ") }")     %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  stop program = "<%=    monit_app_prefixed("sidekiqctl stop #{ pid_file }")   %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   group sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
   # if does not exist then start # (default)
   if totalmem > <%= ( fetch( :monit_sidekiq_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then alert

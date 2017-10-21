@@ -23,12 +23,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
-**Version 0.0.75:**
+**Version 0.0.76:**
 - **Remove useless monit secret-helpers:**
 - `:monit_thin_with_secret`, `:monit_sidekiq_with_secret`
 - **Add App-command-wrapper for monit** (i.e. for: thin, sidekiq)
 - `:monit_app_worker_command`
- 
+  
+
+**Caution**
+- broken Version: **0.0.75**
+  
 
 **Version 0.0.70:**
 - **Renamed and combined some stuff:**
