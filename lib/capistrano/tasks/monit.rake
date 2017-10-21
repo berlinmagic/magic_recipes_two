@@ -4,7 +4,7 @@ include Capistrano::MagicRecipes::BaseHelpers
 namespace :load do
   task :defaults do
     set :monit_roles,                 -> { :web }
-    set :monit_interval,              -> { 30 }
+    set :monit_interval,              -> { 60 }
     set :monit_bin,                   -> { '/usr/bin/monit' }
     ## Monit default:                 '/var/log/monit.log'
     set :monit_logfile,               -> { "#{shared_path}/log/monit.log" }
