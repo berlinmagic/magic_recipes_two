@@ -6,6 +6,7 @@ namespace :load do
     set :lets_encrypt_roles,        -> { :web }
     set :lets_encrypt_path,         -> { "~" }
     set :lets_encrypt_domains,      -> { fetch(:nginx_major_domain,false) ? [fetch(:nginx_major_domain)] + Array(fetch(:nginx_domains)) : Array(fetch(:nginx_domains)) }
+    set :lets_encrypt__www_domains, -> { true }
     set :lets_encrypt_renew_minute, -> { "23" }
     set :lets_encrypt_renew_hour1,  -> { "0" }
     set :lets_encrypt_renew_hour2,  -> { "12" }
@@ -32,7 +33,7 @@ namespace :lets_encrypt do
   task :certonly do
     on release_roles fetch(:lets_encrypt_roles) do
       # execute "./certbot-auto certonly --webroot -w /var/www/example -d example.com -d www.example.com -w /var/www/thing -d thing.is -d m.thing.is"
-      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public #{ Array(fetch(:lets_encrypt_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, "")} -d www.#{d.gsub(/^\*?\./, "")}" }.join(" ") }"
+      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public #{ Array(fetch(:lets_encrypt_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, "")} #{ fetch(:lets_encrypt__www_domains,false) ? " -d www.#{d.gsub(/^\*?\./, "")}" }" : "" }.join(" ") }"
     end
   end
   
