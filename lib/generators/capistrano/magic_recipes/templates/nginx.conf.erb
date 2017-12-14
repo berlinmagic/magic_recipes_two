@@ -17,18 +17,8 @@ upstream thin_<%= fetch(:application) %>_<%= fetch(:stage) %>_cluster {
 <% if fetch(:nginx_major_domain) %>
 server {
   listen                80<%= ' default_server' if fetch(:default_site) %>;
-  server_name           <%= nginx_domains.join(joiner) %>
+  server_name           <%= nginx_domains_with_www.join(joiner) %>
                         <%= nginx_major_domain %>;
-  
-  <%# 
-      ## https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
-      # return 301 https://xxxxx$request_uri;
-      # rewrite ^ http://xxxxx$request_uri? permanent;
-      # location / {
-      #   return 301 https://xxxxx$request_uri;
-      # }
-  #%>
-  
   return 301 https://<%= nginx_major_domain %>$request_uri;
   
 }
@@ -36,23 +26,12 @@ server {
   listen 80;
   server_name           <%= nginx_domains.map{ |d| subdomain_regex(d) }.join(joiner) %>
                         <%= subdomain_regex( nginx_major_domain ) %>;
-  
-  <%#
-      ## https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#taxing-rewrites
-      # return 301 https://$sub.xxxxx$request_uri;
-      # rewrite ^ http://$sub.xxxxx$request_uri? permanent;
-      # location / {
-      #   return 301 https://$sub.xxxxx$request_uri;
-      # }
-  #%>
-  
   return 301 https://$sub.<%= nginx_major_domain %>$request_uri;
-  
 }
 <% else %>
 server {
   listen                80;
-  server_name           <%= nginx_domains.join(joiner) %>;
+  server_name           <%= nginx_domains_with_www.join(joiner) %>;
   return 301 https://$host$request_uri;
 }
 server {
@@ -90,7 +69,7 @@ server {
 <% else %>
 server {
   listen                80;
-  server_name           <%= nginx_domains.join(joiner) %>;
+  server_name           <%= nginx_domains_with_www.join(joiner) %>;
   return 301 http://<%= nginx_major_domain %>$request_uri;
 }
 server {
@@ -115,9 +94,9 @@ server {
   listen                [::]:80<%= ' default deferred' if fetch(:default_site) %>;
 <% end %>
   <% if fetch(:nginx_major_domain) %>
-  server_name           <%= ".#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" %>;
+  server_name           <%= "#{fetch(:nginx_domain_wildcard, false) ? "." : ""}#{fetch(:nginx_major_domain).gsub(/^\*?\./, "")}" %>;
   <% else %>
-  server_name           <%= nginx_domains.join(joiner) %>;
+  server_name           <%= nginx_domains_with_www.join(joiner) %>;
   <% end %>
   
   <%= magic_render("nginx/remove_www") %>

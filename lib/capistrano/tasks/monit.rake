@@ -24,6 +24,7 @@ namespace :load do
     set :monit_mail_to,               -> { "foo@example.com" }
     set :monit_mail_from,             -> { "monit@foo.bar" }
     set :monit_mail_reply_to,         -> { "support@foo.bar" }
+    set :monit_ignore,                -> { [] }  # %w[action pid]
     ## Additional stuff for postrgres
     set :postgresql_roles,            -> { :db }
     set :postgresql_pid,              -> { "/var/run/postgresql/9.1-main.pid" }
@@ -34,6 +35,8 @@ namespace :load do
     set :monit_sidekiq_timeout_sec,   -> { 90 }
     ## Additional App helpers
     set :monit_app_worker_command,    -> { "cd #{ current_path } ; #{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do bundle exec MONIT_CMD" }
+    set :monit_app_worker_role,       -> { :user }  # user / bash / shell
+    set :monit_app_worker_prefix,     -> { :rvm }   # rvm / rvm1capistrano3 / env
     ## WebClient
     set :monit_http_client,           -> { true }
     set :monit_http_domain,           -> { false }
@@ -169,7 +172,28 @@ def monit_config( name, destination = nil, role = nil )
 end
 
 def monit_app_prefixed( cmd )
-  fetch(:monit_app_worker_command, "cd #{ current_path } ; bundle exec MONIT_CMD").to_s.gsub(/MONIT_CMD/, cmd)
+  # fetch(:monit_app_worker_command, "cd #{ current_path } ; bundle exec MONIT_CMD").to_s.gsub(/MONIT_CMD/, cmd)
+  
+  case fetch(:monit_app_worker_role, :user).to_s.downcase.strip
+  when "sh", "shell"
+    komando = "/bin/sh -c 'COMMAND_PREFIX bundle exec MONIT_CMD'"
+  when "bash"
+    komando = "/bin/bash -c 'REAL_COMMAND_HERE'"
+  else
+    komando = "/bin/su - #{role.user} -c 'REAL_COMMAND_HERE'"
+  end
+  
+  case fetch(:monit_app_worker_prefix, :env).to_s.downcase.strip
+  when "rvm"
+    komando.gsub!(/REAL_COMMAND_HERE/, "cd #{ current_path } ; #{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do bundle exec MONIT_CMD")
+  when "rvm1capistrano3", "rvm1capistrano", "rvm1"
+    komando.gsub!(/REAL_COMMAND_HERE/, "cd #{ current_path } ; #{fetch(:rvm1_auto_script_path)}/rvm-auto.sh #{fetch(:rvm1_ruby_version)} bundle exec MONIT_CMD")
+  else
+    komando.gsub!(/REAL_COMMAND_HERE/, "/usr/bin/env cd #{current_path} ; bundle exec MONIT_CMD")
+  end
+  
+  komando.gsub(/MONIT_CMD/, cmd)
+  
 end
 
 

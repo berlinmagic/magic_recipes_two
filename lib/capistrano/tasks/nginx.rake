@@ -6,6 +6,7 @@ namespace :load do
   task :defaults do
     set :nginx_domains,               -> { [] }
     set :nginx_major_domain,          -> { false }
+    set :nginx_domain_wildcard,       -> { false }
     set :nginx_remove_www,            -> { true }
     set :default_site,                -> { false }
     set :app_instances,               -> { 1 }
@@ -145,6 +146,16 @@ namespace :nginx do
   
     def nginx_domains
       Array( fetch(:nginx_domains) ).map{ |d| clear_domain(d) }.uniq
+    end
+    
+    def nginx_domains_with_www
+      domains = []
+      nginx_domains.each do |domain|
+        domains << domain
+        domains << "www.#{domain}"  unless  domain =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/
+        domains << ".#{domain}"     if      fetch(:nginx_domain_wildcard, false)
+      end
+      domains
     end
     
     def nginx_major_domain

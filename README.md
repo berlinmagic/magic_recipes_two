@@ -23,6 +23,9 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.77:**
+- `:monit_ingore` specify events you don't wanna get emails for
+
 **Version 0.0.76:**
 - **Remove useless monit secret-helpers:**
 - `:monit_thin_with_secret`, `:monit_sidekiq_with_secret`
@@ -287,6 +290,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_mail_authentication,            false # SSLAUTO|SSLV2|SSLV3|TLSV1|TLSV11|TLSV12
     # => set :monit_mail_username,                  "foo@example.com"
     # => set :monit_mail_password,                  "secret"
+    # => set :monit_ignore,                         []  # %w[action pid]
     ## Change me!!
     # => set :monit_mail_to,                        "foo@example.com"
     # => set :monit_mail_from,                      "monit@foo.bar"

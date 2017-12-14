@@ -42,7 +42,7 @@ set mailserver <%= fetch(:monit_mail_server) %> port <%= fetch(:monit_mail_port)
     <% end %>
     with timeout 30 seconds
 
-set alert <%= fetch(:monit_mail_to) %>
+set alert <%= fetch(:monit_mail_to) %><%= Array( fetch(:monit_ignore, nil) ).count > 0 ? " but not on { #{ Array( fetch(:monit_ignore, nil) ).join(", ") } }" : "" %>
 
 <% if fetch(:monit_http_client) %>
 set httpd port <%= fetch(:monit_http_port) %>
