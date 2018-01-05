@@ -17,28 +17,33 @@ upstream thin_<%= fetch(:application) %>_<%= fetch(:stage) %>_cluster {
 <% if fetch(:nginx_major_domain) %>
 server {
   listen                80<%= ' default_server' if fetch(:default_site) %>;
-  server_name           <%= nginx_domains_with_www.join(joiner) %>
-                        <%= nginx_major_domain %>;
+  server_name           <%= nginx_all_domains_with_www.join(joiner) %>;
   return 301 https://<%= nginx_major_domain %>$request_uri;
   
 }
+<% if fetch(:nginx_redirect_subdomains, false) %>
+# server with subdomain
 server {
   listen 80;
   server_name           <%= nginx_domains.map{ |d| subdomain_regex(d) }.join(joiner) %>
                         <%= subdomain_regex( nginx_major_domain ) %>;
   return 301 https://$sub.<%= nginx_major_domain %>$request_uri;
 }
+<% end %>
 <% else %>
 server {
   listen                80;
-  server_name           <%= nginx_domains_with_www.join(joiner) %>;
+  server_name           <%= nginx_all_domains_with_www.join(joiner) %>;
   return 301 https://$host$request_uri;
 }
+<% if fetch(:nginx_redirect_subdomains, false) %>
+# server with subdomain
 server {
   listen                80;
   server_name           <%= nginx_domains.map{ |d| subdomain_regex(d) }.join(joiner) %>
   return 301 https://$sub.$host$request_uri;
 }
+<% end %>
 <% end %>
 <% end %>
 
@@ -55,6 +60,7 @@ server {
   
   return 301 https://<%= nginx_major_domain %>$request_uri;
 }
+<% if fetch(:nginx_redirect_subdomains, false) %>
 # ssl-with-subdomain
 server {
   listen                443;
@@ -66,17 +72,20 @@ server {
   
   return 301 https://$sub.<%= nginx_major_domain %>$request_uri;
 }
+<% end %>
 <% else %>
 server {
   listen                80;
   server_name           <%= nginx_domains_with_www.join(joiner) %>;
   return 301 http://<%= nginx_major_domain %>$request_uri;
 }
+<% if fetch(:nginx_redirect_subdomains, false) %>
 server {
   listen                80;
   server_name           <%= nginx_domains.map{ |d| subdomain_regex(d) }.join(joiner) %>;
   return 301 http://$sub.<%= nginx_major_domain %>$request_uri;
 }
+<% end %>
 <% end %>
 <% end %>
 

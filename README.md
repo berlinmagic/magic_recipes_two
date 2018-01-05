@@ -23,6 +23,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.78:**
+- add `:nginx_redirect_subdomains` config, to control nginx redirection
+
+
 **Version 0.0.77:**
 - `:monit_ingore` specify events you don't wanna get emails for
 
@@ -348,6 +352,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :nginx_remove_www,                true             # true | false
     ## how many (thin) server instances 
     # => set :app_instances,                   1                # number >= 1
+    ## use wildcard for domain?
+    # => set :nginx_domain_wildcard,           false
+    ## redirect all subdomains?
+    # => set :nginx_redirect_subdomains,       false
     ## nginx service path
     # => set :nginx_service_path,              'service nginx'
     # => set :nginx_roles,                     :web

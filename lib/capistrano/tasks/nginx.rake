@@ -7,6 +7,7 @@ namespace :load do
     set :nginx_domains,               -> { [] }
     set :nginx_major_domain,          -> { false }
     set :nginx_domain_wildcard,       -> { false }
+    set :nginx_redirect_subdomains,   -> { false }
     set :nginx_remove_www,            -> { true }
     set :default_site,                -> { false }
     set :app_instances,               -> { 1 }
@@ -160,6 +161,21 @@ namespace :nginx do
     
     def nginx_major_domain
       fetch(:nginx_major_domain, false) ? clear_domain( fetch(:nginx_major_domain) ) : false
+    end
+    
+    def nginx_all_domains_with_www
+      domains = []
+      nginx_domains.each do |domain|
+        domains << domain
+        domains << "www.#{domain}"  unless  domain =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/
+        domains << ".#{domain}"     if      fetch(:nginx_domain_wildcard, false)
+      end
+      if nginx_major_domain
+        domains << nginx_major_domain
+        domains << "www.#{nginx_major_domain}"  unless  nginx_major_domain =~ /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/
+        domains << ".#{nginx_major_domain}"     if      fetch(:nginx_domain_wildcard, false)
+      end
+      domains
     end
     
     
