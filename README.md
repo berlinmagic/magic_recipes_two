@@ -23,6 +23,11 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+
+**Version 0.0.80**
+- create diffie hellman path before upload
+
+
 **Version 0.0.79**
 - upload diffie hellman to `:nginx_diffie_hellman_param`
 
