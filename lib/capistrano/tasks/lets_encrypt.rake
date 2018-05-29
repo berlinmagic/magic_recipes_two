@@ -68,7 +68,7 @@ namespace :lets_encrypt do
   desc "Generate Strong Diffie-Hellman Group"
   task :generate_dhparam do
     on release_roles fetch(:lets_encrypt_roles) do
-      execute :sudo, "openssl dhparam -out #{ fetch(:nginx_ssl_dh_path) }/#{ fetch(:nginx_ssl_dh_file) } 2048"
+      execute :sudo, "openssl dhparam -out #{ fetch(:nginx_diffie_hellman_param) } 2048"
     end
   end
   

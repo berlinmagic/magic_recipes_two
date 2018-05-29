@@ -23,6 +23,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### NEWs
 
+**Version 0.0.79**
+- upload diffie hellman to `:nginx_diffie_hellman_param`
+
+
 **Version 0.0.78:**
 - add `:nginx_redirect_subdomains` config, to control nginx redirection
 
