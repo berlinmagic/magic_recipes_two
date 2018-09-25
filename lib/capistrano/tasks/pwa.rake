@@ -14,6 +14,7 @@ namespace :load do
     set :pwa_ssl_domains,     -> { fetch(:pwa_major_domain,false) ? [fetch(:pwa_major_domain)] + Array(fetch(:pwa_domains)) : Array(fetch(:pwa_domains)) }
     set :pwa_is_default_site, -> { false }
     set :pwa_nginx_hooks,     -> { false }
+    set :pwa_nginx_template,  -> { :default }
     
     set :pwa_use_ssl,         -> { false }
     set :pwa_ssl_cert,        -> { "" }
@@ -72,7 +73,7 @@ namespace :nginx do
     task :add => ['nginx:load_pwa_vars'] do
       on release_roles fetch(:nginx_roles) do
         within fetch(:sites_available) do
-          config_file = fetch(:pwa_nginx_template)
+          config_file = fetch(:pwa_nginx_template, :default)
           if config_file == :default
             magic_template("nginx_pwa.conf", '/tmp/nginx_pwa.conf')
           else

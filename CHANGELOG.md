@@ -6,7 +6,7 @@ Our most used recipes for Capistrano-3!
 ### ChangeLog:
 
 
-**Version 0.0.81**
+**Version 0.0.83**
 - add **pwa module** for mobile (spa/pwa) support (nginx + lets_encrypt)
 - add `monit:downgrade` methods (fix action problem)
 - add `lets_encrypt:certonly_expand` to add more domains
@@ -14,6 +14,10 @@ Our most used recipes for Capistrano-3!
 - add `nginx:check_status` to check service status
 - add `nginx:fix_port80` to fix port Problem: 0.0.0.0:80 failed (98: Address already in use)
 - add `nginx:fix_port443` to fix port Problem: 0.0.0.0:443 failed (98: Address already in use)
+
+
+**Caution**
+- broken Versions: **0.0.81 - 0.0.82**
 
 
 **Version 0.0.80**

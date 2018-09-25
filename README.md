@@ -161,7 +161,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_logfile,                        "#{shared_path}/log/monit.log"
     # => set :monit_idfile,                         '/var/lib/monit/id'
     # => set :monit_statefile,                      '/var/lib/monit/state'
-    ## Downgrade to 5.16 on deploy (to fix action problems)
+    ## Downgrade to 5.16 on deploy (to fix action problems):
     # => set :monit_downgrade_on_deploy,            false
     ## Mailer
     # => set :monit_mail_server,                    "smtp.gmail.com"
@@ -310,6 +310,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :pwa_ssl_domains,     fetch(:pwa_major_domain,false) ? [fetch(:pwa_major_domain)] + Array(fetch(:pwa_domains)) : Array(fetch(:pwa_domains))
     # => set :pwa_is_default_site, false
     # => set :pwa_nginx_hooks,     false
+    # => set :pwa_nginx_template,  :default
     ## SSL (lets_encrypt helper)
     # => set :pwa_use_ssl,         false
     # => set :pwa_ssl_cert,        ""
