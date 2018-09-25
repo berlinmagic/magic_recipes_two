@@ -27,7 +27,7 @@ namespace :lets_encrypt do
   desc "Generate PWA LetsEncrypt certificate"
   task :pwa_certonly do
     on release_roles fetch(:lets_encrypt_roles) do
-      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{ fetch(:pwa_root_path) } -d #{ fetch(:pwa_ssl_domains) }"
+      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{ fetch(:pwa_root_path) } #{ Array(fetch(:pwa_ssl_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, '')}"}.join(" ") }"
     end
   end
   

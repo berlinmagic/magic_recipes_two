@@ -6,7 +6,7 @@ Our most used recipes for Capistrano-3!
 ### ChangeLog:
 
 
-**Version 0.0.84**
+**Version 0.0.85**
 - add **pwa module** for mobile (spa/pwa) support (nginx + lets_encrypt)
 - add `monit:downgrade` methods (fix action problem)
 - add `lets_encrypt:certonly_expand` to add more domains
@@ -17,7 +17,7 @@ Our most used recipes for Capistrano-3!
 
 
 **Caution**
-- broken Versions: **0.0.81 - 0.0.83**
+- broken Versions: **0.0.81 - 0.0.84**
 
 
 **Version 0.0.80**
