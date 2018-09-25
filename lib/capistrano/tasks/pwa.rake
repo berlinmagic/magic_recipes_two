@@ -63,8 +63,8 @@ namespace :nginx do
     set :sites_available,           -> { File.join(fetch(:nginx_root_path), fetch(:nginx_sites_available)) }
     set :sites_enabled,             -> { File.join(fetch(:nginx_root_path), fetch(:nginx_sites_enabled)) }
     set :nginx_pwa_application,     -> { "pwa_#{fetch(:pwa_application)}_#{fetch(:stage)}" }
-    set :enabled_pwa_application,   -> { File.join(fetch(:sites_enabled), "#{fetch(:pwa_application)}_#{fetch(:stage)}") }
-    set :available_pwa_application, -> { File.join(fetch(:sites_available), "#{fetch(:pwa_application)}_#{fetch(:stage)}") }
+    set :enabled_pwa_application,   -> { File.join(fetch(:sites_enabled), "#{fetch(:nginx_pwa_application)}") }
+    set :available_pwa_application, -> { File.join(fetch(:sites_available), "#{fetch(:nginx_pwa_application)}") }
   end
   
   namespace :pwa_site do
