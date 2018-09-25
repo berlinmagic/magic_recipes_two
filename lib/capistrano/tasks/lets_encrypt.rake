@@ -89,6 +89,15 @@ namespace :lets_encrypt do
     end
   end
   
+  
+  desc "Generate LetsEncrypt certificate + expand"
+  task :certonly_expand do
+    on release_roles fetch(:lets_encrypt_roles) do
+      # execute "./certbot-auto certonly --webroot -w /var/www/example -d example.com -d www.example.com -w /var/www/thing -d thing.is -d m.thing.is"
+      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public #{ Array(fetch(:lets_encrypt_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, "")}#{ fetch(:lets_encrypt__www_domains,false) ? " -d www.#{d.gsub(/^\*?\./, "")}" : "" }" }.join(" ") } --expand"
+    end
+  end
+  
 end
 
 

@@ -10,6 +10,7 @@ namespace :load do
     set :monit_logfile,               -> { "#{shared_path}/log/monit.log" }
     set :monit_idfile,                -> { '/var/lib/monit/id' }
     set :monit_statefile,             -> { '/var/lib/monit/state' }
+    set :monit_downgrade_on_deploy,   -> { false }
     ## Status
     set :monit_active,                -> { true }
     # set :monit_processes,             -> { %w[nginx postgresql redis sidekiq thin website] }
@@ -87,6 +88,12 @@ namespace :monit do
   end
   # after "deploy:setup", "monit:setup"
   
+  desc 'Downgrade MONIT to 5.16 (fix action problem)'
+  task :downgrade_system do
+    on roles :db do
+      execute :sudo, 'apt-get -y install monit=1:5.16-2 --allow-downgrades'
+    end
+  end
   
   %w[nginx postgresql redis sidekiq thin].each do |process|
       
@@ -199,6 +206,7 @@ end
 
 namespace :deploy do
   before :starting, :stop_monitoring do
+    invoke "monit:downgrade_system" if fetch(:monit_downgrade_on_deploy, false)
     %w[sidekiq thin].each do |command|
       if fetch(:monit_active) && Array(fetch(:monit_processes)).include?(command)
         invoke "monit:unmonitor_#{command}"

@@ -122,6 +122,37 @@ namespace :nginx do
       puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
     end
   end
+  
+  
+  desc "check nginx service status"
+  task :check_status do
+    on release_roles fetch(:nginx_roles) do
+      output = capture(:sudo, "systemctl status nginx.service")
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+      output.each_line do |line|
+          puts line
+      end
+      puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+    end
+  end
+  
+  
+  #
+  # Fix restart problems with nginx
+  # https://easyengine.io/tutorials/nginx/troubleshooting/emerg-bind-failed-98-address-already-in-use/
+  #
+  desc "fix port Problem: 0.0.0.0:80 failed (98: Address already in use)"
+  task :fix_port80 do
+    on release_roles fetch(:nginx_roles) do
+      execute :sudo, 'fuser -k 80/tcp'
+    end
+  end
+  desc "fix ssl port Problem: 0.0.0.0:443 failed (98: Address already in use)"
+  task :fix_port443 do
+    on release_roles fetch(:nginx_roles) do
+      execute :sudo, 'fuser -k 443/tcp'
+    end
+  end
 
   after 'deploy:check', nil do
     on release_roles fetch(:nginx_roles) do
