@@ -3,7 +3,8 @@
 <% if fetch(:pwa_major_domain, false) %>
 server {
   listen                80<%= ' default_server' if fetch(:pwa_is_default_site) %>;
-  server_name           <%= Array(fetch(:pwa_domains)).join(joiner) %>;
+  server_name           <%= fetch(:pwa_major_domain)  %>
+                        <%= Array(fetch(:pwa_domains)).join(joiner) %>;
   return 301 https://<%= fetch(:pwa_major_domain)  %>$request_uri;
   
 }
