@@ -6,6 +6,10 @@ Our most used recipes for Capistrano-3!
 ### ChangeLog:
 
 
+**Version 0.0.88**
+- fixed pwa nginx conf
+
+
 **Version 0.0.85**
 - add **pwa module** for mobile (spa/pwa) support (nginx + lets_encrypt)
 - add `monit:downgrade` methods (fix action problem)
