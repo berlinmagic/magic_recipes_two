@@ -47,6 +47,13 @@ namespace :load do
     set :monit_http_pemfile,          -> { "/etc/monit/monit.pem" }
     set :monit_http_username,         -> { "admin" }
     set :monit_http_password,         -> { "monitor" }
+    # use a subdomain for monit?
+    set :monit_webclient,             -> { false }
+    set :monit_webclient_domain,      -> { false }
+    set :monit_webclient_use_ssl,     -> { false }
+    set :monit_webclient_ssl_cert,    -> { false }
+    set :monit_webclient_ssl_key,     -> { false }
+    set :monit_nginx_template,        -> { :default }
     ## Website
     set :monit_website_check_timeout, -> { 10 }
     set :monit_website_check_cycles,  -> { 3 }
@@ -81,6 +88,10 @@ namespace :monit do
       # invoke "monit:configure_website"
       %w[nginx postgresql redis sidekiq thin website].each do |command|
         invoke "monit:configure_#{command}" if Array(fetch(:monit_processes)).include?(command)
+      end
+      if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
+        invoke "nginx:monit:add"
+        invoke "nginx:monit:enable"
       end
     end
     invoke "monit:syntax"
@@ -206,6 +217,62 @@ def monit_app_prefixed( cmd )
 end
 
 
+
+namespace :nginx do
+  namespace :monit do
+    
+    desc 'Creates MONIT WebClient configuration and upload it to the available folder'
+    task :add => ['nginx:load_vars'] do
+      on release_roles fetch(:nginx_roles) do
+        within fetch(:sites_available) do
+          config_file = fetch(:monit_nginx_template, :default)
+          if config_file == :default
+            magic_template("nginx_monit.conf", '/tmp/nginx_monit.conf')
+          else
+            magic_template(config_file, '/tmp/nginx_monit.conf')
+          end
+          execute :sudo, :mv, '/tmp/nginx_monit.conf', "monit_webclient"
+        end
+      end
+    end
+    
+    desc 'Enables MONIT WebClient creating a symbolic link into the enabled folder'
+    task :enable => ['nginx:load_vars'] do
+      on release_roles fetch(:nginx_roles) do
+        if test "! [ -h #{ File.join(fetch(:sites_enabled), "monit_webclient") } ]"
+          within fetch(:sites_enabled) do
+            execute :sudo, :ln, '-nfs', File.join(fetch(:sites_available), "monit_webclient"), "monit_webclient"
+          end
+        end
+      end
+    end
+
+    desc 'Disables MONIT WebClient removing the symbolic link located in the enabled folder'
+    task :disable => ['nginx:load_vars'] do
+      on release_roles fetch(:nginx_roles) do
+        if test "[ -f #{ File.join(fetch(:sites_enabled), "monit_webclient") } ]"
+          within fetch(:sites_enabled) do
+            execute :sudo, :rm, '-f', "monit_webclient"
+          end
+        end
+      end
+    end
+    
+  end
+end
+
+namespace :lets_encrypt do
+  
+  desc "Generate MONIT-WebClient LetsEncrypt certificate"
+  task :monit_certonly do
+    on release_roles fetch(:lets_encrypt_roles) do
+      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public -d #{ fetch(:monit_webclient_domain).gsub(/^\*?\./, '') }"
+    end
+  end
+  
+end
+
+
 namespace :deploy do
   before :starting, :stop_monitoring do
     invoke "monit:downgrade_system" if fetch(:monit_downgrade_on_deploy, false)
@@ -218,6 +285,12 @@ namespace :deploy do
   # after :finished, :setup_monit_configs do
   #   invoke "monit:setup" if fetch(:monit_active)
   # end
+  before :restart_nginx_app, :add_monit_webclient do
+    if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
+      invoke "nginx:monit:add"
+      invoke "nginx:monit:enable"
+    end
+  end
   after :finished, :restart_monitoring do
     %w[sidekiq thin].each do |command|
       if fetch(:monit_active) && Array(fetch(:monit_processes)).include?(command)
