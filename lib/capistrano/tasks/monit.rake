@@ -285,7 +285,7 @@ namespace :deploy do
   # after :finished, :setup_monit_configs do
   #   invoke "monit:setup" if fetch(:monit_active)
   # end
-  before :restart_nginx_app, :add_monit_webclient do
+  before 'deploy:finishing', :add_monit_webclient do
     if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
       invoke "nginx:monit:add"
       invoke "nginx:monit:enable"
