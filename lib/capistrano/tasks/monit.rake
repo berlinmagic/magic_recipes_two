@@ -187,7 +187,9 @@ def monit_app_prefixed( cmd )
   when "bash"
     komando = "/bin/bash -c 'REAL_COMMAND_HERE'"
   else
-    komando = "/bin/su - #{role.user} -c 'REAL_COMMAND_HERE'"
+    # komando = "/bin/su - #{role.user} -c 'REAL_COMMAND_HERE'"
+    komando = "/bin/su - #{fetch(:user)} -c 'REAL_COMMAND_HERE'"
+    
   end
   
   case fetch(:monit_app_worker_prefix, :env).to_s.downcase.strip
