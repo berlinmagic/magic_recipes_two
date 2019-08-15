@@ -13,6 +13,7 @@ namespace :load do
     set :monit_downgrade_on_deploy,   -> { false }
     ## Status
     set :monit_active,                -> { true }
+    set :monit_main_rc,               -> { true }
     # set :monit_processes,             -> { %w[nginx postgresql redis sidekiq thin website] }
     set :monit_processes,             -> { %w[nginx postgresql thin website] }
     set :monit_name,                  -> { "#{ fetch(:application) }_#{ fetch(:stage) }" }
@@ -63,6 +64,16 @@ namespace :load do
     ## M/Monit
     set :monit_mmonit_url,            -> { false }
     
+    ## PM2 - JS - App
+    set :monit_pm2_app_name,          -> { "app" }
+    set :monit_pm2_app_instances,     -> { 1 }
+    set :monit_pm2_app_path,          -> { "~/pm2_app" }
+    set :monit_pm2_pid_path,          -> { "~/.pm2/pids" }
+    set :monit_pm2_start_script,      -> { "ecosystem.config.js" }
+    set :monit_pm2_stage,             -> { "production" }
+    set :monit_pm2_website,           -> { "example.com" }
+    set :monit_pm2_website_ssl,       -> { false }
+    
   end
 end
 
@@ -79,14 +90,16 @@ namespace :monit do
   desc "Setup all Monit configuration"
   task :setup do
     on release_roles fetch(:monit_roles) do
-      monit_config "monitrc", "/etc/monit/monitrc"
+      if fetch(:monit_main_rc, false)
+        monit_config "monitrc", "/etc/monit/monitrc"
+      end
       # invoke "monit:nginx"
       # invoke "monit:postgresql"
       # invoke "monit:sidekiq"
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx postgresql redis sidekiq thin website].each do |command|
+      %w[nginx pm2 postgresql redis sidekiq thin website].each do |command|
         invoke "monit:configure_#{command}" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
@@ -106,7 +119,7 @@ namespace :monit do
     end
   end
   
-  %w[nginx postgresql redis sidekiq thin].each do |process|
+  %w[nginx pm2 postgresql redis sidekiq thin].each do |process|
       
       %w[monitor unmonitor start stop restart].each do |command|
         desc "#{command} monit-service for: #{process}"
@@ -140,7 +153,7 @@ namespace :monit do
             end
           end
         end
-      elsif %w[sidekiq thin].include?(process)
+      elsif %w[pm2 sidekiq thin].include?(process)
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
         task "configure_#{process}" do

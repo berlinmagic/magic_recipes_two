@@ -150,6 +150,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     
     ## Status (monit is running or not .. activate monit hooks in deploy chain)
     # => set :monit_active,                         true
+    ## Main-Instance (write monitrc?)
+    # => set :monit_main_rc,                        true
     ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin website
     # => set :monit_processes,                      %w[nginx postgresql thin website]
     # => set :monit_name,                           "#{ fetch(:application) }_#{ fetch(:stage) }"
