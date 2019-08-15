@@ -138,6 +138,10 @@ namespace :monit do
                 fetch(:app_instances).times do |idx|
                   sudo "#{fetch(:monit_bin)} #{command} #{fetch(:application)}_#{fetch(:stage)}_thin_#{idx}"
                 end
+              elsif process == "pm2"
+                fetch(:monit_pm2_app_instances).times do |idx|
+                  sudo "#{fetch(:monit_bin)} #{command} #{fetch(:application)}_#{fetch(:stage)}_pm2_#{idx}"
+                end
               else
                 sudo "#{fetch(:monit_bin)} #{command} #{process}"
               end
