@@ -2,16 +2,16 @@
 <%  fetch(:monit_pm2_app_instances, 1).times do |n| %>
   check process <%= fetch(:application) %>_<%= fetch(:stage) %>_pm2_<%= n %> with pidfile <%= fetch(:monit_pm2_pid_path) %>/<%= fetch(:monit_pm2_app_name) %>-<%= n %>.pid
     group pm2-<%= fetch(:application) %>-<%= fetch(:stage) %>
-    start program = "cd <%= fetch(:monit_pm2_app_path) %> ; pm2 restart <%= fetch(:monit_pm2_start_script) %> --env <%= fetch(:monit_pm2_stage) %>"
-    stop program = "cd <%= fetch(:monit_pm2_app_path) %> ; pm2 stop <%= fetch(:monit_pm2_start_script) %> --env <%= fetch(:monit_pm2_stage) %>"
+    start program = "<%= monit_pm2_prefixed("pm2 restart #{fetch(:monit_pm2_start_script)} --env #{fetch(:monit_pm2_stage)}") %>"
+    stop program = "<%= monit_pm2_prefixed("pm2 stop #{fetch(:monit_pm2_start_script)} --env #{fetch(:monit_pm2_stage)}") %>"
     # if does not exist then start # (default)
     if does not exist for 3 cycles then alert
-    if 3 restarts within 10 cycles then alert
-    if cpu > 50% then alert
-    if cpu > 50% for 3 cycles then restart
-    if 5 restarts within 15 cycles then timeout
+    # if 3 restarts within 10 cycles then alert
+    # if cpu > 50% then alert
+    # if cpu > 50% for 3 cycles then restart
+    # if 5 restarts within 15 cycles then timeout
     # alert <%= fetch(:monit_mail_to) %> only on { pid }
-    if changed pid 3 times within 20 cycles then alert
+    if changed pid 3 times within 10 cycles then alert
 <% end %>
 
 
@@ -28,5 +28,5 @@ check host <%= fetch(:monit_pm2_website) %> with address <%= fetch(:monit_pm2_we
     protocol http
   <% end %>
     # status = 200
-    with timeout 30 seconds for 5 cycles 
+    with timeout 13 seconds for 5 cycles 
   then alert

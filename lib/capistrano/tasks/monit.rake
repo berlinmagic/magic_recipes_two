@@ -74,6 +74,8 @@ namespace :load do
     set :monit_pm2_website,           -> { "example.com" }
     set :monit_pm2_website_ssl,       -> { false }
     set :pm2_roles,                   -> { :web }
+    set :monit_pm2_worker_role,       -> { :user }
+    
     
   end
 end
@@ -203,19 +205,20 @@ def monit_config( name, destination = nil, role = nil )
   execute :sudo, "chmod 600 #{destination}"
 end
 
+def monit_role_prefix( role )
+  case role.to_s.downcase.strip
+  when "sh", "shell"
+    "/bin/sh -c 'REAL_COMMAND_HERE'"
+  when "bash"
+    "/bin/bash -c 'REAL_COMMAND_HERE'"
+  else
+    "/bin/su - #{fetch(:user)} -c 'REAL_COMMAND_HERE'"
+  end
+end
+
 def monit_app_prefixed( cmd )
   # fetch(:monit_app_worker_command, "cd #{ current_path } ; bundle exec MONIT_CMD").to_s.gsub(/MONIT_CMD/, cmd)
-  
-  case fetch(:monit_app_worker_role, :user).to_s.downcase.strip
-  when "sh", "shell"
-    komando = "/bin/sh -c 'COMMAND_PREFIX bundle exec MONIT_CMD'"
-  when "bash"
-    komando = "/bin/bash -c 'REAL_COMMAND_HERE'"
-  else
-    # komando = "/bin/su - #{role.user} -c 'REAL_COMMAND_HERE'"
-    komando = "/bin/su - #{fetch(:user)} -c 'REAL_COMMAND_HERE'"
-    
-  end
+  komando = monit_role_prefix( fetch(:monit_app_worker_role, :user) )
   
   case fetch(:monit_app_worker_prefix, :env).to_s.downcase.strip
   when "rvm"
@@ -227,7 +230,13 @@ def monit_app_prefixed( cmd )
   end
   
   komando.gsub(/MONIT_CMD/, cmd)
-  
+end
+
+def monit_pm2_prefixed( cmd )
+  # fetch(:monit_app_worker_command, "cd #{ current_path } ; bundle exec MONIT_CMD").to_s.gsub(/MONIT_CMD/, cmd)
+  komando = monit_role_prefix( fetch(:monit_pm2_worker_role, :user) )
+  komando.gsub!(/REAL_COMMAND_HERE/, "cd #{fetch(:monit_pm2_app_path)} ; #{fetch(:monit_pm2_worker_prefix, '')} MONIT_CMD")
+  komando.gsub(/MONIT_CMD/, cmd)
 end
 
 
