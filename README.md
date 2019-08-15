@@ -212,6 +212,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_website_check_cycles,           3
     ## M/Monit
     # => set :monit_mmonit_url,                     false
+    ## PM2 - JS - App
+    # set :monit_pm2_app_name,                      "app"
+    # set :monit_pm2_app_instances,                 1
+    # set :monit_pm2_app_path,                      "/home/#{fetch(:user)}/pm2_app"
+    # set :monit_pm2_pid_path,                      "/home/#{fetch(:user)}/.pm2/pids"
+    # set :monit_pm2_start_script,                  "ecosystem.config.js"
+    # set :monit_pm2_stage,                         "production"
+    # set :monit_pm2_website,                       "example.com"
+    # set :monit_pm2_website_ssl,                   false
+    # set :pm2_roles,                               :web
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

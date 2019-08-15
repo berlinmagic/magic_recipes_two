@@ -17,7 +17,7 @@
 
 
 # Check website for pm2: <%= fetch(:application) %> [<%= fetch(:stage) %>]
-check host <%= fetch(:nginx_use_ssl) %> with address <%= fetch(:nginx_use_ssl) %>
+check host <%= fetch(:monit_pm2_website) %> with address <%= fetch(:monit_pm2_website) %>
   if failed 
   <% if fetch(:monit_pm2_website_ssl) %>
     port 443
