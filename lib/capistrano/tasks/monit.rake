@@ -103,7 +103,7 @@ namespace :monit do
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx pm2 postgresql redis sidekiq thin website].each do |command|
+      %w[nginx pm2 postgresql pwa redis sidekiq thin website].each do |command|
         invoke "monit:configure_#{command}" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
@@ -175,15 +175,20 @@ namespace :monit do
       
   end
   
-  
-  desc "Upload Monit website config file (app specific)"
-  task "configure_website" do
-    if Array(fetch(:monit_processes)).include?("website")
-      on release_roles fetch(:nginx_roles, :web) do |role|
-        monit_config "website", "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_website.conf", role
+  %w[pwa website].each do |process|
+    
+    desc "Upload Monit #{process} config file (app specific)"
+    task "configure_#{process}" do
+      if Array(fetch(:monit_processes)).include?(process)
+        on release_roles fetch("#{process == "website" ? 'nginx' : process}_roles".to_sym, :web) do |role|
+          monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
+        end
       end
     end
+    
   end
+  
+  
   
 
   %w[start stop restart syntax reload].each do |command|

@@ -6,7 +6,7 @@ Our most used recipes for Capistrano-3!
 ### ChangeLog:
 
 
-**Version 0.0.89**
+**Version 0.0.90**
 - add *pm2* to monit .. so you can check pm2 process and website
 - add *pwa* website check to monit
 
