@@ -152,7 +152,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_active,                         true
     ## Main-Instance (write monitrc?)
     # => set :monit_main_rc,                        true
-    ## Monit-Processes (what should be monitored) = nginx postgresql redis sidekiq thin website
+    ## Monit-Processes (what should be monitored) = nginx pm2 postgresql pwa redis sidekiq thin website
     # => set :monit_processes,                      %w[nginx postgresql thin website]
     # => set :monit_name,                           "#{ fetch(:application) }_#{ fetch(:stage) }"
     ## Monit System
@@ -222,6 +222,9 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # set :monit_pm2_website,                       "example.com"
     # set :monit_pm2_website_ssl,                   false
     # set :pm2_roles,                               :web
+    # set :monit_pm2_worker_role,                   :user
+    ## if prefix for monit command is needed .. ie: "[ -s \"$HOME/.nvm/nvm.sh\" ] && \. \"$HOME/.nvm/nvm.sh\" ; nvm use 9.9.0 ; "
+    # set :monit_pm2_worker_prefix,                 ""
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

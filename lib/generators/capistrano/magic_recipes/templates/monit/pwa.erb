@@ -1,0 +1,23 @@
+<% if fetch(:pwa_major_domain, false) %>
+  <% domain_list = [fetch(:pwa_major_domain, "").to_s.gsub(/^\*?\./, "")] %>
+<% else %>
+  <% domain_list = [] %>
+  <% Array(fetch(:pwa_domains)).each do |domain| %>
+    <% domain_list << domain.gsub(/^\*?\./, "") %>
+  <% end %>
+<% end %>
+# Check PWA domains for <%= fetch(:application) %> [<%= fetch(:stage) %>]
+<% domain_list.uniq.each do |domain| %>
+check host <%= domain %> with address <%= domain %>
+  if failed 
+  <% if fetch(:pwa_use_ssl) %>
+    port 443
+    type TCPSSL
+    protocol https
+  <% else %>
+    port 80
+    protocol http
+  <% end %>
+    with timeout 13 seconds for 5 cycles 
+  then alert
+<% end %>

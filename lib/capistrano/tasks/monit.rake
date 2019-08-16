@@ -14,7 +14,7 @@ namespace :load do
     ## Status
     set :monit_active,                -> { true }
     set :monit_main_rc,               -> { true }
-    # set :monit_processes,             -> { %w[nginx postgresql redis sidekiq thin website] }
+    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website] }
     set :monit_processes,             -> { %w[nginx postgresql thin website] }
     set :monit_name,                  -> { "#{ fetch(:application) }_#{ fetch(:stage) }" }
     ## Mailer
@@ -75,6 +75,7 @@ namespace :load do
     set :monit_pm2_website_ssl,       -> { false }
     set :pm2_roles,                   -> { :web }
     set :monit_pm2_worker_role,       -> { :user }
+    set :monit_pm2_worker_prefix,     -> { "" }
     
     
   end
@@ -160,7 +161,7 @@ namespace :monit do
             end
           end
         end
-      elsif %w[pm2 sidekiq thin].include?(process)
+      elsif %w[pm2 pwa sidekiq thin].include?(process)
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
         task "configure_#{process}" do
