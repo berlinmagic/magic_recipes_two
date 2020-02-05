@@ -15,6 +15,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - **monit** control monit with monit-webinterface
 - **monit_sidekiq** monit tasks for sidekiq (unused!!)
 - **nginx** control nginx with several instances and ssl
+- **redirect_page** a page that redirects to new domain after 10 sec. info old-page -> new-page
 - **redis** control redis
 - **secrets** handling of rails 4 secrets
 - **sidekiq** control sidekiq
@@ -64,6 +65,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/nginx'
     # => require 'capistrano/magic_recipes/pwa'
     # => require 'capistrano/magic_recipes/redis'
+    # => require 'capistrano/magic_recipes/redirect_page'
     # => require 'capistrano/magic_recipes/secrets'
     # => require 'capistrano/magic_recipes/sidekiq'
     # => require 'capistrano/magic_recipes/thin'
@@ -373,6 +375,26 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => redirect_page
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :redirect_page_active,        false  # auto-include on each deploy ?
+    # => set :redirect_old_domains,        []     # list of old sites to redirect (ie:  ['test.com', 'try.com'])
+    # => set :redirect_old_ssl_domains,    []     # which old_sites have ssl (ie:  ['test.com'])
+    # => set :redirect_new_domain,         ''     # domain of new page (ie:  https://example.com)
+    # => set :redirect_new_name,           ''     # name of new page (ie:  example.com)
+    # => set :redirect_ssl_cert,           ''     # path to cert for all old_ssl_domains
+    # => set :redirect_ssl_key,            ''     # path to key for all old_ssl_domains
+    ## deeper configs
+    # => set :redirect_roles,              :app
+    # => set :redirect_index_path,         "redirector"
+    # => set :redirect_index_parent,       "#{ shared_path }"
+    # => set :redirect_index_template,     :default
+    # => set :redirect_nginx_template,     :default
+    # => set :redirect_conf_name,          "redirector_#{fetch(:application)}_#{fetch(:stage)}"
+    
+    
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 ## => redis
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     
@@ -429,6 +451,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :sidekiq_timeout,         10
     # => set :sidekiq_roles,           :app
     # => set :sidekiq_processes,       1
+    # => set :sidekiq_concurrency,     3      # how many threads to spawn
     ## If needed, you can set special queues and configure it seperately .. options:
     ##    - queue:      string    # => queue-name       (default: "default")
     ##    - processes:  integer   # => number processes (default: 1)

@@ -1,0 +1,34 @@
+# Redirect - Page
+server {
+  listen                80;
+  server_name           <%= Array(fetch(:redirect_old_domains)).join(joiner) %>;
+  
+  root                  <%= "#{ fetch(:redirect_index_parent, shared_path) }/#{ fetch(:redirect_index_path, 'redirector') }" %>;
+  
+  # SPA-routing
+  location / {
+  	try_files /index.html;
+  }
+  
+}
+
+
+<% if Array(fetch(:redirect_old_ssl_domains, [])).any? %>
+server {
+  listen                443 ssl http2;
+  ssl                   on;
+  ssl_certificate       <%= fetch(:redirect_ssl_cert) %>;
+  ssl_certificate_key   <%= fetch(:redirect_ssl_key) %>;
+  <%= magic_render("nginx/diffie_hellman") %>
+  
+  server_name           <%= Array(fetch(:redirect_old_ssl_domains)).join(joiner) %>;
+  
+  root                  <%= "#{ fetch(:redirect_index_parent, shared_path) }/#{ fetch(:redirect_index_path, 'redirector') }" %>;
+  
+  # SPA-routing
+  location / {
+  	try_files /index.html;
+  }
+  
+}
+<% end %>

@@ -210,6 +210,7 @@ namespace :nginx do
     end
     
     
+    
     desc 'Creates the site configuration and upload it to the available folder'
     task :add => ['nginx:load_vars'] do
       on release_roles fetch(:nginx_roles) do
@@ -257,6 +258,8 @@ namespace :nginx do
         end
       end
     end
+    
+    
   end
 end
 
