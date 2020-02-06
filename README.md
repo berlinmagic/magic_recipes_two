@@ -130,10 +130,6 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # Array without www.domains "www" will be auto-added! .. First domain is main one!
     # => set :lets_encrypt_domains,       fetch(:nginx_major_domain,false) ? [fetch(:nginx_major_domain)] + Array(fetch(:nginx_domains)) : Array(fetch(:nginx_domains))
     # => set :lets_encrypt__www_domains,  true # also encrypt www. domains
-    # => set :lets_encrypt_renew_minute,  "23"        # 0-59
-    # => set :lets_encrypt_renew_hour1,   "0"         # 0-11
-    # => set :lets_encrypt_renew_hour2,   "12"        # 12-23
-    # => set :lets_encrypt_renew_hour,    "#{fetch(:lets_encrypt_renew_hour1)},#{fetch(:lets_encrypt_renew_hour2)}"
     # => set :lets_encrypt_cron_log,      "#{shared_path}/log/lets_encrypt_cron.log"
     # => set :lets_encrypt_email,         "admin@example.com"
     
