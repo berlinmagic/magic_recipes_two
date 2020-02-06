@@ -5,6 +5,14 @@ server {
   
   root                  <%= "#{ fetch(:redirect_index_parent, shared_path) }/#{ fetch(:redirect_index_path, 'redirector') }" %>;
   
+  # location ~ /.well-known { allow all; }
+  
+  # lets-encrypt path
+  location ~ /.well-known {
+    allow         all;
+    root          <%= current_path %>/public;
+  }
+  
   # SPA-routing
   location / {
   	try_files /index.html;
@@ -24,6 +32,14 @@ server {
   server_name           <%= Array(fetch(:redirect_old_ssl_domains)).join(joiner) %>;
   
   root                  <%= "#{ fetch(:redirect_index_parent, shared_path) }/#{ fetch(:redirect_index_path, 'redirector') }" %>;
+  
+  # location ~ /.well-known { allow all; }
+  
+  # lets-encrypt path
+  location ~ /.well-known {
+    allow         all;
+    root          <%= current_path %>/public;
+  }
   
   # SPA-routing
   location / {

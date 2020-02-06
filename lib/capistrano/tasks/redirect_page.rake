@@ -85,14 +85,34 @@ namespace :redirect_page do
   end
   
   
+  desc 'upload redirect-page and activate nginx config'
+  task :upload_and_enable do
+    invoke "redirect_page:upload"
+    invoke "redirect_page:add"
+    invoke "redirect_page:enable"
+  end
+  
+  namespace :lets_encrypt do
+  
+    desc "Generate MONIT-WebClient LetsEncrypt certificate"
+    task :certonly do
+      on release_roles fetch(:lets_encrypt_roles) do
+        execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --allow-subset-of-names --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public #{ Array(fetch(:redirect_old_ssl_domains)).map{ |d| "-d #{d.gsub(/^\*?\./, "")} -d www.#{d.gsub(/^\*?\./, "")}" }.join(" ") }"
+      end
+    end
+  
+  end
+  
 end
+
+
+
+
 
 namespace :deploy do
   after :finishing, :include_redirect_page do
     if fetch(:redirect_page_active, false)
-      invoke "redirect_page:upload"
-      invoke "redirect_page:add"
-      invoke "redirect_page:enable"
+      invoke "redirect_page:upload_and_enable"
     end
   end
 end
