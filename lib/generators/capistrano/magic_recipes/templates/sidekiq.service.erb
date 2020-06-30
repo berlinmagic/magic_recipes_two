@@ -56,8 +56,8 @@ ExecStart=/usr/local/bin/bundle exec sidekiq <%= @side_kiq_args %>
 # Use `systemctl kill -s TSTP <%= @service_file %>` to quiet the Sidekiq process
 
 # !!! Change this to your deploy user account !!!
-User=<%= @role.user %>
-Group=<%= @role.user %>
+User=<%= fetch(:sidekiq_six_user) %>
+Group=<%= fetch(:sidekiq_six_user) %>
 UMask=0002
 
 # Greatly reduce Ruby memory fragmentation and heap usage
