@@ -130,7 +130,7 @@ namespace :sidekiq_six do
   end
   
   %w[start stop restart enable disable is-enabled].each do |cmnd|
-    desc "#{command.capitalize} sidekiq6 service"
+    desc "#{cmnd.capitalize} sidekiq6 service"
     task cmnd.gsub(/-/, '_') do
       on roles fetch(:sidekiq_six_roles) do
         for_each_process do |service_file, idx|
