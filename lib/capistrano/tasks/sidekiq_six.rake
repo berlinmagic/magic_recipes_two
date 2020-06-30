@@ -139,7 +139,7 @@ namespace :sidekiq_six do
     task cmnd.gsub(/-/, '_') do
       on roles fetch(:sidekiq_six_roles) do
         for_each_process do |service_file, idx|
-          execute :systemctl, cmnd, service_file
+          execute :sudo, :systemctl, cmnd, service_file
         end
       end
     end
@@ -149,7 +149,7 @@ namespace :sidekiq_six do
   task :quiet do
     on roles fetch(:sidekiq_six_roles) do
       for_each_process do |service_file, idx|
-        execute :systemctl, 'kill -s TSTP', service_file
+        execute :sudo, :systemctl, 'kill -s TSTP', service_file
       end
     end
   end
