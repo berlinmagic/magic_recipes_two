@@ -4,16 +4,16 @@
 # Customize this file based on your bundler location, app directory, etc.
 # Customize and copy this into /usr/lib/systemd/system (CentOS) or /lib/systemd/system (Ubuntu).
 # Then run:
-#   - systemctl enable <%= deamon_file %>
-#   - systemctl {start,stop,restart} <%= deamon_file %>
+#   - systemctl enable <%= service_file %>
+#   - systemctl {start,stop,restart} <%= service_file %>
 #
 # This file corresponds to a single Sidekiq process.  Add multiple copies
 # to run multiple processes (sidekiq-1, sidekiq-2, etc).
 #
-# Use `journalctl -u <%= deamon_file %> -rn 100` to view the last 100 lines of log output.
+# Use `journalctl -u <%= service_file %> -rn 100` to view the last 100 lines of log output.
 #
 [Unit]
-Description=<%= deamon_file %>
+Description=<%= service_file %>
 # start us only once the network and logging subsystems are available,
 # consider adding redis-server.service if Redis is local and systemd-managed.
 After=syslog.target network.target
@@ -53,7 +53,7 @@ ExecStart=/usr/local/bin/bundle exec sidekiq <%= side_kiq_args %>
 <% end %>
 
 
-# Use `systemctl kill -s TSTP <%= deamon_file %>` to quiet the Sidekiq process
+# Use `systemctl kill -s TSTP <%= service_file %>` to quiet the Sidekiq process
 
 # !!! Change this to your deploy user account !!!
 User=<%= @role.user %>
@@ -73,7 +73,7 @@ StandardOutput=syslog
 StandardError=syslog
 
 # This will default to "bundler" if we don't specify it
-SyslogIdentifier=<%= deamon_file %>
+SyslogIdentifier=<%= service_file %>
 
 [Install]
 WantedBy=multi-user.target
