@@ -134,7 +134,7 @@ namespace :sidekiq_six do
     task cmnd.gsub(/-/, '_') do
       on roles fetch(:sidekiq_six_roles) do
         for_each_process do |service_file, idx|
-          execute :systemctl, command, service_file
+          execute :systemctl, cmnd, service_file
         end
       end
     end
