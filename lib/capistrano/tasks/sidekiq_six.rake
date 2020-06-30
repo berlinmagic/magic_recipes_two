@@ -107,6 +107,9 @@ namespace :sidekiq_six do
 
     side_kiq_args = args.compact.join(' ')
     
+    @service_file   = service_file
+    @side_kiq_args  = side_kiq_args
+    
     if fetch(:sidekiq_six_deamon_template, :default) == :default
       magic_template("sidekiq.service", '/tmp/sidekiq.service')
     else
