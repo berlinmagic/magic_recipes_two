@@ -487,6 +487,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :sidekiq_six_deamon_template,   :default
 	# => 
     # => set :sidekiq_six_ruby_vm,           :system   	## ( :rvm | :rbenv | :system )
+	# => set :sidekiq_six_user,              'deploy'   ## role-user
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
