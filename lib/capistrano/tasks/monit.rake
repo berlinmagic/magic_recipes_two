@@ -14,7 +14,7 @@ namespace :load do
     ## Status
     set :monit_active,                -> { true }
     set :monit_main_rc,               -> { true }
-    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website] }
+    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website website2 website3] }
     set :monit_processes,             -> { %w[nginx postgresql thin website] }
     set :monit_name,                  -> { "#{ fetch(:application) }_#{ fetch(:stage) }" }
     ## Mailer
@@ -61,6 +61,18 @@ namespace :load do
     set :monit_website_check_content, -> { false }
     set :monit_website_check_path,    -> { "/" }
     set :monit_website_check_text,    -> { "<!DOCTYPE html>" }
+    ## Website2
+    set :monit_website2_check_domains, -> { [] }
+    set :monit_website2_check_ssl,     -> { false }
+    set :monit_website2_check_content, -> { false }
+    set :monit_website2_check_path,    -> { "/" }
+    set :monit_website2_check_text,    -> { "<!DOCTYPE html>" }
+    ## Website3
+    set :monit_website3_check_domains, -> { [] }
+    set :monit_website3_check_ssl,     -> { false }
+    set :monit_website3_check_content, -> { false }
+    set :monit_website3_check_path,    -> { "/" }
+    set :monit_website3_check_text,    -> { "<!DOCTYPE html>" }
     ## M/Monit
     set :monit_mmonit_url,            -> { false }
     
@@ -103,7 +115,7 @@ namespace :monit do
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx pm2 postgresql pwa redis sidekiq thin website].each do |command|
+      %w[nginx pm2 postgresql pwa redis sidekiq thin website website2 website3].each do |command|
         invoke "monit:configure_#{command}" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
@@ -124,10 +136,11 @@ namespace :monit do
   end
   
   %w[nginx pm2 postgresql redis sidekiq thin].each do |process|
+    namespace process.to_sym do
       
       %w[monitor unmonitor start stop restart].each do |command|
         desc "#{command} monit-service for: #{process}"
-        task "#{command}_#{process}" do
+        task "#{command}" do
           if Array(fetch(:monit_processes)).include?(process)
             on roles(fetch("#{process}_roles".to_sym)) do
               if process == "sidekiq"
@@ -154,7 +167,7 @@ namespace :monit do
       if %w[nginx postgresql redis].include?(process)
         ## Server specific tasks (gets overwritten by other environments!)
         desc "Upload Monit #{process} config file (server specific)"
-        task "configure_#{process}" do
+        task "configure" do
           if Array(fetch(:monit_processes)).include?(process)
             on release_roles fetch("#{process}_roles".to_sym) do |role|
               monit_config( process, nil, role )
@@ -164,7 +177,7 @@ namespace :monit do
       elsif %w[pm2 pwa sidekiq thin].include?(process)
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
-        task "configure_#{process}" do
+        task "configure" do
           if Array(fetch(:monit_processes)).include?(process)
             on release_roles fetch("#{process}_roles".to_sym) do |role|
               monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
@@ -173,19 +186,23 @@ namespace :monit do
         end
       end
       
+    end
   end
   
-  %w[pwa website].each do |process|
-    
-    desc "Upload Monit #{process} config file (app specific)"
-    task "configure_#{process}" do
-      if Array(fetch(:monit_processes)).include?(process)
-        on release_roles fetch("#{process == "website" ? 'nginx' : process}_roles".to_sym, :web) do |role|
-          monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
+  %w[pwa website website2 website3].each do |process|
+    namespace process.to_sym do
+      
+      desc "Upload Monit #{process} config file (app specific)"
+      task "configure_#{process}" do
+        if Array(fetch(:monit_processes)).include?(process)
+          on release_roles fetch("#{process =~ /website/ ? 'nginx' : process}_roles".to_sym, :web) do |role|
+            process_file = process =~ /^website\d{1}$/ ? 'websiteX' : process
+            monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
+          end
         end
       end
+      
     end
-    
   end
   
   

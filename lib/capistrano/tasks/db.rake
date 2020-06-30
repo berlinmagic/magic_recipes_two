@@ -34,6 +34,35 @@ namespace :db do
     end
   end
   
+  
+  desc "upload data.yml to server and load it = DELETES EXISTING DATA"
+  task :upload_and_replace_data do
+    on roles fetch(:db_roles) do
+      puts()
+      puts()
+      puts("   ! ! !     C A U T I O N !     ! ! ! ")
+      puts()
+      puts()
+      puts("This will upload 'local-App/db/data.yml' and load it in current DB")
+      puts()
+      puts("This will   DELETE ALL DATA   in your #{ fetch(:stage) } DB!!")
+      puts()
+      ask(:are_you_sure, 'no')
+      if fetch(:are_you_sure, 'no').to_s.downcase == 'yes'
+        local_dir = "./db/data.yml"
+        remote_dir = "#{host.user}@#{host.hostname}:#{release_path}/db/data.yml"
+        puts(".. uploading db/data.yml")
+        run_locally { execute "rsync -av --delete #{local_dir} #{remote_dir}" }
+        puts(".. loading data.yml in #{ fetch(:stage) } DB")
+        within release_path do
+          execute :bundle, :exec, :rake, "db:data:load RAILS_ENV=#{fetch(:stage)}"
+        end
+      else
+        puts(".. stoped process ..")
+      end
+    end
+  end
+  
 end
 
 namespace :deploy do

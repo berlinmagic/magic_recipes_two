@@ -1,12 +1,4 @@
-<% if fetch(:nginx_major_domain, false) %>
-  <% domain_list = [fetch(:nginx_major_domain, "").to_s.gsub(/^\*?\./, "")] %>
-<% else %>
-  <% domain_list = [] %>
-  <% Array(fetch(:nginx_domains)).each do |domain| %>
-    <% domain_list << domain.gsub(/^\*?\./, "") %>
-  <% end %>
-<% end %>
-# Check domains on port 80 <%= "(and 443 if ssl is on)" if fetch(:nginx_use_ssl) %> for <%= fetch(:application) %> [<%= fetch(:stage) %>]
+# Check domains on <%= fetch(:nginx_use_ssl) ? 'https' : 'http' %> for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% domain_list.uniq.each do |domain| %>
 check host <%= domain %> with address <%= domain %>
   if failed 
@@ -21,8 +13,9 @@ check host <%= domain %> with address <%= domain %>
   <% if fetch(:monit_website_check_content, false) %>
     request "<%= fetch(:monit_website_check_path, '/') %>"
     content = "<%= fetch(:monit_website_check_text, '<!DOCTYPE html>') %>"
-  <% end %>
+  <% else %>
     # status = 200
+  <% end %>
     with timeout <%= fetch(:monit_website_check_timeout, 10) %> seconds
     for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
   then alert

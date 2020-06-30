@@ -116,6 +116,24 @@ namespace :secrets do
 end
 
 
+namespace :keys do
+  
+  desc "upload master.key to server"
+  task :upload_master do
+    on roles %w{app db web} do
+      
+      %w(master.key credentials.yml.enc).each do |that|
+        puts "syncing: #{that}"
+        local_dir = "./config/#{ that }"
+        remote_dir = "#{host.user}@#{host.hostname}:#{shared_path}/config/#{ that }"
+        run_locally { execute "rsync -av --delete #{local_dir} #{remote_dir}" }
+      end
+      
+    end
+  end
+  
+end
+
 
 
 desc 'Server setup tasks'

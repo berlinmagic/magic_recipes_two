@@ -68,6 +68,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/redirect_page'
     # => require 'capistrano/magic_recipes/secrets'
     # => require 'capistrano/magic_recipes/sidekiq'
+	# => require 'capistrano/magic_recipes/sidekiq6'
     # => require 'capistrano/magic_recipes/thin'
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
@@ -407,6 +408,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :rvm_custom_path,        '~/.myveryownrvm'   # only needed if not detected
     # => set :rvm_roles,              [:app, :web]
     # => set :rvm_map_bins,           %w{gem rake ruby bundle}
+	# => set :rvm_path,               '/usr/local/rvm'
     
         
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
@@ -458,6 +460,33 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     ## Rbenv and RVM integration
     # => set :rbenv_map_bins,          fetch(:rbenv_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
     # => set :rvm_map_bins,            fetch(:rvm_map_bins).to_a.concat(%w(sidekiq sidekiqctl))
+	
+    
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => sidekiq6
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :sidekiq6_default_hooks,     true
+    # => set :sidekiq6_deamon_file,       "sidekiq_#{fetch(:application)}_#{fetch(:stage)}"
+    # => set :sidekiq6_timeout,           10
+    # => set :sidekiq6_roles,             :app
+    # => set :sidekiq6_processes,         1
+    # => # Sidekiq queued processes:
+    # => 
+    # => set :sidekiq6_special_queues,    false
+    # => set :sidekiq6_queued_processes,  []
+    # => 
+	## If needed you can set special queues and configure it seperately
+    ## .. options:  
+    ##    - queue:      string    # => queue-name       (default: "default")
+    ##    - processes:  integer   # => number processes (default: 1)
+    ##    - worker:     integer   # => concurrency      (default: 7)
+    ## => [ { queue: "queue_name", processes: "count", worker: "count" }]
+    # => 
+    # => set :sidekiq6_deamon_path,       "/lib/systemd/system"
+    # => set :sidekiq6_deamon_template,   :default
+	# => 
+    # => set :sidekiq6_ruby_vm,           :system   	## ( :rvm | :rbenv | :system )
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
