@@ -68,7 +68,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/redirect_page'
     # => require 'capistrano/magic_recipes/secrets'
     # => require 'capistrano/magic_recipes/sidekiq'
-	# => require 'capistrano/magic_recipes/sidekiq6'
+	# => require 'capistrano/magic_recipes/sidekiq_six'
     # => require 'capistrano/magic_recipes/thin'
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
@@ -466,15 +466,15 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 ## => sidekiq6
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     
-    # => set :sidekiq6_default_hooks,     true
-    # => set :sidekiq6_deamon_file,       "sidekiq_#{fetch(:application)}_#{fetch(:stage)}"
-    # => set :sidekiq6_timeout,           10
-    # => set :sidekiq6_roles,             :app
-    # => set :sidekiq6_processes,         1
+    # => set :sidekiq_six_default_hooks,     true
+    # => set :sidekiq_six_deamon_file,       "sidekiq_#{fetch(:application)}_#{fetch(:stage)}"
+    # => set :sidekiq_six_timeout,           10
+    # => set :sidekiq_six_roles,             :app
+    # => set :sidekiq_six_processes,         1
     # => # Sidekiq queued processes:
     # => 
-    # => set :sidekiq6_special_queues,    false
-    # => set :sidekiq6_queued_processes,  []
+    # => set :sidekiq_six_special_queues,    false
+    # => set :sidekiq_six_queued_processes,  []
     # => 
 	## If needed you can set special queues and configure it seperately
     ## .. options:  
@@ -483,10 +483,10 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     ##    - worker:     integer   # => concurrency      (default: 7)
     ## => [ { queue: "queue_name", processes: "count", worker: "count" }]
     # => 
-    # => set :sidekiq6_deamon_path,       "/lib/systemd/system"
-    # => set :sidekiq6_deamon_template,   :default
+    # => set :sidekiq_six_deamon_path,       "/lib/systemd/system"
+    # => set :sidekiq_six_deamon_template,   :default
 	# => 
-    # => set :sidekiq6_ruby_vm,           :system   	## ( :rvm | :rbenv | :system )
+    # => set :sidekiq_six_ruby_vm,           :system   	## ( :rvm | :rbenv | :system )
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

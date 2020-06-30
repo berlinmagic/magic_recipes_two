@@ -7,7 +7,7 @@ Our most used recipes for Capistrano-3!
 
 
 **Version 0.0.93**
-- add **sidekiq6** .. handle sidekiq 6.0.x via service file
+- add **sidekiq_six** .. handle sidekiq 6.0.x via service file
 
 **Version 0.0.91**
 - add *redirect_page_* .. handle a redirect_page with domain info

@@ -41,10 +41,10 @@ Type=notify
 WatchdogSec=10
 
 WorkingDirectory=<%= current_path %>
-<% if fetch(:sidekiq6_ruby_vm) == :rbenv %>
+<% if fetch(:sidekiq_six_ruby_vm) == :rbenv %>
 # If you use rbenv:
 ExecStart=/bin/bash -lc 'exec /home/deploy/.rbenv/shims/bundle exec sidekiq <%= side_kiq_args %>'
-<% elsif fetch(:sidekiq6_ruby_vm) == :rvm %>
+<% elsif fetch(:sidekiq_six_ruby_vm) == :rvm %>
 # RVM
 ExecStart=<%= fetch(:rvm_path) %>/bin/rvm <%= fetch(:rvm_ruby_version) %> do bundle exec sidekiq <%= side_kiq_args %>
 <% else %>
