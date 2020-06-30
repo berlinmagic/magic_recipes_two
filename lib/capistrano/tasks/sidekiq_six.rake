@@ -89,7 +89,6 @@ namespace :sidekiq_six do
   
   def upload_deamon(service_file, idx = 0)
     args = []
-    args.push "--index #{idx}"
     args.push "--environment #{fetch(:stage)}"
     args.push "--require #{fetch(:sidekiq_six_require)}" if fetch(:sidekiq_six_require)
     args.push "--tag #{fetch(:sidekiq_six_tag)}" if fetch(:sidekiq_six_tag)
