@@ -131,7 +131,7 @@ namespace :sidekiq6 do
   
   %w[start stop restart enable disable is-enabled].each do |command|
     desc "#{command.capitalize} sidekiq6 service"
-    task command.underscore do
+    task command.gsub(/-/, '_') do
       on roles fetch(:sidekiq6_roles) do
         for_each_process do |service_file, idx|
           execute :systemctl, command, service_file
