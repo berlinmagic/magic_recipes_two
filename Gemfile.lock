@@ -136,7 +136,7 @@ GEM
       thread_safe (~> 0.1)
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.2)
+    websocket-extensions (0.1.5)
     yaml_db (0.6.0)
       rails (>= 3.0, < 5.2)
       rake (>= 0.8.7)
