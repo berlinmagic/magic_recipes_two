@@ -5,7 +5,7 @@ include Capistrano::MagicRecipes::BaseHelpers
 namespace :load do
   task :defaults do
     
-    set :backup_attachment_roles,       -> { :app, :web }
+    set :backup_attachment_roles,       -> { :web }
     set :backup_attachment_name,        -> { 'dragonfly' }
     set :backup_attachment_remote_path, -> { "#{host.user}@#{host.hostname}:#{shared_path}/public/system/dragonfly/live" }
     set :backup_attachment_local_path,  -> { "backups/#{ fetch(:backup_attachment_name) }/#{ fetch(:stage) }" }
