@@ -27,6 +27,7 @@ namespace :load do
     set :sidekiq_six_ruby_vm,           -> { :system }   # ( :rvm | :rbenv | :system )
     
     set :sidekiq_six_user,              -> { 'deploy' }  # role-user
+    set :sidekiq_six_log_lines,         -> { 100 }
     
   end
 end
@@ -149,6 +150,15 @@ namespace :sidekiq_six do
     on roles fetch(:sidekiq_six_roles) do
       for_each_process do |service_file, idx|
         execute :sudo, :systemctl, 'kill -s TSTP', service_file
+      end
+    end
+  end
+  
+  desc "Get logs for sidekiq6 service"
+  task :logs do
+    on roles fetch(:sidekiq_six_roles) do
+      for_each_process do |service_file, idx|
+        execute :sudo, :journalctl, '-u', service_file, '-rn', fetch(:sidekiq_six_log_lines, 100)
       end
     end
   end
