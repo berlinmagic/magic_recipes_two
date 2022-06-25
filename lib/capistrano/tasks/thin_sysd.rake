@@ -13,13 +13,17 @@ namespace :load do
     set :thin_require,                -> { [] }
     set :thin_wait,                   -> { 90 }
     set :thin_onebyone,               -> { true }
-    set :thin_deamonize,              -> { true }
+    # https://help.cloud66.com/rails/how-to-guides/rack-servers/thin-rack-server.html
+    # You should not daemonize the custom_web process !!!
+    set :thin_daemonize,              -> { false }
     set :thin_hooks,                  -> { true }
     
-    set :thin_deamon_file,            -> { "thin_#{fetch(:application)}_#{fetch(:stage)}" }
-    set :thin_deamon_path,            -> { "/lib/systemd/system" }
-    set :thin_deamon_template,        -> { :default }
-    set :thin_deamon_log_lines,       -> { 100 }
+    set :thin_daemon_ruby_vm,         -> { :system }   # ( :rvm | :rbenv | :system )
+    set :thin_daemon_file,            -> { "thin_#{fetch(:application)}_#{fetch(:stage)}" }
+    set :thin_daemon_path,            -> { "/lib/systemd/system" }
+    set :thin_daemon_template,        -> { :default }
+    set :thin_daemon_log_lines,       -> { 100 }
+    set :thin_daemon_user,            -> { fetch(:user, 'deploy') }  # role-user
     
   end
 end
@@ -27,13 +31,13 @@ end
 
 namespace :thin do
   
-  def upload_thin_deamon
-    if fetch(:thin_deamon_template, :default) == :default
+  def upload_thin_daemon
+    if fetch(:thin_daemon_template, :default) == :default
       magic_template("thin.service", '/tmp/thin.service')
     else
-      magic_template(fetch(:thin_deamon_template), '/tmp/thin.service')
+      magic_template(fetch(:thin_daemon_template), '/tmp/thin.service')
     end
-    execute :sudo, :mv, '/tmp/thin.service', "#{ fetch(:thin_deamon_path) }/#{ fetch(:thin_deamon_file) }.service"
+    execute :sudo, :mv, '/tmp/thin.service', "#{ fetch(:thin_daemon_path) }/#{ fetch(:thin_daemon_file) }.service"
   end
   
   
@@ -41,11 +45,11 @@ namespace :thin do
   ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
   
   
-  desc 'Create and upload thin DEAMON file'
-  task :upload_deamon  do
+  desc 'Create and upload thin daemon file'
+  task :upload_daemon  do
     on roles fetch(:thin_roles) do
       within current_path do
-        upload_thin_deamon()
+        upload_thin_daemon()
       end
     end
   end
@@ -70,7 +74,7 @@ namespace :thin do
     task cmnd.gsub(/-/, '_') do
       on roles fetch(:thin_roles) do
         within current_path do
-          execute :sudo, :systemctl, cmnd, fetch(:thin_deamon_file)
+          execute :sudo, :systemctl, cmnd, fetch(:thin_daemon_file)
         end
       end
     end
@@ -80,7 +84,7 @@ namespace :thin do
   task :quiet do
     on roles fetch(:thin_roles) do
       within current_path do
-        execute :sudo, :systemctl, 'kill -s TSTP', fetch(:thin_deamon_file)
+        execute :sudo, :systemctl, 'kill -s TSTP', fetch(:thin_daemon_file)
       end
     end
   end
@@ -89,7 +93,7 @@ namespace :thin do
   task :logs do
     on roles fetch(:thin_roles) do
       within current_path do
-        execute :sudo, :journalctl, '-u', fetch(:thin_deamon_file), '-rn', fetch(:thin_deamon_log_lines, 100)
+        execute :sudo, :journalctl, '-u', fetch(:thin_daemon_file), '-rn', fetch(:thin_daemon_log_lines, 100)
       end
     end
   end
@@ -101,9 +105,9 @@ namespace :thin do
       within current_path do
         puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
         puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
-        puts fetch(:thin_deamon_file)
+        puts fetch(:thin_daemon_file)
         puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
-        output = capture :sudo, "systemctl status", fetch(:thin_deamon_file)
+        output = capture :sudo, "systemctl status", fetch(:thin_daemon_file)
         output.each_line do |line|
             puts line
         end

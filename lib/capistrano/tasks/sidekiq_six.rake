@@ -26,7 +26,7 @@ namespace :load do
     
     set :sidekiq_six_ruby_vm,           -> { :system }   # ( :rvm | :rbenv | :system )
     
-    set :sidekiq_six_user,              -> { 'deploy' }  # role-user
+    set :sidekiq_six_user,              -> { fetch(:user, 'deploy') }   # role-user
     set :sidekiq_six_log_lines,         -> { 100 }
     
   end

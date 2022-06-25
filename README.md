@@ -466,10 +466,13 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 	
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-## => sidekiq6
+## => sidekiq_six  *(sidekiq 6+ on sysd)*
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     
-    # => set :sidekiq_six_default_hooks,     true
+	## CAUTION: if used with rvm, set `:rvm_custom_path` to `/home/YOUR_USER/.rvm` or whatever absolute path .. 
+	## new systemd doesn't like `~/..` path in ExecCommand !!! (stderr: Failed to start ...service has a bad unit file setting.)
+	##
+	# => set :sidekiq_six_default_hooks,     true
     # => set :sidekiq_six_deamon_file,       "sidekiq_#{fetch(:application)}_#{fetch(:stage)}"
     # => set :sidekiq_six_timeout,           10
     # => set :sidekiq_six_roles,             :app
@@ -490,7 +493,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :sidekiq_six_deamon_template,   :default
 	# => 
     # => set :sidekiq_six_ruby_vm,           :system   	## ( :rvm | :rbenv | :system )
-	# => set :sidekiq_six_user,              'deploy'   ## role-user
+	# => set :sidekiq_six_user,              fetch(:user, 'deploy')   ## role-user
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
@@ -505,14 +508,17 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :thin_require,               []              # => require the library
     # => set :thin_wait,                  90              # => Maximum wait time for server to be started in seconds
     # => set :thin_onebyone,              true            # => for zero-downtime deployment (only works with restart command)
-    # => set :thin_deamonize,             true 			  # => deamonize ? default = true
+    # => set :thin_daemonize,             true 			  # => daemonize ? default = true
     # => set :thin_hooks,                 true            # => activate thin hooks in deploy chain ?
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-## => thin - sysD   .. thin with systemd managed process
+## => thin_sysd   *.. thin with systemd managed process*
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     
+	## CAUTION: if used with rvm, set `:rvm_custom_path` to `/home/YOUR_USER/.rvm` or whatever absolute path .. 
+	## new systemd doesn't like `~/..` path in ExecCommand !!! (stderr: Failed to start ...service has a bad unit file setting.)
+	## 
     # => set :thin_path,                  '/etc/thin'     # => thin path on your server
     # => set :thin_roles,                 :web            # => thin roles
     # => set :thin_timeout,               30              # => Request or command timeout in sec (default: 30)
@@ -521,13 +527,15 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :thin_require,               []              # => require the library
     # => set :thin_wait,                  90              # => Maximum wait time for server to be started in seconds
     # => set :thin_onebyone,              true            # => for zero-downtime deployment (only works with restart command)
-	# => set :thin_deamonize,             true 			  # => deamonize ? default = true
+	# => set :thin_daemonize,             true 			  # => daemonize ? default = true
     # => set :thin_hooks,                 true            # => activate thin hooks in deploy chain ?
-	## New control thin deamon
-    # => set :thin_deamon_file,           "thin_#{fetch(:application)}_#{fetch(:stage)}"
-    # => set :thin_deamon_path,           "/lib/systemd/system"
-    # => set :thin_deamon_template,       :default
-    # => set :thin_deamon_log_lines,      100
+	## New control thin daemon
+    # => set :thin_daemon_file,           "thin_#{fetch(:application)}_#{fetch(:stage)}"
+    # => set :thin_daemon_path,           "/lib/systemd/system"
+	# => set :thin_daemon_ruby_vm,        :system   	  ## ( :rvm | :rbenv | :system )
+    # => set :thin_daemon_template,       :default
+    # => set :thin_daemon_log_lines,      100
+    # => set :thin_daemon_user,           fetch(:user, 'deploy')	 # => daemon user
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 

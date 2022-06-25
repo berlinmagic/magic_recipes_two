@@ -6,10 +6,14 @@ Our most used recipes for Capistrano-3!
 ### ChangeLog:
 
 
-**Version 0.0.93**
-- add **thin_sysd_** .. handle thin via service file
+**Version 0.0.94**
+- add **thin_sysd** .. handle thin via systemd service file
 - add `:lets_encrypt_client` => 'certbot' | 'certbot-auto' .. for new certbot 
+- fixed critical typo in new `thin_sysd`
 
+
+**Caution**
+- broken Version: **0.0.93**
 
 
 **Version 0.0.92**
