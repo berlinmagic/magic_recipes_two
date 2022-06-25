@@ -27,7 +27,7 @@ end
 
 namespace :thin do
   
-  def upload_deamon(service_file, idx = 0)
+  def upload_thin_deamon
     if fetch(:thin_deamon_template, :default) == :default
       magic_template("thin.service", '/tmp/thin.service')
     else
@@ -37,7 +37,21 @@ namespace :thin do
   end
   
   
-  desc "rewrite and upload thin config"
+  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
+  ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### ### 
+  
+  
+  desc 'Create and upload thin DEAMON file'
+  task :upload_deamon  do
+    on roles fetch(:thin_roles) do
+      within current_path do
+        upload_thin_deamon()
+      end
+    end
+  end
+  
+  
+  desc "Create and upload thin config file"
   task :reconf do
     on release_roles fetch(:thin_roles) do
       within current_path do
@@ -55,7 +69,9 @@ namespace :thin do
     desc "#{cmnd.capitalize} thin service"
     task cmnd.gsub(/-/, '_') do
       on roles fetch(:thin_roles) do
-        execute :sudo, :systemctl, cmnd, fetch(:thin_deamon_file)
+        within current_path do
+          execute :sudo, :systemctl, cmnd, fetch(:thin_deamon_file)
+        end
       end
     end
   end
@@ -63,14 +79,18 @@ namespace :thin do
   desc "Quiet thin service"
   task :quiet do
     on roles fetch(:thin_roles) do
-      execute :sudo, :systemctl, 'kill -s TSTP', fetch(:thin_deamon_file)
+      within current_path do
+        execute :sudo, :systemctl, 'kill -s TSTP', fetch(:thin_deamon_file)
+      end
     end
   end
   
   desc "Get logs for thin service"
   task :logs do
     on roles fetch(:thin_roles) do
-      execute :sudo, :journalctl, '-u', fetch(:thin_deamon_file), '-rn', fetch(:thin_deamon_log_lines, 100)
+      within current_path do
+        execute :sudo, :journalctl, '-u', fetch(:thin_deamon_file), '-rn', fetch(:thin_deamon_log_lines, 100)
+      end
     end
   end
   
@@ -78,6 +98,7 @@ namespace :thin do
   desc "check thin service status"
   task :check_status do
     on roles fetch(:thin_roles) do
+      within current_path do
         puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
         puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
         puts fetch(:thin_deamon_file)
@@ -87,6 +108,7 @@ namespace :thin do
             puts line
         end
         puts "#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#"
+      end
     end
   end
   
