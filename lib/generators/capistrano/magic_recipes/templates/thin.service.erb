@@ -6,8 +6,8 @@ After=network.target
 [Service]
 Type=forking
 
-User=<%= @role.user %>
-Group=<%= @role.user %>
+User=<%= fetch(:user) %>
+Group=<%= fetch(:user) %>
 
 WorkingDirectory=<%= current_path %>
 <% if fetch(:sidekiq_six_ruby_vm) == :rbenv %>
