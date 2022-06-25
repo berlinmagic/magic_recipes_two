@@ -35,7 +35,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.81', group: :development
+  gem 'magic_recipes_two', '>= 0.0.93', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
@@ -70,6 +70,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/sidekiq'
 	# => require 'capistrano/magic_recipes/sidekiq_six'
     # => require 'capistrano/magic_recipes/thin'
+	# => require 'capistrano/magic_recipes/thin_sysd'
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ```
@@ -504,7 +505,29 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :thin_require,               []              # => require the library
     # => set :thin_wait,                  90              # => Maximum wait time for server to be started in seconds
     # => set :thin_onebyone,              true            # => for zero-downtime deployment (only works with restart command)
+    # => set :thin_deamonize,             true 			  # => deamonize ? default = true
     # => set :thin_hooks,                 true            # => activate thin hooks in deploy chain ?
+    
+    
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+## => thin - sysD   .. thin with systemd managed process
+## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+    
+    # => set :thin_path,                  '/etc/thin'     # => thin path on your server
+    # => set :thin_roles,                 :web            # => thin roles
+    # => set :thin_timeout,               30              # => Request or command timeout in sec (default: 30)
+    # => set :thin_max_conns,             1024            # => Maximum number of open file descriptors (default: 1024)
+    # => set :thin_max_persistent_conns,  512             # => Maximum number of persistent connections (default: 100)
+    # => set :thin_require,               []              # => require the library
+    # => set :thin_wait,                  90              # => Maximum wait time for server to be started in seconds
+    # => set :thin_onebyone,              true            # => for zero-downtime deployment (only works with restart command)
+	# => set :thin_deamonize,             true 			  # => deamonize ? default = true
+    # => set :thin_hooks,                 true            # => activate thin hooks in deploy chain ?
+	## New control thin deamon
+    # => set :thin_deamon_file,           "thin_#{fetch(:application)}_#{fetch(:stage)}"
+    # => set :thin_deamon_path,           "/lib/systemd/system"
+    # => set :thin_deamon_template,       :default
+    # => set :thin_deamon_log_lines,      100
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 

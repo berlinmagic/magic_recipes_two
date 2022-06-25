@@ -7,6 +7,11 @@ Our most used recipes for Capistrano-3!
 
 
 **Version 0.0.93**
+- add **thin_sysd_** .. handle thin via service file
+
+
+
+**Version 0.0.92**
 - add **sidekiq_six** .. handle sidekiq 6.0.x via service file
 
 **Version 0.0.91**

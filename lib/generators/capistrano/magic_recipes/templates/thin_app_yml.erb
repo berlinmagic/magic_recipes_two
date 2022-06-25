@@ -15,5 +15,5 @@ wait: <%= fetch(:thin_wait) %>
 servers: <%= fetch(:app_instances) %>
 # user: <%= fetch(:user) %>
 socket: /tmp/thin.<%= fetch(:application) %>.<%= fetch(:stage) %>.sock
-daemonize: true
+daemonize: <%= fetch(:thin_deamonize) %>
 onebyone: <%= fetch(:thin_onebyone) %>

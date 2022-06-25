@@ -1,0 +1,33 @@
+[Unit]
+Description=<%= fetch(:thin_deamon_file) %>
+After=syslog.target
+After=network.target
+
+[Service]
+Type=forking
+
+User=<%= @role.user %>
+Group=<%= @role.user %>
+
+WorkingDirectory=<%= current_path %>
+<% if fetch(:sidekiq_six_ruby_vm) == :rbenv %>
+ExecStart=/bin/bash -lc 'exec /home/deploy/.rbenv/shims/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml start'
+ExecStop=/bin/bash -lc 'exec /home/deploy/.rbenv/shims/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml stop'
+ExecReload=/bin/bash -lc 'exec /home/deploy/.rbenv/shims/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml restart'
+<% elsif fetch(:sidekiq_six_ruby_vm) == :rvm %>
+ExecStart=<%= fetch(:rvm_path) %>/bin/rvm <%= fetch(:rvm_ruby_version) %> do bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml start
+ExecStop=<%= fetch(:rvm_path) %>/bin/rvm <%= fetch(:rvm_ruby_version) %> do bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml stop
+ExecReload=<%= fetch(:rvm_path) %>/bin/rvm <%= fetch(:rvm_ruby_version) %> do bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml restart
+<% else %>
+ExecStart=/usr/local/bin/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml start
+ExecStop=/usr/local/bin/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml stop
+ExecReload=/usr/local/bin/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml restart
+<% end %>
+
+TimeoutSec=<%= fetch(:thin_wait) %>
+Restart=always
+
+SyslogIdentifier=thin
+
+[Install]
+WantedBy=multi-user.target
