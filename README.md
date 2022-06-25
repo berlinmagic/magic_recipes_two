@@ -134,8 +134,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :lets_encrypt__www_domains,  true # also encrypt www. domains
     # => set :lets_encrypt_cron_log,      "#{shared_path}/log/lets_encrypt_cron.log"
     # => set :lets_encrypt_email,         "admin@example.com"
-	# Client type: "new: certbot" or old "certbot-auto"
-	# => set :lets_encrypt_client,        "new: certbot"
+	# Client type: new: "certbot" or old "certbot-auto"
+	# => set :lets_encrypt_client,        "certbot-auto"
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

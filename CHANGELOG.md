@@ -8,6 +8,7 @@ Our most used recipes for Capistrano-3!
 
 **Version 0.0.93**
 - add **thin_sysd_** .. handle thin via service file
+- add `:lets_encrypt_client` => 'certbot' | 'certbot-auto' .. for new certbot 
 
 
 
