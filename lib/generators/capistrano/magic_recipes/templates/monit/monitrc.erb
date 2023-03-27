@@ -29,7 +29,7 @@ set mail-format {
     M O N I T
     
     <% if fetch(:monit_webclient) %>
-    Web:      <%= fetch(:monit_webclient_use_ssl) ? "https" : "http" %>://<%= fetch(monit_webclient_domain) %>
+    Web:      <%= fetch(:monit_webclient_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_webclient_domain) %>
     <% end %>
 }
 
