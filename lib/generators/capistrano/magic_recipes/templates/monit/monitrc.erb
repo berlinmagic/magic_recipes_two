@@ -28,11 +28,9 @@ set mail-format {
     Your faithful employee,
     M O N I T
     
-    <% if fetch(:monit_http_client) %><% if fetch(:monit_http_domain) %>
-    Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:monit_http_domain) %>:<%= fetch(:monit_http_port) %>/
-    <% else %>
-    Web:      <%= fetch(:monit_http_use_ssl) ? "https" : "http" %>://<%= fetch(:app_server_ip) %>:<%= fetch(:monit_http_port) %>/
-    <% end %><% end %>
+    <% if fetch(:monit_webclient) %>
+    Web:      <%= fetch(:monit_webclient_use_ssl) ? "https" : "http" %>://<%= fetch(monit_webclient_domain) %>
+    <% end %>
 }
 
 set mailserver <%= fetch(:monit_mail_server) %> port <%= fetch(:monit_mail_port) %>
@@ -44,19 +42,11 @@ set mailserver <%= fetch(:monit_mail_server) %> port <%= fetch(:monit_mail_port)
 
 set alert <%= fetch(:monit_mail_to) %><%= Array( fetch(:monit_ignore, nil) ).count > 0 ? " but not on { #{ Array( fetch(:monit_ignore, nil) ).join(", ") } }" : "" %>
 
-<% if fetch(:monit_http_client) %>
+<% if fetch(:monit_webclient) %>
 set httpd port <%= fetch(:monit_http_port) %>
-    <% if fetch(:monit_http_domain) %>
-    use address <%= fetch(:monit_http_domain) %>
-    <% end %>
-    # allow 127.0.0.1
-    <% if fetch(:monit_http_use_ssl) %>
-    ssl enable
-    pemfile <%= fetch(:monit_http_pemfile) %>
-    <% if fetch(:monit_http_allow_self_certification) %>
-    ALLOWSELFCERTIFICATION
-    <% end %>
-    <% end %>
+		<% if fetch(:monit_webclient_use_ssl, false) %>
+    allow 127.0.0.1
+		<% end %>
     allow <%= fetch(:monit_http_username) %>:<%= fetch(:monit_http_password) %>
 <% end %>
 
