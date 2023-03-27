@@ -193,7 +193,7 @@ namespace :monit do
     namespace process.to_sym do
       
       desc "Upload Monit #{process} config file (app specific)"
-      task "configure_#{process}" do
+      task "configure" do
         if Array(fetch(:monit_processes)).include?(process)
           on release_roles fetch("#{process =~ /website/ ? 'nginx' : process}_roles".to_sym, :web) do |role|
             process_file = process =~ /^website\d{1}$/ ? 'websiteX' : process
