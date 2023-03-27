@@ -179,8 +179,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_mail_from,                      "monit@foo.bar"
     # => set :monit_mail_reply_to,                  "support@foo.bar"
     ## Additional stuff for postrgres
-    # => set :postgresql_roles,                     :db
-    # => set :postgresql_pid,                       "/var/run/postgresql/9.1-main.pid"
+    # => set :monit_pg_pid,                       	"/var/run/postgresql/12-main.pid"
     ## Additional stuff for thin (need secrets_key_base to be set)
     # => set :monit_thin_totalmem_mb,               300
     ## Additional stuff for sidekiq (need secrets_key_base to be set)
