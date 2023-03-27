@@ -315,7 +315,11 @@ namespace :lets_encrypt do
   desc "Generate MONIT-WebClient LetsEncrypt certificate"
   task :monit_certonly do
     on release_roles fetch(:lets_encrypt_roles) do
-      execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public -d #{ fetch(:monit_webclient_domain).gsub(/^\*?\./, '') }"
+      if fetch(:lets_encrypt_client) == "certbot-auto"
+        execute :sudo, "#{ fetch(:lets_encrypt_path) }/certbot-auto --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public -d #{ fetch(:monit_webclient_domain).gsub(/^\*?\./, '') }"
+      else
+        execute :sudo, "certbot --non-interactive --agree-tos --email #{fetch(:lets_encrypt_email)} certonly --webroot -w #{current_path}/public -d #{ fetch(:monit_webclient_domain).gsub(/^\*?\./, '') }"
+      end
     end
   end
   
