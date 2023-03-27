@@ -116,7 +116,7 @@ namespace :monit do
       # invoke "monit:thin"
       # invoke "monit:configure_website"
       %w[nginx pm2 postgresql pwa redis sidekiq thin website website2 website3].each do |command|
-        invoke "monit:configure_#{command}" if Array(fetch(:monit_processes)).include?(command)
+        invoke "monit:#{command}:configure" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
         invoke "nginx:monit:add"
