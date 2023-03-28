@@ -1,8 +1,8 @@
 # Check additional domains for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% monit_website_list.each do |that| %>
-check host <%= that['name'] %> with address <%= that['domain'] %>
+check host <%= that[:name] %> with address <%= that[:domain] %>
   if failed 
-  <% if that['ssl'] %>
+  <% if that[:ssl] %>
     port 443
     type TCPSSL
     protocol https
@@ -10,17 +10,14 @@ check host <%= that['name'] %> with address <%= that['domain'] %>
     port 80
     protocol http
   <% end %>
-  <% if that['check_content'] %>
-    request "<%= that['path'] %>"
-    content = "<%= that['content'] %>"
+  <% if that[:check_content] %>
+    request "<%= that[:path] %>"
+    content = "<%= that[:content] %>"
   <% else %>
     status = 200
   <% end %>
-	
-	<%= that.to_yaml %>
-	
-    with timeout <%= that['timeout'] %> seconds
-    for <%= that['cycles'] %> cycles 
+    with timeout <%= that[:timeout] %> seconds
+    for <%= that[:cycles] %> cycles 
   then alert
 <% end %>
 
