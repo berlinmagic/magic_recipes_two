@@ -182,7 +182,7 @@ namespace :monit do
       task "configure" do
         if Array(fetch(:monit_processes)).include?(process)
           on release_roles fetch("#{process =~ /website/ ? 'nginx' : process}_roles".to_sym, :web) do |role|
-            monit_config process_file, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
+            monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
           end
         end
       end

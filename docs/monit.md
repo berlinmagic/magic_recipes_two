@@ -1,14 +1,14 @@
 # Monit
 
 -----
->
+> 
 > ### Requirements
 > 
 > Capfile
 > ```ruby
 > require 'capistrano/magic_recipes/monit'
 > ```
->
+> 
 -----
 
 
