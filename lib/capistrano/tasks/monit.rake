@@ -256,9 +256,17 @@ end
 
 def init_site_check_item( domain )
   ## defaults
+  puts "%%% "
+  puts "%%% domain: #{domain}"
   that = { ssl: false, check_content: false, path: '/', content: '<!DOCTYPE html>', timeout: 30, cycles: 3 }
+  puts "%%% "
+  puts "%%% that: #{that}"
   that.merge! domain
+  puts "%%% "
+  puts "%%% that: #{that}"
   that[:name] = that[:domain]   if [nil, '', ' '].include?( that[:name] )
+  puts "%%% "
+  puts "%%% that: #{that}"
   that
 end
 
