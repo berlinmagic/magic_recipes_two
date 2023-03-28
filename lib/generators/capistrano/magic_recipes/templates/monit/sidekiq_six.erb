@@ -1,6 +1,6 @@
 # Monit configuration for SIDEKIQ-six :  <%= fetch(:application) %>  (<%= fetch(:stage) %>)
 <% for_each_process do |service_file, idx| %>
-CHECK PROCESS <%= service_file %> with path "systemctl --quiet is-active <%= service_file %>"
+CHECK program <%= service_file %> with path "systemctl --quiet is-active <%= service_file %>"
   start program = "<%= fetch(:sidekiq_six_deamon_path) %>/<%= service_file %>.service start" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   stop program = "<%= fetch(:sidekiq_six_deamon_path) %>/<%= service_file %>.service stop" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   group sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
