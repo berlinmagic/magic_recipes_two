@@ -1,5 +1,4 @@
 # Check additional domains for <%= fetch(:application) %> [<%= fetch(:stage) %>]
-<%= that.to_yaml %>
 <% monit_website_list.each do |that| %>
 check host <%= that['name'] %> with address <%= that['domain'] %>
   if failed 
@@ -17,6 +16,9 @@ check host <%= that['name'] %> with address <%= that['domain'] %>
   <% else %>
     status = 200
   <% end %>
+	
+	<%= that.to_yaml %>
+	
     with timeout <%= that['timeout'] %> seconds
     for <%= that['cycles'] %> cycles 
   then alert
