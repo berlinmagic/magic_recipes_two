@@ -30,7 +30,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 ### DOCU:
 
-- [MONIT](/berlinmagic/magic_recipes_two/tree/master/docs/monit.md)
+- [MONIT](/docs/monit.md)
 
 
 
