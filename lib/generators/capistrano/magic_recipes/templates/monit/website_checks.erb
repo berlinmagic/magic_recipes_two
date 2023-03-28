@@ -1,6 +1,6 @@
 # Check additional domains for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% monit_website_list.each do |that| %>
-check host <%= that[:name] %> with address <%= that[:domain] %>
+check host <%= that[:name].gsub(/\s+/, '-') %> with address <%= that[:domain] %>
   if failed 
   <% if that[:ssl] %>
     port 443
