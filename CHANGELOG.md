@@ -6,6 +6,16 @@ Our most used recipes for Capistrano-3!
 ### ChangeLog:
 
 
+**Version 0.0.95**
+- improve **monit** helper
+- removed monit `website2` and `website3`! .. replaced with `monit_websites_to_check` which is an array of sites to check
+- removed some monit http settings
+- serving ssl monit now completely handled via nginx and lets-encrypt
+- NO DOWNGRADE TO monit of 2014 possible anymore!!!
+
+
+
+
 **Version 0.0.94**
 - add **thin_sysd** .. handle thin via systemd service file
 - add `:lets_encrypt_client` => 'certbot' | 'certbot-auto' .. for new certbot 

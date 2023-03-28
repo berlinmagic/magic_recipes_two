@@ -27,6 +27,18 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - [see gem CHANGELOG](https://github.com/berlinmagic/magic_recipes_two/blob/master/CHANGELOG.md)
 
 
+
+### DOCU:
+
+- [MONIT](/berlinmagic/magic_recipes_two/tree/master/docs/monit.md)
+
+
+
+
+
+
+
+
 ---
 #### Still work in progress .. so maybe not  ready for your needs! .. but also used a lot in production :)
 ---
@@ -198,13 +210,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     #    - "/bin/su - #{@role.user} -c 'cd #{current_path} ; bundle exec MONIT_CMD'"
     ## WebClient
     # => set :monit_http_client,                    true
-    # => set :monit_http_domain,                    false
     # => set :monit_http_port,                      2812
-    # => set :monit_http_use_ssl,                   false
-    # => set :monit_http_allow_self_certification,  false
-    # => set :monit_http_pemfile,                   "/etc/monit/monit.pem"
     # => set :monit_http_username,                  "admin"
     # => set :monit_http_password,                  "monitor"
+    # use a domain / subdomain for monit?
+    # => set :monit_webclient,             					false
+    # => set :monit_webclient_domain,      					false
+    # => set :monit_webclient_use_ssl,     					false
+    # => set :monit_webclient_ssl_cert,    					false
+    # => set :monit_webclient_ssl_key,     					false
+    # => set :monit_nginx_template,        					:default
     ## Website
     # => set :monit_website_check_content,          false
     # => set :monit_website_check_path,             "/"

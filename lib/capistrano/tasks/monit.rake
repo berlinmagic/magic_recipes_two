@@ -10,11 +10,10 @@ namespace :load do
     set :monit_logfile,               -> { "#{shared_path}/log/monit.log" }
     set :monit_idfile,                -> { '/var/lib/monit/id' }
     set :monit_statefile,             -> { '/var/lib/monit/state' }
-    set :monit_downgrade_on_deploy,   -> { false }
     ## Status
     set :monit_active,                -> { true }
     set :monit_main_rc,               -> { true }
-    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website website2 website3] }
+    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website website_checks] }
     set :monit_processes,             -> { %w[nginx postgresql thin website] }
     set :monit_name,                  -> { "#{ fetch(:application) }_#{ fetch(:stage) }" }
     ## Mailer
@@ -40,11 +39,7 @@ namespace :load do
     set :monit_app_worker_prefix,     -> { :rvm }   # rvm / rvm1capistrano3 / env
     ## WebClient
     set :monit_http_client,           -> { true }
-    set :monit_http_domain,           -> { false }
     set :monit_http_port,             -> { 2812 }
-    set :monit_http_use_ssl,          -> { false }
-    set :monit_http_allow_self_certification, -> { false }
-    set :monit_http_pemfile,          -> { "/etc/monit/monit.pem" }
     set :monit_http_username,         -> { "admin" }
     set :monit_http_password,         -> { "monitor" }
     # use a subdomain for monit?
@@ -60,18 +55,10 @@ namespace :load do
     set :monit_website_check_content, -> { false }
     set :monit_website_check_path,    -> { "/" }
     set :monit_website_check_text,    -> { "<!DOCTYPE html>" }
-    ## Website2
-    set :monit_website2_check_domains, -> { [] }
-    set :monit_website2_check_ssl,     -> { false }
-    set :monit_website2_check_content, -> { false }
-    set :monit_website2_check_path,    -> { "/" }
-    set :monit_website2_check_text,    -> { "<!DOCTYPE html>" }
-    ## Website3
-    set :monit_website3_check_domains, -> { [] }
-    set :monit_website3_check_ssl,     -> { false }
-    set :monit_website3_check_content, -> { false }
-    set :monit_website3_check_path,    -> { "/" }
-    set :monit_website3_check_text,    -> { "<!DOCTYPE html>" }
+    ## check other Sites:
+    set :monit_websites_to_check,     -> { [] }
+    # Website: { name: String, domain: String, ssl: Boolean, check_content: Boolean, path: String, content: String }
+    
     ## M/Monit
     set :monit_mmonit_url,            -> { false }
     
@@ -188,14 +175,13 @@ namespace :monit do
     end
   end
   
-  %w[pwa website website2 website3].each do |process|
+  %w[pwa website website_checks].each do |process|
     namespace process.to_sym do
       
       desc "Upload Monit #{process} config file (app specific)"
       task "configure" do
         if Array(fetch(:monit_processes)).include?(process)
           on release_roles fetch("#{process =~ /website/ ? 'nginx' : process}_roles".to_sym, :web) do |role|
-            process_file = process =~ /^website\d{1}$/ ? 'websiteX' : process
             monit_config process_file, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
           end
         end
@@ -264,6 +250,22 @@ def monit_pm2_prefixed( cmd )
   komando.gsub!(/REAL_COMMAND_HERE/, "cd #{fetch(:monit_pm2_app_path)} ; #{fetch(:monit_pm2_worker_prefix, '')} MONIT_CMD")
   komando.gsub(/MONIT_CMD/, cmd)
 end
+
+
+
+
+def init_site_check_item( domain )
+  ## defaults
+  that = { ssl: false, check_content: false, path: '/', content: '<!DOCTYPE html>', timeout: 30, cycles: 3 }
+  that.merge! domain
+  that[:name] = that[:domain]   if that[:name].blank?
+  that
+end
+
+def monit_website_list
+  Array( fetch(:monit_websites_to_check) ).map{ |d| init_site_check_item(d) }
+end
+
 
 
 
