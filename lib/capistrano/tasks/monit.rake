@@ -258,7 +258,7 @@ def init_site_check_item( domain )
   ## defaults
   that = { ssl: false, check_content: false, path: '/', content: '<!DOCTYPE html>', timeout: 30, cycles: 3 }
   that.merge! domain
-  that[:name] = that[:domain]   if that[:name].blank?
+  that[:name] = that[:domain]   if [nil, '', ' '].include?( that[:name] )
   that
 end
 
