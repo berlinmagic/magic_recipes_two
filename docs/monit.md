@@ -1,14 +1,14 @@
 # Monit
 
 -----
-
+>
 > ### Requirements
 > 
 > Capfile
 > ```ruby
 > require 'capistrano/magic_recipes/monit'
 > ```
-
+>
 -----
 
 
@@ -54,6 +54,8 @@ Monit Log-File (Monit default: '/var/log/monit.log')
 ```
 
 
+-----
+
 
 MONIT-Mailer
 ```ruby
@@ -66,8 +68,6 @@ MONIT-Mailer
  set :monit_mail_from,                      "monit@foo.bar"
  set :monit_mail_reply_to,                  "support@foo.bar"
 ```
-
-
 
 
 MONIT-WEB-VIEW
@@ -86,6 +86,8 @@ MONIT-WEB-VIEW
  set :monit_nginx_template,        					:default
 ```
 
+
+-----
 
 
 M/MONIT URL (test-phase BETA)
@@ -113,6 +115,7 @@ sidekiq (need secrets_key_base to be set)
 ```
 
 
+-----
 
 
 
@@ -147,7 +150,7 @@ PM2 - JS - App
 
 
 
-===
+-----
 
 
 Additional App helpers (for in app processes like: thin, sidekiq)
