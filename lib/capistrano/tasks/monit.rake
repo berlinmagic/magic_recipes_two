@@ -1,4 +1,6 @@
 require 'capistrano/magic_recipes/base_helpers'
+require 'capistrano/magic_recipes/sidekiq_helpers'
+include Capistrano::MagicRecipes::SidekiqHelpers
 include Capistrano::MagicRecipes::BaseHelpers
 
 namespace :load do
@@ -101,7 +103,7 @@ namespace :monit do
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx pm2 postgresql pwa redis sidekiq thin website website_checks].each do |command|
+      %w[nginx pm2 postgresql pwa redis sidekiq sidekiq_six thin website website_checks].each do |command|
         invoke "monit:#{command}:configure" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
@@ -121,7 +123,7 @@ namespace :monit do
     end
   end
   
-  %w[nginx pm2 postgresql redis sidekiq thin].each do |process|
+  %w[nginx pm2 postgresql redis sidekiq sidekiq_six thin].each do |process|
     namespace process.to_sym do
       
       %w[monitor unmonitor start stop restart].each do |command|
@@ -160,7 +162,7 @@ namespace :monit do
             end
           end
         end
-      elsif %w[pm2 pwa sidekiq thin].include?(process)
+      elsif %w[pm2 pwa sidekiq thin sidekiq_six].include?(process)
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
         task "configure" do
