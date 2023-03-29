@@ -8,7 +8,7 @@
 <% end %>
 # Check domains on port 80 <%= "(and 443 if ssl is on)" if fetch(:nginx_use_ssl) %> for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% domain_list.uniq.each do |domain| %>
-check host <%= domain %> with address <%= domain %>
+check host "<%= fetch(:monit_website_check_name, domain) %> [<%= domain %>]" with address <%= domain %>
   if failed 
   <% if fetch(:nginx_use_ssl) %>
     port 443

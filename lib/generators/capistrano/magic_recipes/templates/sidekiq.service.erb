@@ -15,6 +15,12 @@ ExecStart=<%= fetch(:rvm_path) %>/bin/rvm <%= fetch(:rvm_ruby_version) %> do bun
 ExecStart=/usr/local/bin/bundle exec sidekiq <%= @side_kiq_args %>
 <% end %>
 
+
+## build PID-File .. only working method :( .. (needed for monit)
+ExecStartPost=/bin/bash -c '/bin/echo $MAINPID > <%= fetch(:sidekiq_six_pid_path) %>/<%= @service_file %>.pid'
+ExecStopPost=/bin/bash -c 'rm <%= fetch(:sidekiq_six_pid_path) %>/<%= @service_file %>.pid'
+
+
 User=<%= fetch(:sidekiq_six_user) %>
 Group=<%= fetch(:sidekiq_six_user) %>
 UMask=0002

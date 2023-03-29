@@ -32,9 +32,11 @@ namespace :load do
     set :monit_pg_pid,                -> { "/var/run/postgresql/12-main.pid" }
     ## Additional stuff for thin (need secrets_key_base to be set)
     set :monit_thin_totalmem_mb,      -> { 300 }
+    set :monit_thin_pid_path,         -> { fetch(:thin_pid_path, '~/run') }
     ## Additional stuff for sidekiq (need secrets_key_base to be set)
     set :monit_sidekiq_totalmem_mb,   -> { 300 }
     set :monit_sidekiq_timeout_sec,   -> { 90 }
+    set :monit_sidekiq_pid_path,      -> { fetch(:sidekiq_six_pid_path, '~/run') }
     ## Additional App helpers
     set :monit_app_worker_command,    -> { "cd #{ current_path } ; #{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do bundle exec MONIT_CMD" }
     set :monit_app_worker_role,       -> { :user }  # user / bash / shell
@@ -52,6 +54,7 @@ namespace :load do
     set :monit_webclient_ssl_key,     -> { false }
     set :monit_nginx_template,        -> { :default }
     ## Website
+    set :monit_website_check_name,    -> { "#{fetch(:application)}-#{fetch(:stage)}" }
     set :monit_website_check_timeout, -> { 10 }
     set :monit_website_check_cycles,  -> { 3 }
     set :monit_website_check_content, -> { false }

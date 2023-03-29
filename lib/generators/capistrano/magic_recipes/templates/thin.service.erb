@@ -24,6 +24,12 @@ ExecStop=/usr/local/bin/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>
 ExecReload=/usr/local/bin/bundle exec thin -C config/thin_app_<%= fetch(:stage) %>.yml restart
 <% end %>
 
+
+## build PID-File .. only working method :(
+ExecStartPost=/bin/bash -c '/bin/echo $MAINPID > <%= fetch(:thin_pid_path) %>/thin_<%= fetch(:application) %>_<%= fetch(:stage) %>.pid'
+ExecStopPost=/bin/bash -c 'rm <%= fetch(:thin_pid_path) %>/thin_<%= fetch(:application) %>_<%= fetch(:stage) %>.pid'
+
+
 TimeoutSec=<%= fetch(:thin_wait) %>
 Restart=always
 

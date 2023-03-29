@@ -21,6 +21,7 @@ namespace :load do
     set :thin_daemon_ruby_vm,         -> { :system }   # ( :rvm | :rbenv | :system )
     set :thin_daemon_file,            -> { "thin_#{fetch(:application)}_#{fetch(:stage)}" }
     set :thin_daemon_path,            -> { "/lib/systemd/system" }
+    set :thin_pid_path,               -> { "~/run" }
     set :thin_daemon_template,        -> { :default }
     set :thin_daemon_log_lines,       -> { 100 }
     set :thin_daemon_user,            -> { fetch(:user, 'deploy') }  # role-user

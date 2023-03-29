@@ -1,8 +1,9 @@
 # Monit configuration for SIDEKIQ-six :  <%= fetch(:application) %>  (<%= fetch(:stage) %>)
 <% for_each_process do |service_file, idx| %>
-CHECK program <%= service_file %> with path "systemctl --quiet is-active <%= service_file %>"
-  start program = "<%= fetch(:sidekiq_six_deamon_path) %>/<%= service_file %>.service start" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
-  stop program = "<%= fetch(:sidekiq_six_deamon_path) %>/<%= service_file %>.service stop" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+
+CHECK process <%= service_file %> with pidfile "<%= fetch(:monit_sidekiq_pid_path) %>/<%= @service_file %>.pid"
+  start program = "systemctl start <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  stop program = "systemctl stop <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   group sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
   # if does not exist then start # (default)
   if totalmem > <%= ( fetch( :monit_sidekiq_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then alert
@@ -13,4 +14,5 @@ CHECK program <%= service_file %> with path "systemctl --quiet is-active <%= ser
   if 3 restarts within 5 cycles then timeout
   if 2 restarts within 3 cycles then alert
   if changed pid 2 times within 10 cycles then alert
+
 <% end %>
