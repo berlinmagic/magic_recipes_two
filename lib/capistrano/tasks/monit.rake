@@ -106,7 +106,7 @@ namespace :monit do
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx pm2 postgresql pwa redis sidekiq sidekiq_six thin website website_checks].each do |command|
+      %w[nginx pm2 postgresql pwa redis sidekiq sidekiq_six thin thin_sysd website website_checks].each do |command|
         invoke "monit:#{command}:configure" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
@@ -126,7 +126,7 @@ namespace :monit do
     end
   end
   
-  %w[nginx pm2 postgresql redis sidekiq sidekiq_six thin].each do |process|
+  %w[nginx pm2 postgresql redis sidekiq sidekiq_six thin thin_sysd].each do |process|
     namespace process.to_sym do
       
       %w[monitor unmonitor start stop restart].each do |command|
@@ -165,7 +165,7 @@ namespace :monit do
             end
           end
         end
-      elsif %w[pm2 pwa sidekiq thin sidekiq_six].include?(process)
+      elsif %w[pm2 pwa sidekiq thin sidekiq_six thin_sysd].include?(process)
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
         task "configure" do
@@ -261,17 +261,9 @@ end
 
 def init_site_check_item( domain )
   ## defaults
-  puts "%%% "
-  puts "%%% domain: #{domain}"
   that = { ssl: false, check_content: false, path: '/', content: '<!DOCTYPE html>', timeout: 30, cycles: 3 }
-  puts "%%% "
-  puts "%%% that: #{that}"
   that.merge! domain
-  puts "%%% "
-  puts "%%% that: #{that}"
   that[:name] = that[:domain]   if [nil, '', ' '].include?( that[:name] )
-  puts "%%% "
-  puts "%%% that: #{that}"
   that
 end
 

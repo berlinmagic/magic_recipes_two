@@ -2,8 +2,8 @@
 <% for_each_process do |service_file, idx| %>
 
 CHECK process <%= service_file %> with pidfile <%= fetch(:monit_sidekiq_pid_path) %>/<%= service_file %>.pid
-  start program = "systemctl start <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
-  stop program = "systemctl stop <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  start program = "/bin/systemctl start <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
+  stop program = "/bin/systemctl stop <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   GROUP sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
 	GROUP sidekiq
   # if does not exist then start # (default)
