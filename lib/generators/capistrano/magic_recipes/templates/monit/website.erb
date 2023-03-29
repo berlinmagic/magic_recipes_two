@@ -14,7 +14,6 @@ check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= do
     port 443
     type TCPSSL
     protocol https
-		CERTIFICATE VALID for 3 DAYS
   <% else %>
     port 80
     protocol http
@@ -27,5 +26,12 @@ check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= do
     with timeout <%= fetch(:monit_website_check_timeout, 10) %> seconds
     for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
   then alert
+	<% if that[:ssl] %>
+	if failed
+		port 443
+		protocol https
+		and certificate valid > 2 days
+	then alert
+	<% end %>
 <% end %>
 
