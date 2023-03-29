@@ -14,6 +14,7 @@ check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= do
     port 443
     type TCPSSL
     protocol https
+		CERTIFICATE VALID for 3 DAYS
   <% else %>
     port 80
     protocol http

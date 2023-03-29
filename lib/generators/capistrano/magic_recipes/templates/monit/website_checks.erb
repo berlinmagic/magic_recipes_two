@@ -6,6 +6,7 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
     port 443
     type TCPSSL
     protocol https
+		CERTIFICATE VALID for 3 DAYS
   <% else %>
     port 80
     protocol http

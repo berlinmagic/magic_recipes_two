@@ -4,7 +4,8 @@
 CHECK process <%= service_file %> with pidfile <%= fetch(:monit_sidekiq_pid_path) %>/<%= service_file %>.pid
   start program = "systemctl start <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
   stop program = "systemctl stop <%= service_file %>" with timeout <%= fetch(:monit_sidekiq_timeout_sec, 90) %> seconds
-  group sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
+  GROUP sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
+	GROUP sidekiq
   # if does not exist then start # (default)
   if totalmem > <%= ( fetch( :monit_sidekiq_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then alert
   if totalmem > <%= fetch( :monit_sidekiq_totalmem_mb, 300 ) %> MB for 2 cycles then restart
