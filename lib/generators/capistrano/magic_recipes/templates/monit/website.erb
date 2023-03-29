@@ -11,7 +11,6 @@
 check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= domain %>
   if failed 
   <% if fetch(:nginx_use_ssl) %>
-    type TCPSSL
 		port 443
     protocol https
     and certificate valid > 2 days
