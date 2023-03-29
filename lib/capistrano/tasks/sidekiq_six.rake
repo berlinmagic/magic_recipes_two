@@ -25,7 +25,7 @@ namespace :load do
     ## => [ { queue: "queue_name", processes: "count", worker: "count" }]
     
     set :sidekiq_six_deamon_path,       -> { "/lib/systemd/system" }
-    set :sidekiq_six_pid_path,          -> { "~/run" }
+    set :sidekiq_six_pid_path,          -> { "/home/#{fetch(:user)}/run" }
     set :sidekiq_six_deamon_template,   -> { :default }
     
     set :sidekiq_six_ruby_vm,           -> { :system }   # ( :rvm | :rbenv | :system )
