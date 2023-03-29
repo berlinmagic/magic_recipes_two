@@ -6,6 +6,7 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
     port 443
     type TCPSSL
     protocol https
+		certificate valid > 2 days
   <% else %>
     port 80
     protocol http
@@ -18,9 +19,6 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
   <% end %>
     with timeout <%= that[:timeout] %> seconds
     for <%= that[:cycles] %> cycles 
-	<% if that[:ssl] %>
-		and certificate valid > 2 days
-	<% end %>
 	then alert
 <% end %>
 
