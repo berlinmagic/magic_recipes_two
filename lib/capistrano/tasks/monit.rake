@@ -33,6 +33,7 @@ namespace :load do
     ## Additional stuff for thin (need secrets_key_base to be set)
     set :monit_thin_totalmem_mb,      -> { 300 }
     set :monit_thin_pid_path,         -> { fetch(:thin_pid_path, "/home/#{fetch(:user)}/run") }
+    set :thin_sysd_roles,             -> { fetch(:thin_roles) }
     ## Additional stuff for sidekiq (need secrets_key_base to be set)
     set :monit_sidekiq_totalmem_mb,   -> { 300 }
     set :monit_sidekiq_timeout_sec,   -> { 90 }
