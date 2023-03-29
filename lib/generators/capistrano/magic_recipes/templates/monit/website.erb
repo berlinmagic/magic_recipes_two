@@ -25,7 +25,7 @@ check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= do
     # status = 200
     with timeout <%= fetch(:monit_website_check_timeout, 10) %> seconds
     for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
-	<% if that[:ssl] %>
+	<% if fetch(:nginx_use_ssl) %>
 		and certificate valid > 2 days
 	<% end %>
 	then alert
