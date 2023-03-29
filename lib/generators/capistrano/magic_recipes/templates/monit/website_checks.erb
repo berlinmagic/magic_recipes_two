@@ -3,10 +3,10 @@
 check host "<%= that[:name] %>" with address <%= that[:domain] %>
   if failed 
   <% if that[:ssl] %>
+		type TCPSSL
     port 443
-    type TCPSSL
     protocol https
-		certificate valid > 2 days
+    and certificate valid > 2 days
   <% else %>
     port 80
     protocol http
