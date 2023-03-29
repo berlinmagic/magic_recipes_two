@@ -18,13 +18,9 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
   <% end %>
     with timeout <%= that[:timeout] %> seconds
     for <%= that[:cycles] %> cycles 
-  then alert
 	<% if that[:ssl] %>
-	if failed
-		port 443
-		protocol https
 		and certificate valid > 2 days
-	then alert
 	<% end %>
+	then alert
 <% end %>
 
