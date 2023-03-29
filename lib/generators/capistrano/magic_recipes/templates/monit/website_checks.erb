@@ -4,20 +4,23 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
   if failed 
   <% if that[:ssl] %>
     port 443
+    type TCPSSL
     protocol https
-    and certificate valid > 2 days
   <% else %>
     port 80
     protocol http
   <% end %>
   <% if that[:check_content] %>
-    request "<%= that[:path] %>"
+    request "<%= that[:path] || '/' %>"
     content = "<%= that[:content] %>"
   <% else %>
     status = 200
   <% end %>
     with timeout <%= that[:timeout] %> seconds
     for <%= that[:cycles] %> cycles 
-	then alert
+  then alert
+	<% if that[:ssl] %>
+	if failed port 443 protocol https and certificate valid > 2 days then alert
+	<% end %>
 <% end %>
 

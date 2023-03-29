@@ -13,7 +13,6 @@ check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= do
   <% if fetch(:nginx_use_ssl) %>
 		port 443
     protocol https
-    and certificate valid > 2 days
   <% else %>
     port 80
     protocol http
@@ -26,5 +25,8 @@ check host "<%= fetch(:monit_website_check_name, domain) %>" with address <%= do
     with timeout <%= fetch(:monit_website_check_timeout, 10) %> seconds
     for <%= fetch(:monit_website_check_cycles, 3) %> cycles 
 	then alert
+	<% if fetch(:nginx_use_ssl) %>
+	if failed port 443 protocol https and certificate valid > 2 days then alert
+	<% end %>
 <% end %>
 
