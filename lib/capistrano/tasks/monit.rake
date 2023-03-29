@@ -169,6 +169,8 @@ namespace :monit do
         ## App specific tasks (unique for app and environment)
         desc "Upload Monit #{process} config file (app specific)"
         task "configure" do
+          puts "configure: #{process}"
+          puts ":monit_processes: #{ Array(fetch(:monit_processes)) }"
           if Array(fetch(:monit_processes)).include?(process)
             on release_roles fetch("#{process}_roles".to_sym) do |role|
               monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
