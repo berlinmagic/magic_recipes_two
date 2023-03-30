@@ -22,5 +22,7 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
 	<% if that[:ssl] %>
 	if failed port 443 protocol https and certificate valid > 2 days then alert
 	<% end %>
+
+
 <% end %>
 
