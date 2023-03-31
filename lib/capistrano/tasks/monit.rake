@@ -220,7 +220,7 @@ namespace :monit do
     desc 'Downgrade MONIT to 5.16 (fix action problem)'
     task :configure do
       on roles :db do
-        on release_roles do |role|
+        on release_roles fetch(:monit_roles) do |role|
           monit_config 'alert_slack', "#{ fetch(:monit_slack_bin_path) }", role
         end
       end
