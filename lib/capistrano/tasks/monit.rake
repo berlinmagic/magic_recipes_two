@@ -221,7 +221,7 @@ namespace :monit do
     task :configure do
       on roles :db do
         on release_roles do |role|
-          monit_config 'alert_slack', "/etc/monit/alert_slack.rb", role
+          monit_config 'alert_slack', "#{ fetch(::monit_slack_bin_path) }", role
         end
       end
     end
