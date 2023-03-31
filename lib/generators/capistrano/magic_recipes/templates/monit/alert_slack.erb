@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/curl -X POST -H 'Content-type: application/json' --data '{"text":"[$MONIT_HOST] $MONIT_SERVICE - $MONIT_DESCRIPTION"}' <%= fetch(:monit_slack_webhook) %>
+/usr/bin/curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"[$MONIT_HOST] $MONIT_SERVICE - ${MONIT_DESCRIPTION}\"}" <%= fetch(:monit_slack_webhook) %>
