@@ -117,18 +117,29 @@ sidekiq (need secrets_key_base to be set)
 
 
 
-Website
+### Website
+Check the main website, ssl value is taken from configuration.
 ```ruby
  set :monit_website_check_content,          false
  set :monit_website_check_path,             "/"
  set :monit_website_check_text,             "<!DOCTYPE html>"
  set :monit_website_check_timeout,          20
  set :monit_website_check_cycles,           3
+ set :monit_website_check_name,        			"#{fetch(:application)}-#{fetch(:stage)}"
+```
+
+
+### More Websites to check
+Check as many websites as you want. If ssl active send alert 2 days before cert is invalid.
+```ruby
+ ## check other Sites:
+ set :monit_websites_to_check,     -> { [] }
+ # Website instance: { name: String, domain: String, ssl: Boolean, check_content: Boolean, path: String, content: String }
 ```
 
 
 
-PM2 - JS - App
+### PM2 - JS - App
 ```ruby
  set :monit_pm2_app_name,                      "app"
  set :monit_pm2_app_instances,                 1
@@ -136,12 +147,15 @@ PM2 - JS - App
  set :monit_pm2_pid_path,                      "/home/#{fetch(:user)}/.pm2/pids"
  set :monit_pm2_start_script,                  "ecosystem.config.js"
  set :monit_pm2_stage,                         "production"
- set :monit_pm2_website,                       "example.com"
- set :monit_pm2_website_ssl,                   false
  set :pm2_roles,                               :web
  set :monit_pm2_worker_role,                   :user
  ## if prefix for monit command is needed .. ie: "[ -s \"$HOME/.nvm/nvm.sh\" ] && \. \"$HOME/.nvm/nvm.sh\" ; nvm use 9.9.0 ; "
  set :monit_pm2_worker_prefix,                 ""
+ ## check website powered by pm2 .. for more settings use :monit_websites_to_check
+ # set :monit_pm2_check_website,     						false
+ # set :monit_pm2_website_name,      						"PM2 #{fetch(:application)} #{fetch(:stage)}"
+ # set :monit_pm2_website_url,       						"example.com"
+ # set :monit_pm2_website_ssl,       						false
 ```
 
 

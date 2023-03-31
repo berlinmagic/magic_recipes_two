@@ -1,6 +1,7 @@
 # Check additional domains for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% monit_website_list.each do |that| %>
-check host "<%= that[:name] %>" with address <%= that[:domain] %>
+check host '<%= that[:name] %>' with address <%= that[:domain] %>
+  <% if that[:ssl] %>if failed port 443 protocol https and certificate valid > 2 days then alert<% end %>
   if failed 
   <% if that[:ssl] %>
     port 443
@@ -19,10 +20,6 @@ check host "<%= that[:name] %>" with address <%= that[:domain] %>
     with timeout <%= that[:timeout] %> seconds
     for <%= that[:cycles] %> cycles 
   then alert
-	<% if that[:ssl] %>
-	if failed port 443 protocol https and certificate valid > 2 days then alert
-	<% end %>
-
 
 <% end %>
 

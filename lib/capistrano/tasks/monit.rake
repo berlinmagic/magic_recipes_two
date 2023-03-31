@@ -75,11 +75,13 @@ namespace :load do
     set :monit_pm2_pid_path,          -> { "/home/#{fetch(:user)}/.pm2/pids" }
     set :monit_pm2_start_script,      -> { "ecosystem.config.js" }
     set :monit_pm2_stage,             -> { "production" }
-    set :monit_pm2_website,           -> { "example.com" }
-    set :monit_pm2_website_ssl,       -> { false }
     set :pm2_roles,                   -> { :web }
     set :monit_pm2_worker_role,       -> { :user }
     set :monit_pm2_worker_prefix,     -> { "" }
+    set :monit_pm2_check_website,     -> { false }
+    set :monit_pm2_website_name,      -> { "PM2 #{fetch(:application)} #{fetch(:stage)}" }
+    set :monit_pm2_website_url,       -> { "example.com" }
+    set :monit_pm2_website_ssl,       -> { false }
     
     
   end

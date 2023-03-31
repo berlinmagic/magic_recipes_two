@@ -226,6 +226,8 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => set :monit_website_check_text,             "<!DOCTYPE html>"
     # => set :monit_website_check_timeout,          20
     # => set :monit_website_check_cycles,           3
+    ## check other Sites:
+    set :monit_websites_to_check,     							[]  # instance => { name: String, domain: String, ssl: Boolean, check_content: Boolean, path: String, content: String }
     ## M/Monit
     # => set :monit_mmonit_url,                     false
     ## PM2 - JS - App
@@ -235,12 +237,15 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # set :monit_pm2_pid_path,                      "/home/#{fetch(:user)}/.pm2/pids"
     # set :monit_pm2_start_script,                  "ecosystem.config.js"
     # set :monit_pm2_stage,                         "production"
-    # set :monit_pm2_website,                       "example.com"
-    # set :monit_pm2_website_ssl,                   false
     # set :pm2_roles,                               :web
     # set :monit_pm2_worker_role,                   :user
     ## if prefix for monit command is needed .. ie: "[ -s \"$HOME/.nvm/nvm.sh\" ] && \. \"$HOME/.nvm/nvm.sh\" ; nvm use 9.9.0 ; "
     # set :monit_pm2_worker_prefix,                 ""
+		## check website powered by pm2 .. for more settings use :monit_websites_to_check
+    # set :monit_pm2_check_website,     						false
+    # set :monit_pm2_website_name,      						"PM2 #{fetch(:application)} #{fetch(:stage)}"
+    # set :monit_pm2_website_url,       						"example.com"
+    # set :monit_pm2_website_ssl,       						false
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
