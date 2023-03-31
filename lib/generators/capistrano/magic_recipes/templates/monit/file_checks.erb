@@ -1,7 +1,7 @@
 # Check files for <%= fetch(:application) %> [<%= fetch(:stage) %>]
 <% monit_files_list.each do |that| %>
 check file "<%= that[:name] %>" with path <%= that[:path] %>
-	if size > <%= that[:max_size].to_i %> GB then alert
+	if size > <%= that[:max_size].to_i %> GB then <%= monit_alert %>
 	<% if that[:clear] %>
 	if size > <%= that[:max_size].to_i %> GB
 		for 3 cycles

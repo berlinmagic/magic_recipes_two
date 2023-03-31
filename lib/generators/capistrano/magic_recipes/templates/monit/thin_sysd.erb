@@ -5,13 +5,13 @@
     start program = "<%=   monit_app_prefixed("thin start -C config/thin_app_#{ fetch(:stage) }.yml -o #{ n }")    %>"
     stop program = "<%=    monit_app_prefixed("thin stop -C config/thin_app_#{ fetch(:stage) }.yml -o #{ n }")     %>"
     if does not exist for 3 cycles then start # (default)
-    if does not exist for 3 cycles then alert
-    if 3 restarts within 5 cycles then alert
-    if mem > <%= ( fetch( :monit_thin_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then alert
+    if does not exist for 3 cycles then <%= monit_alert %>
+    if 3 restarts within 5 cycles then <%= monit_alert %>
+    if mem > <%= ( fetch( :monit_thin_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then <%= monit_alert %>
     if mem > <%= fetch( :monit_thin_totalmem_mb, 300 ) %> MB for 2 cycles then restart
-    if cpu > 50% then alert
+    if cpu > 50% then <%= monit_alert %>
     if cpu > 50% for 3 cycles then restart
     if 5 restarts within 5 cycles then timeout
     # alert <%= fetch(:monit_mail_to) %> only on { pid }
-    if changed pid 2 times within 20 cycles then alert
+    if changed pid 2 times within 20 cycles then <%= monit_alert %>
 <% end %>

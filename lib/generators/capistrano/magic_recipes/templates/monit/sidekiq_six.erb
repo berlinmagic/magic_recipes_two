@@ -7,13 +7,13 @@ CHECK process <%= sidekiq_six_service_name(service_file) %> with pidfile <%= fet
   GROUP sidekiq-<%= fetch(:sidekiq_monit_group, fetch(:application)) %>-<%= fetch(:stage) %>
 	GROUP sidekiq
   # if does not exist then start # (default)
-  if totalmem > <%= ( fetch( :monit_sidekiq_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then alert
+  if totalmem > <%= ( fetch( :monit_sidekiq_totalmem_mb, 300 ).to_i * 0.75 ).to_i %> MB then <%= monit_alert %>
   if totalmem > <%= fetch( :monit_sidekiq_totalmem_mb, 300 ) %> MB for 2 cycles then restart
-  # if does not exist for 3 cycles then alert
+  # if does not exist for 3 cycles then <%= monit_alert %>
   # alert <%= fetch(:monit_mail_to) %> only on { pid }
-  if 3 restarts within 5 cycles then alert
+  if 3 restarts within 5 cycles then <%= monit_alert %>
   if 3 restarts within 5 cycles then timeout
-  if 2 restarts within 3 cycles then alert
-  if changed pid 2 times within 10 cycles then alert
+  if 2 restarts within 3 cycles then <%= monit_alert %>
+  if changed pid 2 times within 10 cycles then <%= monit_alert %>
 
 <% end %>

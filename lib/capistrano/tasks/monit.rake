@@ -93,6 +93,12 @@ namespace :load do
     set :monit_files_to_check,        -> { [] }
     ## FILE: { name: String, path: String, max_size: Integer, clear: Boolean }
     
+    ## Slack Alerts
+    set :monit_use_slack,             -> { false }
+    set :monit_slack_webhook,         -> { false }
+    set :monit_slack_user,            -> { 'MONIT' }
+    set :monit_slack_bin_path,        -> { "/etc/monit/alert_slack.rb" }
+    
   end
 end
 
@@ -210,6 +216,18 @@ namespace :monit do
   end
   
   
+  namespace :slack do
+    desc 'Downgrade MONIT to 5.16 (fix action problem)'
+    task :configure do
+      on roles :db do
+        on release_roles do |role|
+          monit_config 'alert_slack', "/etc/monit/alert_slack.rb", role
+        end
+      end
+    end
+  end
+  
+  
   
 
   %w[start stop restart syntax reload].each do |command|
@@ -299,6 +317,16 @@ end
 
 def monit_files_list
   Array( fetch(:monit_files_to_check) ).map{ |x| init_file_check_item(x) }
+end
+
+
+
+def monit_alert
+  if fetch(:monit_use_slack, false)
+    "exec #{fetch(::monit_slack_bin_path)}"
+  else
+    "alert"
+  end
 end
 
 

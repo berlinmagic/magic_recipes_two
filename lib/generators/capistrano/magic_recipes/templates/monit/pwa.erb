@@ -19,5 +19,5 @@ check host <%= domain %> with address <%= domain %>
     protocol http
   <% end %>
     with timeout 13 seconds for 5 cycles 
-  then alert
+  then <%= monit_alert %>
 <% end %>

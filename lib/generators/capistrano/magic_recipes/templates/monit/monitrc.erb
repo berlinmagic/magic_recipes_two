@@ -51,12 +51,12 @@ set httpd port <%= fetch(:monit_http_port) %>
 <% end %>
 
 check system <%= fetch(:monit_name, "#{ fetch(:application) }_server") %>
-    if loadavg(5min) > 2 for 2 cycles then alert
-    if memory > 75% for 2 cycles then alert
-    if cpu(user) > 75% for 2 cycles then alert
+    if loadavg(5min) > 2 for 2 cycles then <%= monit_alert %>
+    if memory > 75% for 2 cycles then <%= monit_alert %>
+    if cpu(user) > 75% for 2 cycles then <%= monit_alert %>
 
 check device HardDrive with path /
-    if SPACE usage > 75% then alert
+    if SPACE usage > 75% then <%= monit_alert %>
 
 
 <% if fetch(:monit_mmonit_url, false) %>
