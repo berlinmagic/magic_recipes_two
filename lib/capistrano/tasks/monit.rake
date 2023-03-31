@@ -15,7 +15,7 @@ namespace :load do
     ## Status
     set :monit_active,                -> { true }
     set :monit_main_rc,               -> { true }
-    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website website_checks] }
+    # set :monit_processes,             -> { %w[nginx pm2 postgresql pwa redis sidekiq thin website website_checks file_checks] }
     set :monit_processes,             -> { %w[nginx postgresql thin website] }
     set :monit_name,                  -> { "#{ fetch(:application) }_#{ fetch(:stage) }" }
     ## Mailer
@@ -83,6 +83,15 @@ namespace :load do
     set :monit_pm2_website_url,       -> { "example.com" }
     set :monit_pm2_website_ssl,       -> { false }
     
+    ## Check log files 
+    set :monit_logs_rails_check,      -> { false }
+    set :monit_logs_rails_max,        -> { false }
+    set :monit_logs_rails_clear,      -> { false }
+    set :monit_logs_rails_path,       -> { "#{shared_path}/log/#{fetch(:stage)}.log" }
+    
+    ## Check files
+    set :monit_files_to_check,        -> { [] }
+    ## FILE: { name: String, path: String, max_size: Integer, clear: Boolean }
     
   end
 end
@@ -109,7 +118,7 @@ namespace :monit do
       # invoke "monit:redis"
       # invoke "monit:thin"
       # invoke "monit:configure_website"
-      %w[nginx pm2 postgresql pwa redis sidekiq sidekiq_six thin thin_sysd website website_checks].each do |command|
+      %w[nginx pm2 postgresql pwa redis sidekiq sidekiq_six thin thin_sysd website website_checks file_checks].each do |command|
         invoke "monit:#{command}:configure" if Array(fetch(:monit_processes)).include?(command)
       end
       if fetch(:monit_webclient, false) && fetch(:monit_webclient_domain, false)
@@ -185,13 +194,13 @@ namespace :monit do
     end
   end
   
-  %w[pwa website website_checks].each do |process|
+  %w[pwa website website_checks file_checks].each do |process|
     namespace process.to_sym do
       
       desc "Upload Monit #{process} config file (app specific)"
       task "configure" do
         if Array(fetch(:monit_processes)).include?(process)
-          on release_roles fetch("#{process =~ /website/ ? 'nginx' : process}_roles".to_sym, :web) do |role|
+          on release_roles fetch("#{process =~ /^website|file/ ? 'nginx' : process}_roles".to_sym, :web) do |role|
             monit_config process, "/etc/monit/conf.d/#{fetch(:application)}_#{fetch(:stage)}_#{process}.conf", role
           end
         end
@@ -276,8 +285,20 @@ def init_site_check_item( domain )
   that
 end
 
+def init_file_check_item( file )
+  ## defaults
+  that = { name: '', path: '', max_size: 12, clear: false }
+  that.merge! file
+  that[:name] = that[:path].to_s.split('/').last   if [nil, '', ' '].include?( that[:name] )
+  that
+end
+
 def monit_website_list
-  Array( fetch(:monit_websites_to_check) ).map{ |d| init_site_check_item(d) }
+  Array( fetch(:monit_websites_to_check) ).map{ |x| init_site_check_item(x) }
+end
+
+def monit_files_list
+  Array( fetch(:monit_files_to_check) ).map{ |x| init_file_check_item(x) }
 end
 
 
