@@ -95,8 +95,7 @@ namespace :load do
     
     ## Slack Alerts
     set :monit_use_slack,             -> { false }
-    set :monit_slack_webhook,         -> { false }
-    set :monit_slack_user,            -> { 'MONIT' }
+    set :monit_slack_webhook,         -> { "" } # your Slack webhook URL
     set :monit_slack_bin_path,        -> { "/etc/monit/alert_slack.sh" }
     
   end
