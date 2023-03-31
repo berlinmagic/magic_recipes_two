@@ -97,7 +97,7 @@ namespace :load do
     set :monit_use_slack,             -> { false }
     set :monit_slack_webhook,         -> { false }
     set :monit_slack_user,            -> { 'MONIT' }
-    set :monit_slack_bin_path,        -> { "/etc/monit/alert_slack.rb" }
+    set :monit_slack_bin_path,        -> { "/etc/monit/alert_slack.sh" }
     
   end
 end
@@ -222,6 +222,7 @@ namespace :monit do
       on roles :db do
         on release_roles fetch(:monit_roles) do |role|
           monit_config 'alert_slack', "#{ fetch(:monit_slack_bin_path) }", role
+          execute :sudo, "chmod +x  #{ fetch(:monit_slack_bin_path) }"
         end
       end
     end
