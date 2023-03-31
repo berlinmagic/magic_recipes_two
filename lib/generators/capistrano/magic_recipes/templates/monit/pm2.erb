@@ -17,7 +17,7 @@
 
 <% if fetch(:monit_pm2_check_website, false) %>
 # Check website for pm2: <%= fetch(:application) %> [<%= fetch(:stage) %>]
-check host "<%= fetch(:monit_pm2_website_name) %>" with address <%= fetch(:monit_pm2_website_url) %>
+check host "<%= fetch(:monit_pm2_website_name).gsub(/\s+/,'-').gsub(/_/,'-').gsub(/:/,'-').gsub(/--+/,'-') %>" with address <%= fetch(:monit_pm2_website_url) %>
   <% if fetch(:monit_pm2_website_ssl) %>if failed port 443 protocol https and certificate valid > 2 days then alert<% end %>
   if failed 
   <% if fetch(:monit_pm2_website_ssl) %>
