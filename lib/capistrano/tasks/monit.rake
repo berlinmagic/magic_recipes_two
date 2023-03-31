@@ -221,7 +221,7 @@ namespace :monit do
     task :configure do
       on roles :db do
         on release_roles do |role|
-          monit_config 'alert_slack', "#{ fetch(::monit_slack_bin_path) }", role
+          monit_config 'alert_slack', "#{ fetch(:monit_slack_bin_path) }", role
         end
       end
     end
@@ -323,7 +323,7 @@ end
 
 def monit_alert
   if fetch(:monit_use_slack, false)
-    "exec #{fetch(::monit_slack_bin_path)}"
+    "exec #{fetch(:monit_slack_bin_path)}"
   else
     "alert"
   end
