@@ -13,13 +13,14 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 - **inform_slack** inform a slack channel about successful upload
 - **lets encrypt** install certs, add cron job, create Diffie-Hellman
 - **monit** control monit with monit-webinterface
-- **monit_sidekiq** monit tasks for sidekiq (unused!!)
 - **nginx** control nginx with several instances and ssl
 - **redirect_page** a page that redirects to new domain after 10 sec. info old-page -> new-page
 - **redis** control redis
 - **secrets** handling of rails 4 secrets
 - **sidekiq** control sidekiq
+- **sidekiq_six** control sidekiq with systemd deamon
 - **thin** control thin
+- **thin_sysd** control thin with systemd deamon
 
 
 ### ChangeLog:
@@ -47,7 +48,7 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
 
 - add Gem to your gemfile
 ```ruby
-  gem 'magic_recipes_two', '>= 0.0.93', group: :development
+  gem 'magic_recipes_two', '>= 0.0.95', group: :development
 ```
 - run `bundle`
 - run `bundle exec cap install`
@@ -80,9 +81,9 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # => require 'capistrano/magic_recipes/redirect_page'
     # => require 'capistrano/magic_recipes/secrets'
     # => require 'capistrano/magic_recipes/sidekiq'
-	# => require 'capistrano/magic_recipes/sidekiq_six'
+		# => require 'capistrano/magic_recipes/sidekiq_six'
     # => require 'capistrano/magic_recipes/thin'
-	# => require 'capistrano/magic_recipes/thin_sysd'
+		# => require 'capistrano/magic_recipes/thin_sysd'
     
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## 
 ```
@@ -246,6 +247,16 @@ Not using capistrano-3, see [Capistrano 2 version](https://github.com/twetzel/ma
     # set :monit_pm2_website_name,      						"PM2 #{fetch(:application)} #{fetch(:stage)}"
     # set :monit_pm2_website_url,       						"example.com"
     # set :monit_pm2_website_ssl,       						false
+    ## check other Sites:
+    set :monit_websites_to_check,     							[]
+    # Website: { name: String, domain: String, ssl: Boolean, check_content: Boolean, path: String, content: String }
+    ## Check files
+    set :monit_files_to_check,        							[]
+    ## FILE: { name: String, path: String, max_size: Integer, clear: Boolean }
+    ## Slack Alerts
+    set :monit_use_slack,             							false
+    set :monit_slack_webhook,         							"" # your Slack webhook URL
+    set :monit_slack_bin_path,        							"/etc/monit/alert_slack.sh"
     
     
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##

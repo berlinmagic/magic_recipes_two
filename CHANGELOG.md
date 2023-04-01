@@ -12,8 +12,9 @@ Our most used recipes for Capistrano-3!
 - removed some monit http settings
 - serving ssl monit now completely handled via nginx and lets-encrypt
 - NO DOWNGRADE TO monit of 2014 possible anymore!!!
-
-
+- add `monit_websites_to_check` helper to check files (ie. logfiles) and even clean them if wanted
+- add Alert via Slack to Monit
+- `sidekiq_six` and `thin_sysd` now writing pid's
 
 
 **Version 0.0.94**
@@ -28,6 +29,7 @@ Our most used recipes for Capistrano-3!
 
 **Version 0.0.92**
 - add **sidekiq_six** .. handle sidekiq 6.0.x via service file
+
 
 **Version 0.0.91**
 - add *redirect_page_* .. handle a redirect_page with domain info

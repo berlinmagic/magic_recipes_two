@@ -85,6 +85,14 @@ MONIT-WEB-VIEW
 ```
 
 
+Send SLACK-Alerts
+```ruby
+ ## Slack Alerts
+ set :monit_use_slack,             							false
+ set :monit_slack_webhook,         							"" # your Slack webhook URL
+ set :monit_slack_bin_path,        							"/etc/monit/alert_slack.sh"
+```
+
 -----
 
 
@@ -117,8 +125,8 @@ sidekiq (need secrets_key_base to be set)
 
 
 
-### Website
-Check the main website, ssl value is taken from configuration.
+### (App) Website(s)
+Check the main website, ssl value is taken from configuration. (automatically checks ALL configured app domains)
 ```ruby
  set :monit_website_check_content,          false
  set :monit_website_check_path,             "/"
@@ -129,12 +137,37 @@ Check the main website, ssl value is taken from configuration.
 ```
 
 
-### More Websites to check
+### Websites to check
 Check as many websites as you want. If ssl active send alert 2 days before cert is invalid.
 ```ruby
  ## check other Sites:
  set :monit_websites_to_check,     -> { [] }
- # Website instance: { name: String, domain: String, ssl: Boolean, check_content: Boolean, path: String, content: String }
+ ## 
+ ## Website: { name: String, domain: String, ssl: Boolean, check_content: Boolean, path: String, content: String }
+ ##
+ ## Samples:
+ ##
+ ## set :monit_websites_to_check,         [
+ ##   { name: 'My-API', domain: 'api.example.com', ssl: true, check_content: true, path: '/api', content: 'status.+OK' }
+ ## ]
+```
+
+
+### Files to check
+Check as many websites as you want. If ssl active send alert 2 days before cert is invalid.
+```ruby
+ ## Check files
+ set :monit_files_to_check,        -> { [] }
+ ## 
+ ## FILE: { name: String, path: String, max_size: Integer, clear: Boolean }
+ ##
+ ## Samples:
+ ##
+ ## set :monit_files_to_check,            [
+ ##   { name: 'Rails-LOG', path: "#{ shared_path }/log/#{fetch(:stage)}.log", max_size: 13, clear: false },
+ ##   { name: 'NginX-Access', path: "#{ shared_path }/log/nginx-access.log", max_size: 7, clear: false },
+ ##   { name: 'NginX-Error', path: "#{ shared_path }/log/nginx-error.log", max_size: 7, clear: false }
+ ## ]
 ```
 
 

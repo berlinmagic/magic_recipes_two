@@ -83,11 +83,6 @@ namespace :load do
     set :monit_pm2_website_url,       -> { "example.com" }
     set :monit_pm2_website_ssl,       -> { false }
     
-    ## Check log files 
-    set :monit_logs_rails_check,      -> { false }
-    set :monit_logs_rails_max,        -> { false }
-    set :monit_logs_rails_clear,      -> { false }
-    set :monit_logs_rails_path,       -> { "#{shared_path}/log/#{fetch(:stage)}.log" }
     
     ## Check files
     set :monit_files_to_check,        -> { [] }
