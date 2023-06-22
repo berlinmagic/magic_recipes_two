@@ -59,10 +59,11 @@ namespace :thin do
   desc "Create and upload thin config file"
   task :reconf do
     on release_roles fetch(:thin_roles) do
-      within shared_path do
+      within current_path do
         magic_template("thin_app_yml", '/tmp/thin_app.yml')
         execute :sudo, :mv, '/tmp/thin_app.yml', "config/thin_app_#{fetch(:stage)}.yml"
         execute :sudo, :rm, ' -f', "#{fetch(:thin_path)}/thin_#{fetch(:application)}_#{fetch(:stage)}*"
+        execute :sudo, :cp, ' -f', "#{current_path}/config/thin_app_#{fetch(:stage)}.yml", "#{shared_path}/config/thin_app_#{fetch(:stage)}.yml"
         execute :sudo, :ln, ' -sf', "#{shared_path}/config/thin_app_#{fetch(:stage)}.yml", "#{fetch(:thin_path)}/thin_#{fetch(:application)}_#{fetch(:stage)}.yml"
       end
     end
